@@ -1,0 +1,81 @@
+Known Bugs
+====================================
+**********************
+* 20 September 2010: *
+**********************
+When calling SNPs, if the total value on the genome is higher than about 20 or
+30, this is always classified as a monoploid SNP.  This is because rounding
+errors in the code that produces the p-value doesn't allow for numbers this
+high.  Will compare ratios instead of p-values to fix this problem.
+
+********************
+* 14 January 2010: *
+********************
+When mapping sequence, the percentage doesn't work.  This is because we only
+read in 1024 sequences at a time.  Because of this, it's possible that one
+thread will do more work than the others.  Perhaps we need to limit the thread
+to reading the max of the read_buffer or the number of sequences it has
+remaining?  This would probably fix the problem and let it be even more even
+across CPUs.
+
+*********************
+* 02 January 2010:	*
+*********************
+Sequence named
+>FS6MV1002HT18D rank=1049841 x=3095.0 y=2875.5 length=2041
+has issues.  Or is it the program?  Seg Faulted on line 60 of 
+#0  0x000000000040cce8 in bin_seq::get_align_score_end () at src/SNPScoredSeq.cpp:60
+60                      }
+(gdb)
+Bottom (innermost) frame selected; you cannot go down.
+(gdb) bt                                     
+#0  0x000000000040cce8 in bin_seq::get_align_score_end () at src/SNPScoredSeq.cpp:60
+#1  0x000000000040d7a3 in bin_seq::get_align_score () at src/SNPScoredSeq.cpp:60
+#2  0x0000000000407d86 in align_sequence (gen=@0x7fffd7e7eaf0, unique=@0x2aabc844dd80, search=
+      {name = 0x2aabcccbaa20 ">FS6MV1002HT18D rank=1049841 x=3095.0 y=2875.5 length=2041", length = 2041, pwm = 0x2aabcccc2810}, consensus=@0x2aabc844ddd0, min_align_score=1005.5, denominator=@0x2aabc844ddc0, upstrand=true) at src/SeqDriver.cpp:398
+#3  0x000000000040866c in print_top_matches (gen=@0x7fffd7e7eaf0, search=@0x2aabcccb26b0, consensus=@0x2aabc8458060, 
+    num_not_matched=@0x2aabc8458070, num_matched=@0x2aabc8458074) at src/SeqDriver.cpp:505
+#4  0x0000000000409062 in thread_print (t_opts=0xd543b4b0) at src/SeqDriver.cpp:1182
+#5  0x0000003824a062e7 in ?? ()
+#6  0x0000000000000000 in ?? ()
+
+>>>>RESOLUTION: 04 January 2010<<<<
+Sequence was 2043 characters long. 
+In bin_seq, the nw array was allocated on the stack, which caused a stack
+overflow error.  Changed to allocate memory on the heap.  Also made the array
+one-dimensional (possibly helping with memory performance?) of length*length.
+
+*********************
+* 09 November 2009:	*
+*********************
+When reading in a test genome from a *.fa text file, there are fewer sequences than
+when reading from a binary genome file. The memory footprint is the same (I've printed
+out the genome hash, the genome, the binary data, etc), and the process after the
+genome is stored is the exact same. I convert the genomes both to the same data format
+as well, but it still gives different results.
+
+Note:  When running this function, it works to read and write.  What were we
+doing before to break it?
+./bin/gnumap -g ~nclement/gnutest/yumei_data/mirna.fa.txt --read=yumei.save -o
+yumei_test_read -a .8 -p -v 1 ~nclement/gnutest/yumei_data/test.txt
+
+These parameters don't work with reading and writing:
+
+./bin/gnumap -g ../../gnutest/yumei_data/mirna.fa.txt --save=yumei.saved -o
+yumei_test -a .8 -p -v 1 -c 8 --snp -j 5
+/Network/Servers/dna.cs.byu.edu/Volumes/home2/nclement/gnutest/yumei_data/test.txt
+--snp -0 --bin_size=1
+
+./bin/gnumap -g yumei --read=yumei.saved -o yumei_test -a .8 -p -v 1 -c 8
+--snp -j 5
+/Network/Servers/dna.cs.byu.edu/Volumes/home2/nclement/gnutest/yumei_data/test.txt
+--snp -0 --bin_size=1
+
+----Note----
+It appears to be a problem with threading.  Running the same program multiple
+times will give different sequences.
+
+>>>>RESOLUTION: 16 November 2009<<<<
+The function getSetThreadID was not performing properly.  It would set the
+thread ID then not check the sequence on the next iteration of mapping.  Need
+to fix this function to perform what we actually want it to do.

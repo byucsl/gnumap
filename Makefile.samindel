@@ -1,0 +1,81 @@
+# Makefile.samindel
+#
+# Copyright (C) 2009-2014 Nathan Clement
+#
+# This file is part of GNUMAP.
+#
+# GNUMAP is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# GNUMAP is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GNUMAP.  If not, see <http://www.gnu.org/licenses/>.
+
+EXE_NAME = bin/sam_indel
+
+EXE_OBJ_FILES = obj-plain/sam_indel.o $(OBJ_FILES)
+OBJ_FILES = obj-plain/GenomeMem.o obj-plain/Reader.o obj-plain/bin_seq.o
+		
+GSL_LIB_FILE = lib/lib/libgsl.a
+GSL_LIB_DIR = lib/gsl-1.14/
+GSL_ZIP_FILE = lib/gsl-1.14.tar.gz
+		
+FLAGS = $(DEBUG_FLAGS)
+
+PROFILE_FLAGS = -m64 -pg -O3
+DEBUG_FLAGS = -m64 -Wall -g -rdynamic
+EXTRA_FLAGS =
+OPT_FLAGS = -m64 -O3
+ERR_FLAGS = -Wall
+
+GXX=g++
+BUILDTARGET=plain
+BUILDEXE=$(_EXE_NAME)
+
+INC = -Iinc/ -I$(GSL_LIB_DIR)
+# For some reason, I thought we needed to do dynamic linking.  Running a few tests,
+# it doesn't seem we do after all, so we'll just pull this out, but leave it in just in case.
+LIB = -dynamic -lpthread -Llib/lib -Wl,-Bstatic -lgsl -lgslcblas -Wl,-Bdynamic
+#LIB =  -Llib/lib -lgsl -lgslcblas -dynamic -lpthread
+
+prog : $(BUILDTARGET)
+
+plain : $(GSL_LIB_FILE) $(EXE_NAME) 
+	-@ echo ""; echo "Successful"; echo ""
+
+$(EXE_NAME) : $(EXE_OBJ_FILES) $(INC_FILES)
+	$(GXX) $(FLAGS) -o $(EXE_NAME) $(EXE_OBJ_FILES) $(INC) $(LIB) $(EXTRA_FLAGS)
+
+obj-plain/sam_indel.o : src/sam_indel.cpp $(INC_FILES)
+	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
+
+obj-plain/%.o : src/%.cpp inc/%.h
+	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
+
+# Compile the gsl library if we need to
+$(GSL_LIB_FILE) :
+	if [ ! -d $(GSL_LIB_DIR) ]; then \
+		tar -xzf $(GSL_ZIP_FILE) -C lib/; \
+	fi
+	cd $(GSL_LIB_DIR) && \
+	if [ ! -e Makefile ]; then \
+		echo "Couldn't find $(GSL_LIB_DIR)Makefile"; \
+		./configure --prefix="$(CURDIR)/lib/"; \
+	fi && \
+	make && make install \
+
+clean : 
+	-rm -f $(BUILDEXE)
+	
+deep-clean: clean
+	-rm -rf lib/lib
+	-rm -rf lib/gsl-1.14
+	-rm -rf lib/bin/
+	-rm -rf lib/share/
+	-rm -rf lib/include/

@@ -1,0 +1,448 @@
+>short1  9a
+tttttgtagtctctgcaagtggacatttggacagctttgaggcttataga
+tctataagcctcaaagctgtccaaatgtccacttgcagatactacaaaaa
+gagtgtttcaaaagtgctcaatgaaaaggaatgttcagctctgtgagtta
+aatgcaaacatcacaaataagtttctgagaatgcttctgtctagttttta
+tgggaagataattccgtgtccagcgaaggcttcaaagctttcaaaatatc
+cacttgcaaattctacaaaaagagtgtttcaaagctgctttatcaaaaga
+>short2
+ctgtgagctgaatgcaaccatcacaaagaattttctgagaatgattctaa
+ttattatgtgaagatattcccgtttcgaacgaaggcctcaaagcgctcca
+gatgtccacttgcagattctacaaaaagagtgtttcaaaactgccctatg
+gaaaggaggattcaactctatgagttgaatgcacacatcacaaatggttt
+ttgcgaatgcttctgtctgctttttatgtgaagatatttcctttttcacc
+ataggcctcaaagaaatccaaatatccacttgcagatactacagaaagat
+tgtttcaaaacttctgtttcgactctgtgagttgaatgcacacatcataa
+agaagtttctgagaatgcttctgtctagtttttttgtgaagatattcccg
+tttccaaggaaagcctcaaagctgtcctaatatccacttttgaattttac
+aagtagagtgtttgaaaactgctctgtcaaaagaaaggtttaactctgtg
+>short3
+ttttatgttaagatatttcctttttcaccataggcctcaaagcacaccaa
+atgtccacttgcatattgtgcaaagagtgtttcaaaactgtgctatcaaa
+agaagcgttcaacactgtgagttgaacgcacacatcacaaagaagtttct
+gagcatgcttctgtatagtttttatgtgaagatattcccgtatccgaaga
+aggcctccaggtggtctaaatatttgcacattctactaaaagagtgttta
+aaagctgctgtatgataaagtatgttcgaatttgtgagttgaatgcacac
+atcacaaagaagtttctgagaatgcttctgtctaatatttatgtgaagat
+attacggtttccaacgaagtcctcaaaaccgtccaaatatccacttgcag
+gttgtttcctttcccccctccccctt
+>short4
+gtctagtttttatgtgaagatattcccatttccaatgaaggccacaaagc
+cgtccaaatatccacttgcagattccactaaaagagtgtttcgaaactgc
+tctatgataaggaatgttcaactctgttaattgaaggcaaacatcacaaa
+gaagtttctcagaatgcttctctctagtttttgtgtgaagatatatcctt
+ttccatcataggcctctaagctctccaaatgtccacttgcagattctaca
+aaaagagtgtttcaaaactgctctctcaaaagtaaggttcaactttttga
+gtttaatacacacatcacatagaagcttctgagaatgcttccgtctagtg
+tttgtgttaagatattcccgtttccaacgaaggcttcaaagcggtcaaaa
+tatcctcttgcagatactacaaaaagcgtgtatcaaaactgctccatgaa
+aaggtatgttcaaccctgtgagttcaatgtaaacatcacaaagaagtttc
+tgagaatgcttgtgtctgtttttttgtgtgaagatgtatccttttccacc
+>hg18_ct_UserTrack_hsa-mir-1302-2 range=chr1:20229-20366 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+ggatgcccagctagtttgaattttagataaacaacgaataatttcgtagc
+ataaatatgtcccaagcttagtttgggacatacttatgctaaaaaacatt
+at
+>hg18_ct_UserTrack_hsa-mir-200b range=chr1:1092347-1092441 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+ccagctcgggcagccgtggccatcttactgggcagcattggatggagtca
+ggtctctaatactgcctggtaatgatgacggcggagccctgcacg
+>hg18_ct_UserTrack_hsa-mir-200a range=chr1:1093106-1093195 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+ccgggcccctgtgagcatcttaccggacagtgctggatttcccagcttga
+ctctaacactgtctggtaacgatgttcaaaggtgacccgc
+>hg18_ct_UserTrack_hsa-mir-429 range=chr1:1094248-1094330 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+cgccggccgatgggcgtcttaccagacatggttagacctggccctctgtc
+taatactgtctggtaaaaccgtccatccgctgc
+>hg18_ct_UserTrack_hsa-mir-551a range=chr1:3467119-3467214 5'pad=0 3'pad=0 strand=- repeatMasking=none
+ggggactgccgggtgaccctggaaatccagagtgggtggggccagtctga
+ccgtttctaggcgacccactcttggtttccagggttgccctggaaa
+>hg18_ct_UserTrack_hsa-mir-34a range=chr1:9134314-9134423 5'pad=0 3'pad=0 strand=- repeatMasking=none
+ggccagctgtgagtgtttctttggcagtgtcttagctggttgttgtgagc
+aatagtaaggaagcaatcagcaagtatactgccctagaagtgctgcacgt
+tgtggggccc
+>hg18_ct_UserTrack_ACA59 range=chr1:12489887-12490038 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+gcccagggtatgttcacggggcgatgctgccctcccagctggcccatggg
+tgaccctgggaacattaactgcctcacaacgtttgtgcctcagttacccg
+tagatgtagtgagggtaacaatacttactctcgttggtgataaggaacag
+ct
+>hg18_ct_UserTrack_hsa-mir-1290 range=chr1:19096152-19096229 5'pad=0 3'pad=0 strand=- repeatMasking=none
+gagcgtcacgttgacactcaaaaagtttcagattttggaacatttcggat
+tttggatttttggatcagggatgctcaa
+>hg18_ct_UserTrack_hsa-mir-1256 range=chr1:21187394-21187512 5'pad=0 3'pad=0 strand=- repeatMasking=none
+agtcagcctgttgaagctttgaagctttgatgccaggcattgacttctca
+ctagctgtgaaagtcctagctaaagagaagtcaatgcatgacatcttgtt
+tcaatagatggctgtttca
+>hg18_ct_UserTrack_ACA35 range=chr1:28033499-28033664 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+cagcacttgatactaaccgagctgtctatatcctagccttgtgtcaaagg
+cttgtgatgtgttgtgatagctgggtttaagaagtgcaatattaaaacaa
+aagccatgagtcttttaagcccagtgtgtaaagatacactctgagttata
+actcagaggcacaact
+>hg18_ct_UserTrack_U17a range=chr1:28706464-28706670 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+tccaacgtggatacacccgggaggtcactctccccgggctctgtccaagt
+ggcgtaggggagcatagggctctgccccatgatgtacaagtccctttcca
+caacgttggaaataaagctgggcctcgtgtctgcgcctgcatattcctac
+agcttcccagagtcctgtcgacaattactggggagacaaaccatgcagga
+aacagcc
+>hg18_ct_UserTrack_U17b range=chr1:28707657-28707861 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+tccaacgtggataccctgggaggtcactctccccaggctctgtccaagtg
+gcataggggagcttagggctctgccccatgatgtacagtccctttccaca
+acgttgaagatgaagctgggcctcgtgtctgcgcctgcatattcctacag
+cttcccagagtcctgtggacaatgactggggagacaaaccatgcaggaaa
+catat
+>hg18_ct_UserTrack_HBII-420 range=chr1:28777842-28777921 5'pad=0 3'pad=0 strand=- repeatMasking=none
+actggtccaggatgaaacctaatttgagtggacatccatggatgagaaat
+gcggatatgggactgagaccagctcctagg
+>hg18_ct_UserTrack_ACA61 range=chr1:28778863-28778992 5'pad=0 3'pad=0 strand=- repeatMasking=none
+atcctcctgatccctttcccatcggatctgaacactggtcttggtggtcg
+taaaaggaggaaaagtaatagtgaagctggcctaaatgttgtaatctggt
+atatggcatgtgggctagtttcagacaggt
+>hg18_ct_UserTrack_ACA44 range=chr1:28779480-28779611 5'pad=0 3'pad=0 strand=- repeatMasking=none
+cagcatgtttccaagggctgtggctggtcatagccatgggatctccaact
+gcatgcaagagcaacctggaaagactttgacagcgcaggtcagtacaata
+cctgcaagctgccactcagctttcctataatg
+>hg18_ct_UserTrack_ACA16 range=chr1:28780019-28780152 5'pad=0 3'pad=0 strand=- repeatMasking=none
+ttggcccttatcgaagctgcagctgcttccgcatagctgctgtggtcaaa
+aaggagcccagagtgacagttttccttgacggtcgccgttctgtttgttg
+taactgatctgcaacattttgggaaaatacagtt
+>hg18_ct_UserTrack_U103 range=chr1:31181120-31181210 5'pad=0 3'pad=0 strand=- repeatMasking=none
+ttgtctggcaatgatgacccacttgccctcactgagaacaaagttcggta
+atgagaatctttgttaatggactcaagttctgagccagaca
+>hg18_ct_UserTrack_U103B range=chr1:31194549-31194639 5'pad=0 3'pad=0 strand=- repeatMasking=none
+ttgtctggcaatgatgacccacttgccctcactgagaacaaagttcggta
+atgagaatctttgttaatggactcaagttctgagccagaca
+>hg18_ct_UserTrack_HBII-251 range=chr1:31213597-31213671 5'pad=0 3'pad=0 strand=- repeatMasking=none
+gactggcaaggatgatacacacttgccctcacttagactatagttcactg
+atgagagcattgttctgagccagtc
+>hg18_ct_UserTrack_hsa-mir-552 range=chr1:34907787-34907882 5'pad=0 3'pad=0 strand=- repeatMasking=none
+aaccattcaaatataccacagtttgtttaaccttttgcctgttggttgaa
+gatgcctttcaacaggtgactggttagacaaactgtggtatataca
+>hg18_ct_UserTrack_ACA55 range=chr1:39805633-39805769 5'pad=0 3'pad=0 strand=- repeatMasking=none
+gagcacctgaatctttcccattccttgctgcctcgtgccggtgtggggac
+agatggtgctacagaatgagcagaggaaatccagacaggttgttttccat
+ttgtcttggggcctgtctctacagctctgccacattt
+>hg18_ct_UserTrack_hsa-mir-30e range=chr1:40992614-40992705 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+gggcagtctttgctactgtaaacatccttgactggaagctgtaaggtgtt
+cagaggagctttcagtcggatgtttacagcggcaggctgcca
+>hg18_ct_UserTrack_hsa-mir-30c-1 range=chr1:40995543-40995631 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+accatgctgtagtgtgtgtaaacatcctacactctcagctgtgagctcaa
+ggtggctgggagagggttgtttactccttctgccatgga
+>hg18_ct_UserTrack_U55 range=chr1:45014124-45014197 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+gtgtatgatgacaactcggtaatgctgcatactcccgagtgcgcggtggg
+gaagccaaccttggagagctgagc
+>hg18_ct_UserTrack_U46 range=chr1:45014751-45014848 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+gtagggtgatgaaaaagaatccttaggcgtggttgtggccgtcttggtca
+cctgtgtgccacttgccaatgcaaggacttgtcatagttacactgact
+>hg18_ct_UserTrack_U38A range=chr1:45016101-45016171 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+ttctcgtgatgaaaactctgtccagttctgctactgaagggagagagatg
+agagccttttaggctgaggaa
+>hg18_ct_UserTrack_U38B range=chr1:45016649-45016717 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+tctcagtgatgaaaactttgtccagttctgctactgacagtaagtgaaga
+taaagtgtgtctgaggaga
+>hg18_ct_UserTrack_hsa-mir-101-1 range=chr1:65296705-65296779 5'pad=0 3'pad=0 strand=- repeatMasking=none
+tgccctggctcagttatcacagtgctgatgctgtctattctaaaggtaca
+gtactgtgataactgaaggatggca
+>hg18_ct_UserTrack_hsa-mir-1262 range=chr1:68421789-68421881 5'pad=0 3'pad=0 strand=- repeatMasking=none
+atctacaatggtgatgggtgaatttgtagaaggatgaaagtcaaagaatc
+cttctgggaactaatttttggccttcaacaagaattgtgatat
+>hg18_ct_UserTrack_hsa-mir-186 range=chr1:71305902-71305987 5'pad=0 3'pad=0 strand=- repeatMasking=none
+tgcttgtaactttccaaagaattctccttttgggctttctggttttattt
+taagcccaaaggtgaattttttgggaagtttgagct
+>hg18_ct_UserTrack_U45C range=chr1:76025345-76025422 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+ggtcaatgatgagttggcatgtattctgaatctaaagttgattattacta
+ctttagctctagaattactctgagacct
+>hg18_ct_UserTrack_U45A range=chr1:76026162-76026244 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+ggtcaatgatgtgttggcatgtattatctgaatctattgctgatgtgtaa
+taacactttagctctagaattactctgagacct
+>hg18_ct_UserTrack_U45B range=chr1:76027750-76027820 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+ggtcaatgatgtaatggcatgtattagctgaatctaaagttgatgtgagt
+tctaaaattacactgagacct
+>hg18_ct_UserTrack_U21 range=chr1:93075434-93075528 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+gctgaatgatgatatcccactaactgagcagtcagtagttggtcctttgg
+ttgcatatgatgcgataattgtttcaagacgggactgatggcagc
+>hg18_ct_UserTrack_U66 range=chr1:93078864-93078996 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+gtgcaaactcgatcactagctctgcgtgatgtggcagaagcgaagggaac
+caggtttgcaaaagtaactgtggtgatggaaatgtgttagcctcagacac
+tactgaggtggttctttctatcctagtacagtc
+>hg18_ct_UserTrack_hsa-mir-760 range=chr1:94084976-94085055 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+ggcgcgtcgcccccctcagtccaccagagcccggatacctcagaaattcg
+gctctgggtctgtggggagcgaaatgcaac
+>hg18_ct_UserTrack_hsa-mir-137 range=chr1:98284214-98284315 5'pad=0 3'pad=0 strand=- repeatMasking=none
+ggtcctctgactctcttcggtgacgggtattcttgggtggataatacgga
+ttacgttgttattgcttaagaatacgcgtagtcgaggagagtaccagcgg
+ca
+>hg18_ct_UserTrack_hsa-mir-553 range=chr1:100519385-100519452 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+cttcaattttattttaaaacggtgagattttgttttgtctgagaaaatct
+cgctgttttagactgagg
+>hg18_ct_UserTrack_mgU2-25/61 range=chr1:109444338-109444757 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+gttttagggagggagagcggcctgggtcctgggtgttgtgtgcggagctg
+tggcgtcgcgtgtgaggcgcgtgcagggtgagtgtgagtggacgcgtgag
+tgtgtgagtgtgcgcgcttggagcgtgttaggcgagtgcgtgcgcccacc
+cctgcgcccctcctcccgcttacactttgatcttatttgatcggatcgtg
+accccagccccgccgggccgacccgaaatgaaaagctctcctcctgcgaa
+gccccctcggggcgctgtgcagcgaggccccttaggcggcggccacgctg
+tggtccccgaggtcccggagctggccctgcggggcccggcgctcagaagt
+gatgaattgatcagatagacgaggccgggcttgtccccggccactgatta
+tcgaggcgattctgatctgg
+>hg18_ct_UserTrack_HBII-382 range=chr1:109444678-109444759 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+gctcagaagtgatgaattgatcagatagacgaggccgggcttgtccccgg
+ccactgattatcgaggcgattctgatctgggc
+>hg18_ct_UserTrack_hsa-mir-197 range=chr1:109943038-109943112 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+ggctgtgccgggtagagagggcagtgggaggtaagagctcttcacccttc
+accaccttctccacccagcatggcc
+>hg18_ct_UserTrack_hsa-mir-320b-1 range=chr1:117015894-117015972 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+aattaatccctctctttctagttcttcctagagtgaggaaaagctgggtt
+gagagggcaaacaaattaactaattaatt
+>hg18_ct_UserTrack_hsa-mir-942 range=chr1:117438788-117438873 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+attaggagagtatcttctctgttttggccatgtgtgtactcacagcccct
+cacacatggccgaaacagagaagttactttcctaat
+>hg18_ct_UserTrack_hsa-mir-554 range=chr1:149784896-149784991 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+acctgagtaacctttgctagtcctgactcagccagtactggtcttagact
+ggtgatgggtcagggttcatattttggcatctctctctgggcatct
+>hg18_ct_UserTrack_hsa-mir-190b range=chr1:152432765-152432843 5'pad=0 3'pad=0 strand=- repeatMasking=none
+tgcttctgtgtgatatgtttgatattgggttgtttaattaggaaccaact
+aaatgtcaaacatattcttacagcagcag
+>hg18_ct_UserTrack_hsa-mir-92b range=chr1:153431592-153431687 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+cgggccccgggcgggcgggagggacgggacgcggtgcagtgttgtttttt
+cccccgccaatattgcactcgtcccggcctccggcccccccggccc
+>hg18_ct_UserTrack_hsa-mir-555 range=chr1:153582765-153582860 5'pad=0 3'pad=0 strand=- repeatMasking=none
+ggagtgaactcagatgtggagcactacctttgtgagcagtgtgacccaag
+gcctgtggacagggtaagctgaacctctgataaaactctgatctat
+>hg18_ct_UserTrack_ACA42 range=chr1:154156324-154156457 5'pad=0 3'pad=0 strand=- repeatMasking=none
+tggtaatggatttatggtgggtccttctctgtgggcctctcatagtgtac
+ccatgccatagcaaatggcagcctcgaaccattgcccagtccccttacct
+gtgggctgtgagcactgaagggggttgcacagtg
+>hg18_ct_UserTrack_ACA26 range=chr1:154162373-154162501 5'pad=0 3'pad=0 strand=- repeatMasking=none
+actggaggactaagaaggctgagtctgatgaagtaagactttgctgatac
+attcctcctagaaaaaagggttggagagagcagccttcactgaagagtat
+cacagggctgactgtactacccaacactc
+>hg18_ct_UserTrack_hsa-mir-9-1 range=chr1:154656757-154656845 5'pad=0 3'pad=0 strand=- repeatMasking=none
+cggggttggttgttatctttggttatctagctgtatgagtggtgtggagt
+cttcataaagctagataaccgaaagtaaaaataacccca
+>hg18_ct_UserTrack_hsa-mir-765 range=chr1:155172547-155172660 5'pad=0 3'pad=0 strand=- repeatMasking=none
+tttaggcgctgatgaaagtggagttcagtagacagcccttttcaagccct
+acgagaaactggggtttctggaggagaaggaaggtgatgaaggatctgtt
+ctcgtgagcctgaa
+>hg18_ct_UserTrack_hsa-mir-556 range=chr1:160578960-160579054 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+gatagtaataagaaagatgagctcattgtaatatgagcttcatttataca
+tttcatattaccattagctcatcttttttattactaccttcaaca
+>hg18_ct_UserTrack_hsa-mir-921 range=chr1:164390604-164390659 5'pad=0 3'pad=0 strand=- repeatMasking=none
+actagtgagggacagaaccaggattcagactcaggtccatgggcctggat
+cactgg
+>hg18_ct_UserTrack_hsa-mir-1255b-2 range=chr1:166234522-166234588 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+tcttacggatgagcaaagaaagtggtttgcgcctcaagaaaccactttct
+ttgctcatccataagga
+>hg18_ct_UserTrack_hsa-mir-557 range=chr1:166611386-166611483 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+agaatgggcaaatgaacagtaaatttggaggcctggggccctccctgctg
+ctggagaagtgtttgcacgggtgggccttgtctttgaaaggaggtgga
+>hg18_ct_UserTrack_hsa-mir-1295 range=chr1:169337493-169337571 5'pad=0 3'pad=0 strand=- repeatMasking=none
+aggacattttgcccagatccgtggcctattcagaaatgtggcctgtgatt
+aggccgcagatctgggtgaaatgtcctcc
+>hg18_ct_UserTrack_hsa-mir-214 range=chr1:170374561-170374670 5'pad=0 3'pad=0 strand=- repeatMasking=none
+ggcctggctggacagagttgtcatgtgtctgcctgtctacacttgctgtg
+cagaacatccgctcacctgtacagcaggcacagacaggcagtcacatgac
+aacccagcct
+>hg18_ct_UserTrack_hsa-mir-199a-2 range=chr1:170380298-170380407 5'pad=0 3'pad=0 strand=- repeatMasking=none
+aggaagcttctggagatcctgctccgtcgccccagtgttcagactacctg
+ttcaggacaatgccgttgtacagtagtctgcacattggttagactgggca
+agggagagca
+>hg18_ct_UserTrack_U81 range=chr1:172099907-172099983 5'pad=0 3'pad=0 strand=- repeatMasking=none
+cagaatacatgatgatctcaatccaacttgaactctctcactgattactt
+gatgacaataaaatatctgatattctg
+>hg18_ct_UserTrack_U47 range=chr1:172100131-172100195 5'pad=0 3'pad=0 strand=- repeatMasking=none
+taatgattctgccaaatgaaatataatgatatcactgtaaaaccgttcca
+ttttgattctgaggt
+>hg18_ct_UserTrack_U80 range=chr1:172100590-172100667 5'pad=0 3'pad=0 strand=- repeatMasking=none
+gatacaatgatgataacatagttcagcagactaacgctgatgagcaatat
+taagtctttcgctcctatctgatgtatc
+>hg18_ct_UserTrack_U79 range=chr1:172101109-172101193 5'pad=0 3'pad=0 strand=- repeatMasking=none
+tactgttagtgatgattttaaaattaaagcagatgggaatctctctgaga
+aagaaaatggagattaatcttaaactgaaacagta
+>hg18_ct_UserTrack_U78 range=chr1:172101383-172101447 5'pad=0 3'pad=0 strand=- repeatMasking=none
+gtgtaatgatgttgatcaaatgtctgacctgaaatgagcatgtagacaaa
+ggtaacactgaagaa
+>hg18_ct_UserTrack_U44 range=chr1:172101727-172101789 5'pad=0 3'pad=0 strand=- repeatMasking=none
+cctggatgatgataagcaaatgctgactgaacatgaaggtcttaattagc
+tctaactgactaa
+>hg18_ct_UserTrack_U77 range=chr1:172102062-172102131 5'pad=0 3'pad=0 strand=- repeatMasking=none
+agatactatgatggttgcatagttcagcagatttaatcatgaagagatgt
+actatctgtctgatgtatct
+>hg18_ct_UserTrack_U76 range=chr1:172102396-172102475 5'pad=0 3'pad=0 strand=- repeatMasking=none
+gccacaatgatgacagtttatttgctactcttgagtgctagaatgatgag
+gatcttaaccaccattatcttaactgaggc
+>hg18_ct_UserTrack_U75 range=chr1:172102640-172102699 5'pad=0 3'pad=0 strand=- repeatMasking=none
+agcctgtgatgctttaagagtagtggacagaagggatttctgaaattcta
+ttctgaggct
+>hg18_ct_UserTrack_U74 range=chr1:172103435-172103506 5'pad=0 3'pad=0 strand=- repeatMasking=none
+ctgcctctgatgaagcctgtgttggtagggacatctgagagtaatgatga
+atgccaaccgctctgatggtgg
+>hg18_ct_UserTrack_HBI-100 range=chr1:174204156-174204299 5'pad=0 3'pad=0 strand=- repeatMasking=none
+aatggaagctgctggaaccagccatgtggacaaatgaaaaaatgcctttt
+gtctacagattgcagcgatcctacataaatatatggaggtctctgtctgg
+cttaggacagctggctaagtctgatcgttcccctccgtacagcc
+>hg18_ct_UserTrack_hsa-mir-488 range=chr1:175265122-175265204 5'pad=0 3'pad=0 strand=- repeatMasking=none
+gagaatcatctctcccagataatggcactctcaaacaagtttccaaattg
+tttgaaaggctatttcttggtcagatgactctc
+>hg18_ct_UserTrack_hsa-mir-1278 range=chr1:191372256-191372336 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+atttgctcatagatgatatgcatagtactcccagaactcattaagttggt
+agtactgtgcatatcatctatgagcgaatag
+>hg18_ct_UserTrack_hsa-mir-181b-1 range=chr1:197094625-197094734 5'pad=0 3'pad=0 strand=- repeatMasking=none
+cctgtgcagagattattttttaaaaggtcacaatcaacattcattgctgt
+cggtgggttgaactgtgtggacaagctcactgaacaatgaatgcaactgt
+ggccccgctt
+>hg18_ct_UserTrack_hsa-mir-181a-1 range=chr1:197094796-197094905 5'pad=0 3'pad=0 strand=- repeatMasking=none
+tgagttttgaggttgcttcagtgaacattcaacgctgtcggtgagtttgg
+aattaaaatcaaaaccatcgaccgttgattgtaccctatggctaaccatc
+atctactcca
+>hg18_ct_UserTrack_hsa-mir-1231 range=chr1:200044362-200044453 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+gtcagtgtctgggcggacagctgcaggaaagggaagaccaaggcttgctg
+tctgtccagtctgccaccctaccctgtctgttcttgccacag
+>hg18_ct_UserTrack_ACA63 range=chr1:201965332-201965456 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+gcagactcactatgcacctgactgtacttccaggcaggtgctttttctgt
+ctgccagagaaacattccagggtgctgtggctgcctcacctatccagggc
+gatgcagctccctggggacacaggt
+>hg18_ct_UserTrack_hsa-mir-135b range=chr1:203684053-203684149 5'pad=0 3'pad=0 strand=- repeatMasking=none
+cactctgctgtggcctatggcttttcattcctatgtgattgctgtcccaa
+actcatgtagggctaaaagccatgggctacagtgaggggcgagctcc
+>hg18_ct_UserTrack_hsa-mir-29c range=chr1:206041820-206041907 5'pad=0 3'pad=0 strand=- repeatMasking=none
+atctcttacacaggctgaccgatttctcctggtgttcagagtctgttttt
+gtctagcaccatttgaaatcggttatgatgtaggggga
+>hg18_ct_UserTrack_hsa-mir-29b-2 range=chr1:206042411-206042491 5'pad=0 3'pad=0 strand=- repeatMasking=none
+cttctggaagctggtttcacatggtggcttagatttttccatctttgtat
+ctagcaccatttgaaatcagtgttttaggag
+>hg18_ct_UserTrack_hsa-mir-205 range=chr1:207672101-207672210 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+aaagatcctcagacaatccatgtgcttctcttgtccttcattccaccgga
+gtctgtctcatacccaaccagatttcagtggagtgaagttcaggaggcat
+ggagctgaca
+>hg18_ct_UserTrack_U98b range=chr1:210592783-210592915 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+tggcctttatcaaagctgcagctgcttccatgtagctgctgtggtcaaaa
+agaagccaagagtgacagttttccttgatggtcatagttctgtttgctgt
+aactgatctgcaagattttgggaaaataccatt
+>hg18_ct_UserTrack_hsa-mir-215 range=chr1:218357818-218357927 5'pad=0 3'pad=0 strand=- repeatMasking=none
+atcattcagaaatggtatacaggaaaatgacctatgaattgacagacaat
+atagctgagtttgtctgtcatttctttaggccaatattctgtatgactgt
+gctacttcaa
+>hg18_ct_UserTrack_hsa-mir-194-1 range=chr1:218358122-218358206 5'pad=0 3'pad=0 strand=- repeatMasking=none
+atggtgttatcaagtgtaacagcaactccatgtggactgtgtaccaattt
+ccagtggagatgctgttacttttgatggttaccaa
+>hg18_ct_UserTrack_hsa-mir-664 range=chr1:218440503-218440584 5'pad=0 3'pad=0 strand=- repeatMasking=none
+gaacattgaaactggctagggaaaatgattggatagaaactattattcta
+ttcatttatccccagcctacaaaatgaaaaaa
+>hg18_ct_UserTrack_ACA36B range=chr1:218440511-218440641 5'pad=0 3'pad=0 strand=- repeatMasking=none
+ttccaaagtgttaagttcagttcagggtagcttccctgctctgttaatta
+aactttggaacattgaaactggctagggaaaatgattggatagaaactat
+tattctattcatttatccccagcctacaaaa
+>hg18_ct_UserTrack_hsa-mir-320b-2 range=chr1:222511329-222511466 5'pad=0 3'pad=0 strand=- repeatMasking=none
+tgttattttttgtcttctacctaagaattctgtctcttaggctttctctt
+cccagatttcccaaagttgggaaaagctgggttgagagggcaaaaggaaa
+aaaaaagaattctgtctctgacataattagatagggaa
+>hg18_ct_UserTrack_hsa-mir-1182 range=chr1:229222197-229222293 5'pad=0 3'pad=0 strand=- repeatMasking=none
+gggacttgtcactgcctgtctcctccctctccagcagcgactggattctg
+gagtccatctagagggtcttgggagggatgtgactgttgggaagccc
+>hg18_ct_UserTrack_ACA14b range=chr1:233357741-233357875 5'pad=0 3'pad=0 strand=- repeatMasking=none
+ctgcattcttaaaccctcttggtagcttcgttctaagtgcttccaagata
+tgagtgaatgctatagaaattgcaggggagtccaaagggctgcgcttctc
+ccgtggctcagtcttatttcatacctgcgacatct
+>hg18_ct_UserTrack_hsa-mir-1301 range=chr2:25405013-25405094 5'pad=0 3'pad=0 strand=- repeatMasking=none
+ggattgtggggggtcgctctaggcaccgcagcactgtgctggggatgttg
+cagctgcctgggagtgacttcacacagtcctc
+>hg18_ct_UserTrack_HBII-316 range=chr2:28990032-28990120 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+tggtgctgtgatgatgccttaatattgtggtttcgactcactgagagtaa
+aatgaggacctacaattccttggctgtgtctgagcaccc
+>hg18_ct_UserTrack_U53 range=chr2:29003437-29003514 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+atgctatgatgacatccatatggtttcgctgctggctgagtttcagagat
+gacacctttctcttggctgtctgagcat
+>hg18_ct_UserTrack_hsa-mir-558 range=chr2:32610724-32610817 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+gtgtgtgtgtgtgtgtgtggttattttggtatagtagctctagactctat
+tatagtttcctgagctgctgtaccaaaataccacaaacgggctg
+>hg18_ct_UserTrack_hsa-mir-559 range=chr2:47458318-47458413 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+gctccagtaacatcttaaagtaaatatgcaccaaaattacttttggtaaa
+tacagttttggtgcatatttactttaggatgttactggagctccca
+>hg18_ct_UserTrack_hsa-mir-217 range=chr2:56063606-56063715 5'pad=0 3'pad=0 strand=- repeatMasking=none
+agtataattattacatagtttttgatgtcgcagatactgcatcaggaact
+gattggataagaatcagtcaccatcagttcctaatgcattgccttcagca
+tctaaacaag
+>hg18_ct_UserTrack_hsa-mir-216a range=chr2:56069589-56069698 5'pad=0 3'pad=0 strand=- repeatMasking=none
+gatggctgtgagttggcttaatctcagctggcaactgtgagatgttcata
+caatccctcacagtggtctctgggattatgctaaacagagcaatttccta
+gccctcacga
+>hg18_ct_UserTrack_hsa-mir-216b range=chr2:56081353-56081434 5'pad=0 3'pad=0 strand=- repeatMasking=none
+gcagactggaaaatctctgcaggcaaatgtgatgtcactgaggaaatcac
+acacttacccgtagagattctacagtctgaca
+>hg18_ct_UserTrack_hsa-mir-1285-2 range=chr2:70333554-70333641 5'pad=0 3'pad=0 strand=- repeatMasking=none
+tttgggaggccgaggctggtgcatcacttgagcccagcaatttgagacca
+atctgggcaacaaagtgagacctccgtctctacaaaga
+>hg18_ct_UserTrack_U94 range=chr2:86216504-86216640 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+caggctgtgatgattggcgcaggggtacggacctcagctgagtcatggga
+gctgaatgtatgtgtttctcctttgtcctgcatgtggcaggctgatgggg
+agcacttacatgagactgttgcctcaatctgagcctg
+>hg18_ct_UserTrack_HBII-289 range=chr2:101255830-101255943 5'pad=0 3'pad=0 strand=- repeatMasking=none
+actgaggaatgatgacaagaaaaggccgaattgcagtgtctccatcagca
+gtttgctctccatgggcacacgatgacaaaatatcctgaagcgaaccact
+agtctgacctcagt
+>hg18_ct_UserTrack_hsa-mir-1302-3 range=chr2:114057006-114057143 5'pad=0 3'pad=0 strand=- repeatMasking=none
+ggatgcccagctagtttgaattttagataaacaacgaataatttcgtagc
+ataaatatttcccaagcttagtttgggacatacttatgctaaaaaacatt
+attggttgtttatctgagattcaaaattaagcatttta
+>hg18_ct_UserTrack_hsa-mir-663b range=chr2:132731009-132731123 5'pad=0 3'pad=0 strand=- repeatMasking=none
+ggtgccgagggccgtccggcatcctaggcgggtcgctgcggtacctccct
+cctgtctgtggcggtgggatcccgtggccgtgttttcctggtggcccggc
+cgtgcctgaggtttc
+>hg18_ct_UserTrack_hsa-mir-128-1 range=chr2:136139437-136139518 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+tgagctgttggattcggggccgtagcactgtctgagaggtttacatttct
+cacagtgaaccggtctctttttcagctgcttc
+>hg18_ct_UserTrack_hsa-mir-933 range=chr2:175740607-175740683 5'pad=0 3'pad=0 strand=- repeatMasking=none
+acttgggtcagttcagaggtcctcggggcgcgcgtcgagtcagccgtgtg
+cgcagggagacctctcccacccacagt
+>hg18_ct_UserTrack_hsa-mir-10b range=chr2:176723277-176723386 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+ccagaggttgtaacgttgtctatatataccctgtagaaccgaatttgtgt
+ggtatccgtatagtcacagattcgattctaggggaatatatggtcgatgc
+aaaaacttca
+>hg18_ct_UserTrack_hsa-mir-1246 range=chr2:177173954-177174026 5'pad=0 3'pad=0 strand=- repeatMasking=none
+tgtatccttgaatggatttttggagcaggagtggacacctgacccaaagg
+aaatcaatccataggctagcaat
+>hg18_ct_UserTrack_hsa-mir-1258 range=chr2:180433808-180433880 5'pad=0 3'pad=0 strand=- repeatMasking=none
+ctgtggcttccacgacctaatcctaactcctgcgagtccctggagttagg
+attaggtcgtggaagccacagga
+>hg18_ct_UserTrack_hsa-mir-561 range=chr2:188870464-188870560 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+cttcatccaccagtcctccaggaacatcaaggatcttaaactttgccaga
+gctacaaaggcaaagtttaagatccttgaagttcctgggggaaccat
+>hg18_ct_UserTrack_hsa-mir-1245 range=chr2:189551063-189551132 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+atttatgtataggcctttagatcatctgatgttgaatactctttaagtga
+tctaaaggcctacatataaa
+>hg18_ct_UserTrack_HBII-234 range=chr2:202849399-202849486 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+ttcgttgttgtcaatgatgtattcttcttggaactgaatctaagtgatct
+gactcaatattcgtcactaccactgagacaacgatgaa
+>hg18_ct_UserTrack_HBII-95 range=chr2:202866019-202866102 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+gtgttcaatgatgatttctatttgtttgcctgatttccttttggataatg
+aaggcatctttagtcactacctcttctgagacac
+>hg18_ct_UserTrack_U51 range=chr2:206734850-206734919 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+gttgcatgatgaataaaatcaaatcaccatctttcggctgagttcgtgat
+ggatttgcttttttctgatt
+>hg18_ct_UserTrack_ACA41 range=chr2:206735197-206735328 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+ttccacagctactggtctgcagctgttcttatggtagcagttgtggcatt
+cctctgtgggaaagaaactgttaacacaaacacctctttcttagcaaaac
+agaaagtgggtatatatgtgtgacagacacaa
+>hg18_ct_UserTrack_hsa-mir-1302-4 range=chr2:207842244-207842393 5'pad=0 3'pad=0 strand=- repeatMasking=none
+aatgcagaagcacagctaaaatttgaatttcagataaacaaatttttctt
+agaataagtatgtctccatgcaacatttgggacatacttatgctaaaata
+ttatttgtgtttcatctgaaattcaaattcaactggacatcctgtatttt
+>hg18_ct_UserTrack_hsa-mir-548f-2 range=chr2:212999232-212999329 5'pad=0 3'pad=0 strand=- repeatMasking=none
+taataactattaggttggtgcgaacataattgcagtttttatcattactt
+ttaatggcaaaaactgtaattacttttgcaccaacctaatattttagt
+>hg18_ct_UserTrack_hsa-mir-26b range=chr2:218975613-218975689 5'pad=0 3'pad=0 strand=+ repeatMasking=none
+ccgggacccagttcaagtaattcaggataggttgtgtgctgtccagcctg
+ttctccattacttggctcggggaccgg
+>hg18_ct_UserTrack_hsa-mir-375 range=chr2:219574611-219574674 5'pad=0 3'pad=0 strand=- repeatMasking=none
+ccccgcgacgagcccctcgcacaaaccggacctgagcgttttgttcgttc
+ggctcgcgtgaggc
+>hg18_ct_UserTrack_hsa-mir-153-1 range=chr2:219867077-219867166 5'pad=0 3'pad=0 strand=- repeatMasking=none
+ctcacagctgccagtgtcatttttgtgatctgcagctagtattctcactc
+cagttgcatagtcacaaaagtgatcattggcaggtgtggc
+>hg18_ct_UserTrack_U23 range=chr2:232028755-232028891 5'pad=0 3'pad=0 strand=- repeatMasking=none
+gtcttctcattgagctcctttctgtctatcagtggcagtttatggattcg
+cacgagaagaagagagaattcacagaactagcattattttaccttctgtc
+tttacagaggtatatttagctgtattgtgagacattc
+>hg18_ct_UserTrack_U20 range=chr2:232029399-232029478 5'pad=0 3'pad=0 strand=- repeatMasking=none
+tggatatgatgactgattacctgagaaataattgatgaaatctcaagaaa
+attcctctagatagtcaagttctgatccag
+>hg18_ct_UserTrack_U82 range=chr2:232033323-232033397 5'pad=0 3'pad=0 strand=- repeatMasking=none
+acagcacaaatgatgaataacaaagggacttaatactgaaacctgatgtt
+acattgtagtgtgctgatgtgctgt

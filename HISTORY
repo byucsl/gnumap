@@ -1,0 +1,93 @@
+October 28, 2011:  Version 3.0.2 Introduction of -k flag (to control number of matches)
+	Also, will print out same fastq scores as existed in input file.
+July 25, 2011:  Version 2.9.0 Some stability fixes.  Also included code for memory
+	optimizations
+June 3, 2011: sam2sgr Version 2.0 Uses threading via openmp
+May 23, 2011: Version 2.6.0 Several stability updates included, in addition to significant 
+	changes in bisulfite mapping.  Including backward compatability so scripts will
+	perform the same way.
+February 22, 2011: Version 2.2.4 Introduced --print_all_sam flag in addition to XP and X0 flags
+December 13, 2010: Fixed SAM MAPQ characters (30 is good match, 0 is very poor)
+November 29, 2010: Ambiguity characters allowed in fasta reads
+November 09, 2010: sam2consensus program added
+November 06, 2010: Bisulfite .sgrex printing
+October 28, 2010: Version 2.2.1 Fixed error with catastrophic cancellation in PHMM
+	code.  Algorithm is more stable with long sequences.
+October 20, 2010: Version 2.2.0 Update to alignment matrices.  Much greater accuracy
+	on real data.  Fixes Segmentation Fault on SNP analysis with 454 sequences.
+September 20, 2010: Update to SNP calling for larger read totals.  Using ratio instead
+	of pvalues for comparison
+August 30, 2010: Updates to output and SNP calling.  Included ratio requirement for 
+	diploid SNP calling.
+August 03, 2010: Version 2.1.7 Changed what FAST mode does.  Also bug fixes and time
+	reductions
+July 22, 2010: Version 2.1.6 Fixes to Bisulfite mapping output.  Also added SAM to SGR
+	converter, Version 1.0
+July 13, 2010: Version 2.1.5 Fixed memory leak.  Working on MPI speedup.  Also added
+	the --read_quality parameter.
+May 19, 2010: Version 2.1.0 Disallowed program from searching for the same string
+	multiple times.  About 2x speedup
+May 13, 2010: Version 2.0.1 Fixed MPI bugs and SAM output
+May 07, 2010: Version 2.0.0 Added MPI for both large memory machines (genome spread 
+	across nodes) and small memory machines (reads spread across nodes)
+March 29, 2010: Version 1.5.75 Fixed a memory leak that was introduced in a previous version
+February 23, 2010: Version 1.5.6 Sam output and a larger genome capability
+February 17, 2010: Version 1.5.5 Added SAM output flag
+February 03, 2010: Version 1.5.3 Minor changes to improve speed
+January 11, 2010: Version 1.5 Fixed several bugs (including fastq sequence files and
+	SNP output in the .sgrex output file)
+December 29, 2009: Version 1.4.9 Fixed several bugs (including fasta sequence files),
+	only reads in a section of the sequences intead of all at once
+December 14, 2009: Version 1.4.8 Fixed the number of sequences report
+December 01, 2009: Version 1.4.7 Can read fasta sequences that are multi-lined
+December 01, 2009: Version 1.4.5 and 1.4.6 Bug fixes
+November 14, 2009: Version 1.4.0 Added functionality to read in both fastq and
+	fasta files (in addition to prb and int files).
+November 09, 2009: Version 1.3.3  Added examples/ directory
+November 05, 2009: Version 1.3.2  Bug fixes.  Added --snp param.
+October 15, 2009: Version 1.3.  Reduced memory footprint, added things to increase
+	speed.  Should also print out each base when needed for the .sgrex file
+September 17, 2009: Version 1.2.  Introduced flags for reading and writing of the
+	genome (reduced hashing and storing the genome to just under 5 minutes).  
+	Also included a "sliding window" method to find a greater number of matches to 
+	the genome.
+July 27, 2009: Version 1.02.1. Bug fixes and optimization. Introduction of the --fast 
+	flag.
+July 04, 2009: Version 1.01.  Fixed some minor bugs when reading in multiple genomes in
+	the same file.
+June 15, 2009: Version 1.0.  Added many optimizations to increase speed.  Also included
+	the -b option for bisulfite conversion.
+May 05, 2009: Version 0.99_5.  Added -0 flag to print output at every position for
+	unequally lengthed sequences.
+May 01, 2009: Version 0.99_4.  Fixed an error with reading multiple chromosomes.  
+	Also allowed for multiple chromosomes to be included in one file.
+April 01, 2009: Version 0.99_3.  Fixed an error with overflowing the size of a 32-bit
+	unsigned int.  Using 64-bit unsigned long instead.  Must compile under 64-bit mode.
+February 10, 2009: Version 0.99_2.  Removed SEQ_LENGTH so the sequences can have 
+	variable lengths.  Also allowed for the receipt for the adaptor sequence,
+	removing any adaptor characters especially for shorter sequences.
+February 02, 2009: Version 0.99_full.  Removed popt library, compatable with platforms
+	that do not have the library.
+January 07, 2009: Version 0.99.  Removed traceback element of alignment, significant
+    speedup achieved.
+December 30, 2008: Version 0.98.  Added command-line argument to enable PWM 
+	matrix specification and maximum GAP definition.
+August 20, 2008: Version 0.96 created, allowing the user to select more than
+	one sequence file.
+August 05, 2008: Version 0.95. Compatability with both the _prb.txt and
+	_int.txt files fixed.
+July 31, 2008: Version 0.9 (Beta) released. The full version released, including
+	multithreading to improve performance.  datagen, a program used to create
+	synthetic reads for duplication analysis, was created.
+June 02, 2008: Version 0.5 released with limited functionality. Synthetic
+	benchmark datasets were also developed to measure the impact of duplicate
+	reads on the accuracy of different read mapping programs.
+April 23, 2008: Development of the hashing algorithm. Most mapping programs
+	hash the reads and then make one pass across the genome to map the reads. In
+	order to account for duplicate reads, we decided that gnumap would need to
+	hash the genome and then map each read into muliple locations.
+March 21, 2008: The architecture of gnumap was developed with a focus on
+	statistical methods to account for duplicate reads.
+January 11, 2008: Initial work on gnumap began when Dr. Evan Johnson and his
+	statistics research group began meeting with researchers in the
+	Computational Sciences Laboratory.
