@@ -1,5 +1,5 @@
-#ifndef GENOME_H
-#define GENOME_H
+#ifndef GENOME_BWT_H
+#define GENOME_BWT_H
 
 #ifdef	MPI_RUN
 #include <mpi.h>
@@ -28,6 +28,7 @@
 #include "bin_seq.h"
 #include "const_include.h"
 #include "Reader.h"
+#include "Genome.h"
 
 #include "utils.h"
 #include "bwt.h"
@@ -69,16 +70,7 @@ typedef struct {
     uint8_t  *mem;
 } bwaidx_t;
 
-struct HashLocation {
-	HashLocation() {
-		size = 0;
-	}
-
-	unsigned long* hash_arr;
-	unsigned long size;
-};
-
-class Genome {
+class GenomeBwt : public Genome {
 	friend class bin_seq;
 	
 	public:
@@ -86,10 +78,10 @@ class Genome {
 		 * Constructor.  Creates new Genome with filename.
 		 * fn - the filename of the file to be parsed into the genome.
 		 */
-		Genome(const char* fn);
-		Genome();
+		GenomeBwt(const char* fn);
+		GenomeBwt();
 		
-		~Genome();
+		~GenomeBwt();
 
         bwaidx_t* bwa_idx_load_from_disk( const char *hint, int which );
         char* bwa_idx_infer_prefix( const char* hint );

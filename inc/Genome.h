@@ -40,6 +40,7 @@
 #include <pthread.h>
 #include <execinfo.h>
 #include <time.h>
+#include <stdint.h>
 
 #include "gsl/gsl_cdf.h"
 #include "gvector.h"
@@ -70,11 +71,6 @@ struct HashLocation {
 };
 
 // An ugly hack, but it made it object-oriented.
-#if defined(GENOME_SUFFIX)
-#define MAP_USE_STRING
-	typedef string MAP_TYPE;
-typedef map<MAP_TYPE, HashLocation> map_type;
-#else // GENOME_SUFFIX
 #if defined(GENOME_STL)
 // The following are for GENOME_STL, but needed here
 //#define MAP_USE_STRING
@@ -90,7 +86,6 @@ typedef map<MAP_TYPE, HashLocation> map_type;
 
 typedef hash_map<unsigned int, HashLocation> map_type;
 
-#endif // GENOME_STL
 #endif // GENOME_STL
 
 class Genome {
@@ -127,8 +122,13 @@ class Genome {
 		 *
 		 * @return the vector of the given hash.
 		 */
+#if defined(GENOME_BWT)
+        virtual void get_sa_int( string& str, uint64_t* in_start, uint64_t* in_end ) = 0;
+        virtual uint64_t get_sa_coord( uint64_t sa_pos ) = 0;
+#else
 		virtual HashLocation* GetMatches(unsigned int hash) = 0;
 		virtual HashLocation* GetMatches(string &) = 0;
+#endif
 		
 		/**
 		 * LoadGenome is responsible for loading the genome into memory--whether it be by reading from
@@ -146,7 +146,11 @@ class Genome {
 		 * hash_and_store() will cause the genome to be hashed--from the file fn given above.
 		 * it will then store the genome in a smaller binary array.
 		 */
+#if defined(GENOME_BWT)
+        virtual void index_and_store() = 0;
+#else
 		virtual void hash_and_store() = 0;
+#endif
 		void inc_counter(int,unsigned int&, unsigned long&, unsigned int);
 		void ReplaceSpaceWithUnderscore(string &str);
 
@@ -307,7 +311,9 @@ class Genome {
 		 * fix_hash will remove all the high-density matches in the hash.  Anything over the
 		 * threshold (MAX_HASH_SIZE) will be removed.
 		 */
+#if defined(GENOME_STL_H) || defined(GENOME_MEM_H)
 		virtual void fix_hash() = 0;
+#endif
 
 		inline int base2int(char c);
 		inline char int2base(int i);
@@ -316,11 +322,15 @@ class Genome {
 
 		// Reads the genome file from memory
 		unsigned int readGen(char* fn);
+#if defined(GENOME_STL_H) || defined(GENOME_MEM_H)
 		virtual void readHash(FILE* readF, bool ldebug) = 0;
+#endif
 		virtual void readGenome(FILE* readF, bool ldebug);
 		// Saves the genome file to memory
 		unsigned int saveGen(char* fn);
+#if defined(GENOME_STL_H) || defined(GENOME_MEM_H)
 		virtual void saveHash(FILE* saveF, bool ldebug) = 0;
+#endif
 		virtual void saveGenome(FILE* saveF, bool ldebug);
 		
 		GEN_TYPE offset;

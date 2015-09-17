@@ -42,16 +42,7 @@
 #include <exception>
 #include "const_include.h"
 #include "const_define.h"	// Defines many things in this file
-//#include "GenomeMem.h"
-#ifdef GENOME_SUFFIX
-#include "GenomeSUFFIX.h"
-#else
-#ifdef GENOME_STL
-#include "GenomeSTL.h"
-#else
-#include "GenomeMem.h"
-#endif
-#endif
+#include "GenomeBwt.h"
 #include "bin_seq.h"
 #include "SeqManager.h"
 #include "ScoredSeq.h"
@@ -167,16 +158,12 @@ void MPISumCenters( const void *in, void *inout, int len, const MPI::Datatype &d
 #endif // DISCRETIZE
 #endif // MPI_RUN
 
-#ifdef GENOME_STL
-typedef GenomeSTL GENOME_t;
-#else
-typedef GenomeMem GENOME_t;
-#endif
+typedef GenomeBwt GENOME_t;
 GENOME_t gGen;
 
 SeqManager* gSM;
 
-void usage(int has_error, char* errmessage) {
+void usage(int has_error, const char * errmessage) {
 	if(has_error) cout << endl << errmessage << endl ;
 
 	cout << "Usage: gnumap [options] <file_to_parse>\n"

@@ -24,23 +24,19 @@ TEST_BIN_FILE = bin/gnutest
 
 EXE_OBJ_FILES = obj/Driver.o $(OBJ_FILES) \
 		obj/NormalScoredSeq.o obj/BSScoredSeq.o obj/SNPScoredSeq.o
-OBJ_FILES = obj/centers.o obj/bin_seq.o obj/Reader.o obj/SeqReader.o obj/Genome.o
+OBJ_FILES = obj/centers.o obj/bin_seq.o obj/Reader.o obj/SeqReader.o obj/Genome.o obj/GenomeMem.o
 		
 INC_FILES = inc/const_include.h inc/const_define.h inc/Exception.h inc/SeqManager.h inc/gvector.h \
 			inc/ScoredSeq.h
 
 CONV_EXE_NAME = bin/sam2sgr
 
-CONV_OBJ_FILES = obj/sam2sgr.o obj/Genome.o obj/Reader.o obj/bin_seq.o obj/SeqReader.o \
+CONV_OBJ_FILES = obj/sam2sgr.o obj/Genome.o obj/GenomeMem.o obj/Reader.o obj/bin_seq.o obj/SeqReader.o \
 		obj/NormalScoredSeq.o obj/BSScoredSeq.o obj/SNPScoredSeq.o
-
 CONV_INC_FILES = inc/const_include.h inc/const_define.h
 
-BWT_OBJ_FILES = obj/GenomeBwt.o obj/bwt.o obj/utils.o obj/bntseq.o obj/bwtindex.o \
-					 obj/is.o obj/bwt_gen.o obj/QSufSort.o
-
 BATCH_CONS_EXE = bin/sam2consensus
-BATCH_CONS_OBJ_FILES = obj/sam2consensus.o obj/Genome.o obj/Reader.o obj/bin_seq.o
+BATCH_CONS_OBJ_FILES = obj/sam2consensus.o obj/Genome.o obj/GenomeMem.o obj/Reader.o obj/bin_seq.o
 BATCH_CONS_INC_FILES = inc/const_include.h inc/const_define.h
 
 GSL_LIB_FILE = lib/lib/libgsl.a
@@ -56,7 +52,7 @@ EXTRA_FLAGS =
 OPT_FLAGS = -m64 -O3
 ERR_FLAGS = -Wall
 
-FLAGS = $(OPT_FLAGS) -DGENOME_BWT
+FLAGS = $(OPT_FLAGS)
 #FLAGS = $(DEBUG_FLAGS) -DDEBUG
 #FLAGS = $(DEBUG_FLAGS) -DSET_POS
 #FLAGS = $(OPT_FLAGS) -DSET_POS -D_INDEL
@@ -148,7 +144,7 @@ $(MPI_EXE_NAME) : $(EXE_OBJ_FILES) $(INC_FILES) inc/ScoredSeq.h inc/SeqManager.h
 	$(MPIXX) $(FLAGS) -o $(MPI_EXE_NAME) $(EXE_OBJ_FILES) $(INC) $(LIB) $(EXTRA_FLAGS)
 	
 obj/Driver.o : src/Driver.cpp $(INC_FILES) inc/a_matrices.c inc/SequenceOperations.h \
-				inc/align_seq2_raw.cpp $(BWT_OBJ_FILES)
+				inc/align_seq2_raw.cpp
 	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
 
 obj/TestDriver.o : test/TestDriver.cpp
@@ -166,30 +162,6 @@ obj/sam2consensus.o : src/sam2consensus.cpp inc/a_matrices.c
 
 obj/GenomeMem.o : src/GenomeMem.cpp inc/GenomeMem.h
 	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
-
-obj/utils.o : src/utils.c inc/utils.h
-	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
-
-obj/bwt.o : src/bwt.c inc/bwt.h
-	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
-
-obj/bntseq.o : src/bntseq.c inc/bntseq.h
-	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
-
-obj/GenomeBwt.o : src/GenomeBwt.cpp inc/GenomeBwt.h
-	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
-
-obj/bwtindex.o : src/bwtindex.c
-	$(GCC) $(FLAGS) -o $@ -c $< $(INC)
-
-obj/is.o : src/is.c
-	$(GCC) $(FLAGS) -o $@ -c $< $(INC)
-
-obj/bwt_gen.o : src/bwt_gen.c
-	$(GCC) $(FLAGS) -o $@ -c $< $(INC)
-
-obj/QSufSort.o : src/QSufSort.c inc/QSufSort.h
-	$(GCC) $(FLAGS) -o $@ -c $< $(INC)
 
 obj/%.o : src/%.cpp inc/%.h
 	$(GXX) $(FLAGS) -o $@ -c $< $(INC)

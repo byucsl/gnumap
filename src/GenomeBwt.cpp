@@ -4,7 +4,7 @@
  * Constructor.  Creates new Genome with filename.
  * fn - the filename of the file to be parsed into the genome.
  */
-Genome::Genome(const char* fn) :
+GenomeBwt::GenomeBwt(const char* fn) : Genome(fn),
 	offset(0), bin_offset(0), packed_genome(NULL), amount_genome(NULL), gs_positions(NULL), genome_size(0)
 {
     std::cout << "constructor 1" << std::endl;
@@ -12,13 +12,13 @@ Genome::Genome(const char* fn) :
 	reader = new Reader();
 }
 
-Genome::Genome() :
+GenomeBwt::GenomeBwt() : Genome(),
 	offset(0), bin_offset(0), reader(NULL), packed_genome(NULL), amount_genome(NULL), gs_positions(NULL), genome_size(0)
 {
     std::cout << "constructor 2" << std::endl;
 }
 
-Genome::~Genome() {
+GenomeBwt::~GenomeBwt() {
 	//fprintf(stderr,"[-/%d] Genome destructor...\n",iproc);
 	delete reader;
 	
@@ -81,7 +81,7 @@ Genome::~Genome() {
     //	gen_hash.free_data_ptr();
 } 
 
-char * Genome::bwa_idx_infer_prefix(const char *hint)
+char * GenomeBwt::bwa_idx_infer_prefix(const char *hint)
 {
     char *prefix;
     int l_hint;
@@ -112,7 +112,7 @@ char * Genome::bwa_idx_infer_prefix(const char *hint)
     }
 }
 
-bwt_t* Genome::bwa_idx_load_bwt(const char *hint)
+bwt_t* GenomeBwt::bwa_idx_load_bwt(const char *hint)
 {
     int bwa_verbose = 0;
     char *tmp, *prefix;
@@ -134,7 +134,7 @@ bwt_t* Genome::bwa_idx_load_bwt(const char *hint)
     return bwt;
 }
 
-bwaidx_t * Genome::bwa_idx_load_from_disk(const char *hint, int which)
+bwaidx_t * GenomeBwt::bwa_idx_load_from_disk(const char *hint, int which)
 {
     int bwa_verbose = 0;
     bwaidx_t *idx;
@@ -164,7 +164,7 @@ bwaidx_t * Genome::bwa_idx_load_from_disk(const char *hint, int which)
     return idx;
 }
 
-void Genome::Init(const char* fn) {
+void GenomeBwt::Init(const char* fn) {
 
     ref_genome_fn = ( char* ) malloc( sizeof( char* ) * ( strlen( fn ) + 20 ) );
     strcpy( ref_genome_fn, fn );
@@ -181,12 +181,12 @@ void Genome::Init(const char* fn) {
 #endif // DISCRETIZE/INTDISC
 }
 
-void Genome::use(const char* fn) {
+void GenomeBwt::use(const char* fn) {
     std::cout << "genome::use" << std::endl;
 	use(fn,0,0);
 }
 
-void Genome::use(const char* fn, unsigned long s, unsigned long e) {
+void GenomeBwt::use(const char* fn, unsigned long s, unsigned long e) {
 	my_start = s;
 	my_end = e;
 	if(my_start >= my_end)
@@ -205,7 +205,7 @@ void Genome::use(const char* fn, unsigned long s, unsigned long e) {
 	reader = new Reader();
 }
 
-void Genome::print_to_file(hash_map<unsigned int, HashLocation> & gh, char* ofn) { 
+void GenomeBwt::print_to_file(hash_map<unsigned int, HashLocation> & gh, char* ofn) { 
 	printf("Printing to file: %s\n",ofn);
 	int SEQ_LENGTH = gMER_SIZE; //This is an archaic #def'd element that needed to be removed.
 	ofstream out;
@@ -245,7 +245,7 @@ void Genome::print_to_file(hash_map<unsigned int, HashLocation> & gh, char* ofn)
 	out.close();
 }
 
-unsigned int Genome::readGen(char* fn) {
+unsigned int GenomeBwt::readGen(char* fn) {
     //std::cout << "readgen:\t" << fn << std::endl;
 	index = bwa_idx_load_from_disk( fn, BWA_IDX_ALL );
 
@@ -259,7 +259,7 @@ unsigned int Genome::readGen(char* fn) {
 	return 1;
 }
 
-void Genome::make_extra_arrays() {
+void GenomeBwt::make_extra_arrays() {
 	//if we are doing the bisulfite sequencing, we want to record what nucleotide
 	//comes at each position
 	if(gSNP) {
@@ -343,7 +343,7 @@ void Genome::make_extra_arrays() {
 	}
 }
 
-void Genome::LoadGenome()
+void GenomeBwt::LoadGenome()
 {
     //std::cout << "load genome" << std::endl;
     unsigned int read_status = readGen( ref_genome_fn );
@@ -393,7 +393,7 @@ void Genome::LoadGenome()
     }
 }
 
-void Genome::index_and_store()
+void GenomeBwt::index_and_store()
 {
     //std::cout << "index_and_store" << std::endl;
     //std::cout << "trying to index:\t" << ref_genome_fn << std::endl;
@@ -404,7 +404,7 @@ void Genome::index_and_store()
     bwa_index( 2, indexing_args );
 }
 
-void Genome::ReplaceSpaceWithUnderscore(string &str)
+void GenomeBwt::ReplaceSpaceWithUnderscore(string &str)
 {
 	for(unsigned int i=0; i<str.length(); i++) {
 		if(str[i] == ' ' || str[i] == 10 || str[i] == 11 || str[i] == 12 || str[i] == 13)
@@ -414,7 +414,7 @@ void Genome::ReplaceSpaceWithUnderscore(string &str)
 
 #define READ_EXTRA	1000
 
-void Genome::StoreGenome() {
+void GenomeBwt::StoreGenome() {
     //std::cout << "store genome" << std::endl;
 	// We'll set it in here so we don't need to take care of it elsewhere
 	gMER_SIZE = MAX_MER_SIZE;
@@ -430,15 +430,15 @@ void Genome::StoreGenome() {
 /*
  * This function will just count the genome--it won't store anything.
  */
-unsigned long Genome::count()
+unsigned long GenomeBwt::count()
 {
     return index->bns->l_pac;
 }
 
-unsigned int Genome::saveGen(char* fn)
+unsigned int GenomeBwt::saveGen(char* fn)
 {
     //deprecated, no need to save anymore
-    std::cout << "Genome::saveGen Deprecated" << std::endl;
+    std::cout << "GenomeBwt::saveGen Deprecated" << std::endl;
     return 0;
 }
 
@@ -448,7 +448,7 @@ unsigned int Genome::saveGen(char* fn)
  * @par begin - the beginning of the string to return
  * @par size - the size of the string to return.
  */
-string Genome::GetString(const unsigned long begin, const unsigned int size)
+string GenomeBwt::GetString(const unsigned long begin, const unsigned int size)
 {
 #ifdef DEBUG
 	fprintf(stderr,"[%d] Getting string at %lu",iproc,begin);
@@ -480,7 +480,7 @@ string Genome::GetString(const unsigned long begin, const unsigned int size)
 	return ref_seq;
 }
 
-inline char Genome::GetChar(const unsigned long pos) {
+inline char GenomeBwt::GetChar(const unsigned long pos) {
 
 	/*unsigned long pos_in_gen = (pos-my_start)/GEN_PACK;
 	assert(pos_in_gen <= genome_size/GEN_PACK);
@@ -494,14 +494,14 @@ inline char Genome::GetChar(const unsigned long pos) {
     return "acgtn"[ bns_get_seq( index->bns->l_pac, index->pac, pos, pos + 1, &rlen )[ 0 ] ];
 }
 
-uint64_t Genome::get_sa_coord( uint64_t sa_pos )
+uint64_t GenomeBwt::get_sa_coord( uint64_t sa_pos )
 {
     //std::cout << "\t" << index->bwt->sa[ sa_pos ] << std::endl;
     //std::cout << "\t" << bwt_sa( index->bwt, sa_pos ) << std::endl;
     return bwt_sa( index->bwt, sa_pos );
 }
 
-void Genome::get_sa_int( string& seq, uint64_t* in_start, uint64_t* in_end )
+void GenomeBwt::get_sa_int( string& seq, uint64_t* in_start, uint64_t* in_end )
 {
     unsigned char* c_seq = new unsigned char[ seq.size() ];
 
@@ -537,7 +537,7 @@ void Genome::get_sa_int( string& seq, uint64_t* in_start, uint64_t* in_end )
     //std::cout << "start:\t" << start << "\nend:\t" << end << std::endl;
 }
 
-/*HashLocation* Genome::GetMatches(string &str) {
+/*HashLocation* GenomeBwt::GetMatches(string &str) {
 	pair<int, unsigned long> p_hash = bin_seq::get_hash(str);
 
     std::cout << "GetMatches" << std::endl;
@@ -550,20 +550,20 @@ void Genome::get_sa_int( string& seq, uint64_t* in_start, uint64_t* in_end )
     return NULL;
 }
 
-HashLocation* Genome::GetMatches(unsigned int hash) {
+HashLocation* GenomeBwt::GetMatches(unsigned int hash) {
 
 	//return &gen_hash[hash];
     return NULL;
 }*/
 
-float Genome::GetScore(const unsigned long &pos) {
+float GenomeBwt::GetScore(const unsigned long &pos) {
 
 	unsigned long pos_temp = (pos-my_start)/gGEN_SIZE;
 	//return amount_genome[pos_temp];
 	return amount_genome[pos];
 }
 
-void Genome::AddScore(const unsigned long &pos, const float &amt) {
+void GenomeBwt::AddScore(const unsigned long &pos, const float &amt) {
 //	if(amt > 1)
 //		fprintf(stderr,"Genome Error!! %d\n",__LINE__);
 		
@@ -576,7 +576,7 @@ void Genome::AddScore(const unsigned long &pos, const float &amt) {
  * INVARIANT:  must add to the genome previous to this call
  *			thus, amount_genome[pos] will never be 0
  */
-void Genome::AddSeqScore(unsigned long pos, const float* amt, const float scale) {
+void GenomeBwt::AddSeqScore(unsigned long pos, const float* amt, const float scale) {
 	//fprintf(stderr,"pos: %lu, myStart: %lu\n",pos,my_start);
 	unsigned int loc = (pos-my_start)/gGEN_SIZE;
 	
@@ -660,7 +660,7 @@ void Genome::AddSeqScore(unsigned long pos, const float* amt, const float scale)
 /* 
  * Invariant:  We must call "AddScore" before calling this function
  */
-void Genome::AddSeqScore(unsigned long pos, const float amt, unsigned int which) {
+void GenomeBwt::AddSeqScore(unsigned long pos, const float amt, unsigned int which) {
 	unsigned int loc = (pos-my_start)/gGEN_SIZE;
 	//fprintf(stderr,"pos: %lu, myStart: %lu, loc:%u \n",pos,my_start,loc);
 
@@ -707,10 +707,10 @@ void Genome::AddSeqScore(unsigned long pos, const float amt, unsigned int which)
 
 }
 
-string Genome::GetPos(const pair<unsigned long,int> p_pos) {
+string GenomeBwt::GetPos(const pair<unsigned long,int> p_pos) {
 	return GetPos(p_pos.first,p_pos.second);
 }
-string Genome::GetPos(const unsigned long &pos, const int strand) {
+string GenomeBwt::GetPos(const unsigned long &pos, const int strand) {
 	int chr_num = 0;
 
 	while(names[chr_num].second <= pos && ((unsigned int)chr_num < names.size()) )
@@ -729,7 +729,7 @@ string Genome::GetPos(const unsigned long &pos, const int strand) {
 	return to_return.str();
 }
 
-pair<string,unsigned long> Genome::GetPosPair(const unsigned long pos)
+pair<string,unsigned long> GenomeBwt::GetPosPair(const unsigned long pos)
 {
     int chr_id = bns_pos2rid( index->bns, pos );
     int chr_base_pos = pos - index->bns->anns[ chr_id ].offset;
@@ -737,7 +737,7 @@ pair<string,unsigned long> Genome::GetPosPair(const unsigned long pos)
 	return pair< string, unsigned long >( index->bns->anns[ chr_id ].name, chr_base_pos );
 }
 
-unsigned long Genome::GetAbsolutePosition(const char* chr, const unsigned long &pos) {
+unsigned long GenomeBwt::GetAbsolutePosition(const char* chr, const unsigned long &pos) {
 	unsigned long absPos = 0;
 	bool found = false;
 	
@@ -759,14 +759,14 @@ unsigned long Genome::GetAbsolutePosition(const char* chr, const unsigned long &
 	return absPos;
 }
 
-string Genome::GetStringRelative(const char* chr, const unsigned long &pos, const unsigned int length) {
+string GenomeBwt::GetStringRelative(const char* chr, const unsigned long &pos, const unsigned int length) {
 	unsigned long abs_pos = GetAbsolutePosition(chr,pos);
 	return GetString(abs_pos,length);
 }
 
 
 #ifdef SET_POS
-bool Genome::getSetThreadID(long unsigned int pos, unsigned int tid) {
+bool GenomeBwt::getSetThreadID(long unsigned int pos, unsigned int tid) {
 	if(pos < my_start)
 		return false;
 
@@ -786,7 +786,7 @@ bool Genome::getSetThreadID(long unsigned int pos, unsigned int tid) {
 	return false;
 }
 
-void Genome::unsetThreadID(long unsigned int pos, unsigned int tid) {
+void GenomeBwt::unsetThreadID(long unsigned int pos, unsigned int tid) {
 	if(pos < my_start)
 		return;
 
@@ -800,7 +800,7 @@ void Genome::unsetThreadID(long unsigned int pos, unsigned int tid) {
 }
 #endif
 
-inline bool Genome::is_max_pos(char to_check, float a, float c, float g, float t, float n) {
+inline bool GenomeBwt::is_max_pos(char to_check, float a, float c, float g, float t, float n) {
 	switch(to_check) {
 		case 'a':
 			return !(a >= c && a >= g && a >= t && a >= n);
@@ -817,7 +817,7 @@ inline bool Genome::is_max_pos(char to_check, float a, float c, float g, float t
 	return false;
 }
 
-inline unsigned int Genome::max_pos(float array[], unsigned int array_size) {
+inline unsigned int GenomeBwt::max_pos(float array[], unsigned int array_size) {
 	float* pos = max_element(array, array+array_size);
 	unsigned int max_pos = pos - &array[0];
 	return max_pos;
@@ -828,7 +828,7 @@ const float MIN_RATIO = 1.5;
 const float MAX_PVAL = 0.01;
 const float MAX_RATIO = 0.0;
 
-inline double Genome::LRT(float chars[5], int &snp_pos) {
+inline double GenomeBwt::LRT(float chars[5], int &snp_pos) {
 	snp_pos = max_pos(chars, 5);
 
 	double sum = chars[0] + chars[1] + chars[2] + chars[3] + chars[4];
@@ -847,7 +847,7 @@ inline double Genome::LRT(float chars[5], int &snp_pos) {
 #define MONO_DIP_RATIO	3.0f
 #define DIFF_UNIF_PRIOR	0.2
 
-inline double Genome::dipLRT(float chars[NUM_CHAR_VALS], int &snp_pos1, int &snp_pos2, bool &dip) {
+inline double GenomeBwt::dipLRT(float chars[NUM_CHAR_VALS], int &snp_pos1, int &snp_pos2, bool &dip) {
 
 	/*******************************************
 	 * If the ratio is too great, we're just going 
@@ -964,7 +964,7 @@ inline double Genome::dipLRT(float chars[NUM_CHAR_VALS], int &snp_pos1, int &snp
 	}
 }
 
-inline double Genome::is_snp(float chars[NUM_CHAR_VALS], int &snp_pos1, int &snp_pos2, bool &dip) {
+inline double GenomeBwt::is_snp(float chars[NUM_CHAR_VALS], int &snp_pos1, int &snp_pos2, bool &dip) {
 	
 	/*
 	//add a diffuse/uniform prior to chars
@@ -995,16 +995,16 @@ inline double Genome::is_snp(float chars[NUM_CHAR_VALS], int &snp_pos1, int &snp
 /**
  * is_indel will determine if this is an indel or not. 
  */
-//inline int Genome::is_indel
+//inline int GenomeBwt::is_indel
 
-void Genome::AppendFinal(const char* fn) {
+void GenomeBwt::AppendFinal(const char* fn) {
 	PrintFinal(fn, true);
 }
-void Genome::PrintFinal(const char* fn) {
+void GenomeBwt::PrintFinal(const char* fn) {
 	PrintFinal(fn, false);
 }
 
-void Genome::PrintFinal(const char* fn, bool append) {
+void GenomeBwt::PrintFinal(const char* fn, bool append) {
 	if(gSNP) {
 		PrintFinalSNP(fn, append);
 	}
@@ -1019,7 +1019,7 @@ void Genome::PrintFinal(const char* fn, bool append) {
 
 #define MIN_PRINT	0.001
 
-void Genome::PrintFinalSNP(const char* fn, bool append) {
+void GenomeBwt::PrintFinalSNP(const char* fn, bool append) {
 	// Instead of printing out a file for each, we want to print
 	// out one file (dubbed the '.sgrex' file for 'sgr-extra') to be a tab-deliminated file
 	// for the number of a's, c's, g's, t's, and gaps at each location in the genome.
@@ -1100,7 +1100,7 @@ void Genome::PrintFinalSNP(const char* fn, bool append) {
 	fclose(gmp_file);
 }
 
-void Genome::PrintSNPCall(const unsigned long count, FILE* gmp_file) {
+void GenomeBwt::PrintSNPCall(const unsigned long count, FILE* gmp_file) {
 	// Get the position here
 	char at_pos = GetChar(count);
 	unsigned long locus = (count-my_start)/gGEN_SIZE;
@@ -1181,7 +1181,7 @@ void Genome::PrintSNPCall(const unsigned long count, FILE* gmp_file) {
 
 }
 
-void Genome::PrintFinalBisulfite(const char* fn, bool append) {
+void GenomeBwt::PrintFinalBisulfite(const char* fn, bool append) {
 	// We got a new update from Evan.  Instead of printing out a file for each, we want to print
 	// out one file (dubbed the '.gmp' file--previously '.sgrex') to be a tab-deliminated file
 	// for the number of a's, c's, g's, t's, and gaps at each location in the genome.
@@ -1301,7 +1301,7 @@ void Genome::PrintFinalBisulfite(const char* fn, bool append) {
 	fclose(gmp_file);
 }
 
-void Genome::PrintFinalSGR(const char* fn, bool append) {
+void GenomeBwt::PrintFinalSGR(const char* fn, bool append) {
 	char* filename = new char[strlen(fn)+5];
 	sprintf(filename,"%s.sgr",fn);
 	
@@ -1364,14 +1364,14 @@ void Genome::PrintFinalSGR(const char* fn, bool append) {
 	delete[] filename;
 }
 
-unsigned long Genome::size() {
+unsigned long GenomeBwt::size() {
 	//return genome_size;
     return index->bns->l_pac;
 }
 
-bool Genome::Test(ostream &os, unsigned int &warnings) {
+bool GenomeBwt::Test(ostream &os, unsigned int &warnings) {
 	bool success = true;
-	Genome gensnp;
+	GenomeBwt gensnp;
 	
 	// Test the max_pos function
 	float a[7] = {0, 1, 2, 3, 4, 5, 6};
@@ -1450,7 +1450,7 @@ bool Genome::Test(ostream &os, unsigned int &warnings) {
 		int prev_gensize = gGEN_SIZE;
 		gSNP = 1;
 		gGEN_SIZE = 1;
-		Genome genYumei;
+		GenomeBwt genYumei;
 		char fn[] = "test/yumei_test.fa";
 		genYumei.use(fn);
 		genYumei.LoadGenome();
@@ -1567,7 +1567,7 @@ bool Genome::Test(ostream &os, unsigned int &warnings) {
 		gHASH_SIZE = (unsigned int) pow(4.0,gMER_SIZE);
 
 
-		Genome gen45;
+		GenomeBwt gen45;
 		gREAD = true;
 		gREAD_FN = "/data/public/genomes/human/gnumap/gnumap_human_s2_h100k_m11";
 		gen45.use("/data/public/genomes/human/gnumap/gnumap_human_s2_h100k_m11");
