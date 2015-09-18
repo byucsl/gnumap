@@ -424,8 +424,9 @@ void clearPositions(GENOME_t &gen, vector<unsigned long> &positions, int thread_
 //string print_top_matches(GENOME_t &gen, vector<vector<double> > &search, string &consensus) {
 //string print_top_matches(GENOME_t &gen, Read &search, string &consensus, 
 //			unsigned int &num_not_matched, unsigned int &num_matched) {
-void set_top_matches(GENOME_t &gen, unsigned int rIndex, string &consensus, 
-			unsigned int &num_not_matched, unsigned int &num_matched, unsigned int &thread_id) {
+void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus, 
+			unsigned int &num_not_matched, unsigned int &num_matched, unsigned int &thread_id )
+{
 
 	bin_seq bs;
 	double min_align_score = 0;
@@ -433,68 +434,77 @@ void set_top_matches(GENOME_t &gen, unsigned int rIndex, string &consensus,
 	double denominator = 0;
 	
 
-	Read* search = gReadArray[rIndex];
-	seq_map* unique = &gReadLocs[rIndex];
+	Read* search = gReadArray[ rIndex ];
+	seq_map* unique = &gReadLocs[ rIndex ];
 
 	// Too short to align
-	if(search->length < (unsigned int)gMER_SIZE) { 
+	if( search->length < ( unsigned int ) gMER_SIZE )
+    {
 #ifdef DEBUG
-		fprintf(stderr,"%s Too short to align\n",consensus.c_str());
+		fprintf( stderr, "%s Too short to align\n", consensus.c_str() );
 #endif
 		num_not_matched++;
-		gReadDenominator[rIndex] = 0;
-		gTopReadScore[rIndex] = READ_TOO_SHORT;
-		clearMapAt(rIndex);
+		gReadDenominator[ rIndex ] = 0;
+		gTopReadScore[ rIndex ] = READ_TOO_SHORT;
+		clearMapAt( rIndex );
 		return;
 	}
 
 
 	// We need to do the length-1 because it will go to the base at that position.
 	double max_align_score = 
-		bs.get_align_score(*search,consensus,0,search->length-1);
+		bs.get_align_score( *search, consensus, 0, search->length - 1 );
 
 	
 	// Too low of quality to align
-	if(max_align_score < gCUTOFF_SCORE) { 
+	if( max_align_score < gCUTOFF_SCORE )
+    { 
 #ifdef DEBUG
-		fprintf(stderr,"%s:%s didn't meet cutoff: %f vs %f\n",consensus.c_str(),search->fq.c_str(),
-							max_align_score,gCUTOFF_SCORE);
+		fprintf( stderr, "%s:%s didn't meet cutoff: %f vs %f\n", consensus.c_str(), search->fq.c_str(),
+							max_align_score, gCUTOFF_SCORE );
 #endif
 		num_not_matched++;
-		gReadDenominator[rIndex] = 0;
-		gTopReadScore[rIndex] = READ_TOO_POOR;
-		clearMapAt(rIndex);
+		gReadDenominator[ rIndex ] = 0;
+		gTopReadScore[ rIndex ] = READ_TOO_POOR;
+		clearMapAt( rIndex );
 		return;
 	}
 
-#ifdef DEBUG
+//#ifdef DEBUG
 //	if(gVERBOSE > 2) {
 		cerr << "\nNext Read ("<< search->name << ") aligned with " << max_align_score << ", less than " << gCUTOFF_SCORE << "?\n";
 		cerr << consensus << "\n";
 //	}
-#endif
+//#endif
 
-	if(perc)
+	if( perc )
+    {
 		min_align_score = gALIGN_SCORE * max_align_score;
+    }
 	else
+    {
 		min_align_score = gALIGN_SCORE;
+    }
 		
 	// Match the positive strand
-	if(gMATCH_POS_STRAND) {
+	if( gMATCH_POS_STRAND )
+    {
+        cerr << "checking positive strand" << endl;
 		//fprintf(stderr,"Aligning to UP_Strand\n");
-		bool aligned = align_sequence(gen, *unique, *search, consensus, 
+		bool aligned = align_sequence( gen, *unique, *search, consensus, 
 									min_align_score, denominator, top_align_score,
-									POS_STRAND, thread_id);
-		if(!aligned) {
+									POS_STRAND, thread_id );
+		if( !aligned )
+        {
 #ifdef DEBUG
-			fprintf(stderr,"%s didn't align forward: too many!\n",search->name);
+			fprintf( stderr, "%s didn't align forward: too many!\n", search->name );
 #endif
-			clearMapAt(rIndex);
+			clearMapAt( rIndex );
 			
 			num_matched++;
 			
-			gReadDenominator[rIndex] = 0;
-			gTopReadScore[rIndex] = READ_TOO_MANY;
+			gReadDenominator[ rIndex ] = 0;
+			gTopReadScore[ rIndex ] = READ_TOO_MANY;
 			return;
 		}
 	}
@@ -503,7 +513,9 @@ void set_top_matches(GENOME_t &gen, unsigned int rIndex, string &consensus,
 	/* We need to do the reverse of this as well...				*/
 	/************************************************************/
 	// If we only want to do the positive strand, skip the reverse compliment stuff
-	if(gMATCH_NEG_STRAND)  {
+	if( gMATCH_NEG_STRAND )
+    {
+        cerr << "checking negative strand" << endl;
 		//fprintf(stderr,"Aligning to DOWN_Strand\n");
 		//TODO: trim consensus before flipping and then send a query!
 		//consensus = trim_end_string(consensus,search->length);
@@ -527,7 +539,8 @@ void set_top_matches(GENOME_t &gen, unsigned int rIndex, string &consensus,
 								NEG_STRAND, thread_id);
 
 		// Clean up the copy
-		for(unsigned int i=0; i<rc.length; i++) {
+		for( unsigned int i=0; i<rc.length; i++ )
+        {
 			delete[] rev_pwm[i];
 		}
 		delete[] rev_pwm;
@@ -537,16 +550,17 @@ void set_top_matches(GENOME_t &gen, unsigned int rIndex, string &consensus,
 			cerr << "\tFound " << gReadLocs[rIndex].size() << " matches for this sequence\n";
 //		}
 #endif
-		if(!aligned) {
+		if( !aligned )
+        {
 			// Too many sequences
 #ifdef DEBUG
-			fprintf(stderr,"%s didn't align backward: too many!\n",search->name);
+			fprintf( stderr, "%s didn't align backward: too many!\n", search->name );
 #endif
-			clearMapAt(rIndex);
+			clearMapAt( rIndex );
 			num_matched++;
 			
-			gReadDenominator[rIndex] = 0;
-			gTopReadScore[rIndex] = READ_TOO_MANY;
+			gReadDenominator[ rIndex ] = 0;
+			gTopReadScore[ rIndex ] = READ_TOO_MANY;
 			
 			return;
 		}
@@ -556,7 +570,8 @@ void set_top_matches(GENOME_t &gen, unsigned int rIndex, string &consensus,
 #ifdef DEBUG
 	fprintf(stderr,"**[%d/%d] Sequence [%s] has %lu matching locations\n",iproc,nproc,consensus.c_str(),unique->size());
 #endif
-	if(gReadLocs[rIndex].size() == 0) {
+	if( gReadLocs[ rIndex ].size() == 0 )
+    {
 		num_not_matched++;
 		gReadDenominator[rIndex] = 0;
 		gTopReadScore[rIndex] = 0;
@@ -573,7 +588,6 @@ void set_top_matches(GENOME_t &gen, unsigned int rIndex, string &consensus,
 	return;
 }
 
-
 void create_match_output(GENOME_t &gen, unsigned int rIndex, string &consensus) {
 
 #ifdef DEBUG
@@ -587,7 +601,6 @@ void create_match_output(GENOME_t &gen, unsigned int rIndex, string &consensus) 
 #endif
 		return;
 	}
-		
 	
 	//to_return << endl;
 	//to_return << "Denominator: " << denominator << endl;
@@ -981,11 +994,7 @@ int main(const int argc, const char* argv[]) {
 
 	//Print command line args
 	cerr << "This is GNUMAP, Version "gVERSION", for public and private use." << endl;
-#ifdef GENOME_STL
-	cerr << "# Using STL version to hash.\n";
-#else
-	cerr << "# Using built-in hashing function.\n";
-#endif
+	cerr << "# Using BWT/Suffix Array.\n";
 	
 	// move this code out of the main body.
 	setup_matrices();

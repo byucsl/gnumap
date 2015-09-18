@@ -25,60 +25,26 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 
 	bin_seq bs;
 	
-	unsigned int i, j, last_hash = search.length - gMER_SIZE;
-    
-#if defined(GENOME_BWT)
+	unsigned int i, j, last_kmer_pos = search.length - gMER_SIZE;
     int sa_num_hits = 0;
-#endif
-
 	
 	// A map of genome positions and the number of times they are referenced
 	map<unsigned long, unsigned int> possible_locs;
 
-
-	for( i = 0; i < last_hash; i += gJUMP_SIZE)
+	for( i = 0; i < last_kmer_pos; i += gJUMP_SIZE)
     {
-#if defined(GENOME_STL) || defined(GENOME_MEM)
-		HashLocation* hashes = NULL;
-#else
         uint64_t start, end;
-#endif
-	
         string consensus_piece;
 
 		// If we've run accross a hash location that is clear (possibly because we've
 		// cleared it in a previous step of the algorithm), we want to get another hash
 		// that's right next to it instead of jumping over everything.
-		for( j = 0; j + i < last_hash; j++ )
+		for( j = 0; j + i < last_kmer_pos; j++ )
         {
 			consensus_piece = consensus.substr( i + j, gMER_SIZE );
 #ifdef DEBUG
 			fprintf( stderr, "Consensus piece: >%s<\n", consensus_piece.c_str() );
 #endif
-
-#if defined(GENOME_STL) || defined(GENOME_MEM)
-            // Let's move this into the Genome class
-			//p_hash = bs.get_hash(consensus_piece);
-			//hashes = gen.GetMatches(p_hash.second);
-			hashes = gen.GetMatches( consensus_piece );
-
-            // p_hash.first would only be zero if there were n's in the sequence.
-			// Just step to a location that doesn't (?) have any n's.
-			if( !hashes )
-            {
-#ifdef DEBUG
-				//if(gVERBOSE > 2)
-				cerr << "Invalid hash sequence at step " << j + i << endl;
-#endif
-				continue;
-			}
-
-			if( hashes->size )
-            {	// we've found a valid location
-				break;
-            }
-		
-#else
             gen.get_sa_int( consensus_piece, &start, &end );
             if( start == -1 )
             {
@@ -89,8 +55,7 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
                 sa_num_hits = end - start + 1;
                 break;
             }
-#endif
-			
+
 #ifdef DEBUG
 			cerr << "At location " << j+i << ", no valid hashes found." << endl;
 #endif
@@ -99,54 +64,30 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 		// Increment i by j so we don't look here again.
 		i += j;
 		
-#if defined(GENOME_STL) || defined(GENOME_MEM)
-        if( !hashes || !hashes->size )
-        {	// There are no valid locations for this specific hash
-#ifdef DEBUG
-			//if(gVERBOSE > 2)
-			cerr << "No valid hashes for this sequence." << endl;
-#endif
-			break;	// Go to the next location
-        }
-
-#ifdef DEBUG
-		cerr << "At location " << i << ", found " << hashes->size << " hashes for this string." << endl;
-#endif
-
-#else
         if( start == -1 )
         {
             break;
         }
 
-#ifdef DEBUG
+//#ifdef DEBUG
     //cerr << "At location " << i << ", found " << hashes->size << " hashes for this string." << endl;
-    if( start != -1 )
-    {
-        cerr << "At location " << i << ", found " << ( end - start + 1 ) << " hits for this string." << endl;
-    }
-    else
-    {
-        cerr << "At location " << i << ", found " << 0 << " hits for this string." << endl;
-    }
-#endif
 
-#endif
+        if( start != -1 )
+        {
+            cerr << "At location " << i << ", found " << ( end - start + 1 ) << " hits for this string." << endl;
+        }
+        else
+        {
+            cerr << "At location " << i << ", found " << 0 << " hits for this string." << endl;
+        }
+//#endif
 		
-#if defined(GENOME_STL) || defined(GENOME_MEM)
-		for( unsigned int vit = 0; vit < hashes->size; ++vit )
-#else
         for( unsigned int vit = start; vit <= end; vit++ )
-#endif
         {
 			//Match the sequence to a sequence that has two characters before and after.
 			//string to_match = gen.GetString((*vit)-i-2, search.size()+4);
 			
-#if defined(GENOME_STL) || defined(GENOME_MEM)
-			unsigned long beginning = ( hashes->hash_arr[ vit ] <= i ) ? 0 : ( hashes->hash_arr[ vit ] - i );
-#else
             unsigned long beginning = ( gen.get_sa_coord( vit ) <= i ) ? 0 : ( gen.get_sa_coord( vit ) - i );
-#endif
 			
 			// Increment the number of times this occurs
 			possible_locs[ beginning ]++;
@@ -158,23 +99,24 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 			
 			// Define the number of hash locations that have to be matching at each genomic position
 			// before we'll even match it
-			if(loc_it->second < gMIN_JUMP_MATCHES)
+			if( loc_it->second < gMIN_JUMP_MATCHES )
             {
 				continue;
             }
 
 			string to_match = gen.GetString(loc_it->first, search.length);
 			
-			if(to_match.size() == 0) {	//means it's on a chromosome boundary--not valid sequence
+			if( to_match.size() == 0 )
+            {	//means it's on a chromosome boundary--not valid sequence
 #ifdef DEBUG
-				fprintf(stderr,"On chromosome boundary...skipping\n");
+				fprintf( stderr, "On chromosome boundary...skipping\n" );
 #endif
 				continue;
 			}
 
 			double align_score = 0;
-			char aligned[to_match.length()+1];
-			strcpy(aligned,to_match.c_str());
+			char aligned[ to_match.length() + 1 ];
+			strcpy( aligned, to_match.c_str() );
 
 			//if(gBISULFITE)
 				//align_score = bs.get_align_score_w_traceback(search,to_match,aligned);
@@ -182,9 +124,9 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 			
 #ifdef DEBUG_NW
 			// Record the number of nw's this thread performs
-			num_nw[thread_id]++;
+			num_nw[ thread_id ]++;
 #endif
-			align_score = bs.get_align_score(search,to_match);
+			align_score = bs.get_align_score( search, to_match );
 
 #ifdef DEBUG
 //			if(gVERBOSE > 1) 
@@ -239,28 +181,32 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 					unique.insert(pair<string,ScoredSeq*>(to_match,temp));
 					denominator += exp(align_score);
 #ifdef DEBUG
-					fprintf(stderr,"[%10s%c] just added %s at jump %u with size %lu\n",search.name,strand==POS_STRAND ? '+' : '-',gen.GetPos(loc_it->first,strand).c_str(),i,hashes->size);
-					fprintf(stderr,"[%10s%c]     size of unique is now %lu\n",search.name,strand==POS_STRAND?'+':'-',unique.size());
+					//fprintf(stderr,"[%10s%c] just added %s at jump %u with size %lu\n",search.name,strand==POS_STRAND ? '+' : '-',gen.GetPos(loc_it->first,strand).c_str(),i,hashes->size);
+					//fprintf(stderr,"[%10s%c]     size of unique is now %lu\n",search.name,strand==POS_STRAND?'+':'-',unique.size());
 #endif
 				}
-				else { //if(it != unique.end()) 	// It was found in the set
+				else
+                { //if(it != unique.end()) 	// It was found in the set
 					
 					delete temp;
 
-					if(gUNIQUE) {	// Need to return early because this matches to
+					if( gUNIQUE )
+                    {	            // Need to return early because this matches to
 									// more than one location
+                        cerr << "not a unique mapping! returning no mapping!" << endl;
 						return false;
 					}
 
 
-					if( (*it).second->add_spot(loc_it->first,strand) ) {
+					if( ( *it ).second->add_spot( loc_it->first, strand ) )
+                    {
 						//fprintf(stderr,"[%s] %lu:%d Not already here\n",search.name,loc_it->first,strand);
-						denominator += exp(align_score);
+						denominator += exp( align_score );
 					}
 					//else
 						//fprintf(stderr,"[%s] %lu:%d Already in here, sorry\n",search.name,loc_it->first,strand);
 #ifdef DEBUG
-					fprintf(stderr,"[%10s%c]     Didn't add.  size of unique is now %lu\n",search.name,strand==NEG_STRAND?'+':'-',unique.size());
+					fprintf( stderr,"[%10s%c]     Didn't add.  size of unique is now %lu\n", search.name, strand == NEG_STRAND ? '+' : '-', unique.size() );
 #endif
 				}
 				
@@ -269,15 +215,21 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 //				fprintf(stderr,"\tCould not align with align score %f and min_score %f\n",align_score,min_align_score);
 		}
 		
-		if(unique.size() > gMAX_MATCHES)
+		if( unique.size() > gMAX_MATCHES )
+        {
+            cerr << "too many matches! returning no mapping!" << endl;
 			return false;
+        }
 		
 		
 		// If we want to do the fast mode, only look at one hash location
-		if(gFAST)
+		if( gFAST)
+        {
 			break;
+        }
 	
 	}  // end of for over all the hash positions
 	
+    cerr << "mapping found!" << endl;
 	return true;
 }

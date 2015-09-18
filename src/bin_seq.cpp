@@ -758,7 +758,7 @@ float bin_seq::get_align_score(const Read &read, const string &gen,
 		const unsigned int begin, const unsigned int end) {
 		
 #ifdef DEBUG
-	fprintf(stderr,"Aligning read named %s to %s\n",read->name,gen.c_str());
+	//fprintf(stderr,"Aligning read named %s to %s\n",read->name,gen.c_str());
 #endif
 
 	assert(begin<=end);
@@ -901,7 +901,7 @@ float bin_seq::get_align_score_mid(const Read &read, const string &consense,
 		   + (read.pwm[i][2] * gALIGN_SCORES[(unsigned int)consense[i]][2])
 		   + (read.pwm[i][3] * gALIGN_SCORES[(unsigned int)consense[i]][3]);
 #ifdef DEBUG
-		if(VERBOSE > 2) {
+		//if(VERBOSE > 2) {
 		fprintf(stderr, "%c/%c %.4f %.4f %.4f %.4f = %.4f\n",
 			read.seq[i], consense[i],
 			read.pwm[i][0] * gALIGN_SCORES[(unsigned int)consense[i]][0],
@@ -920,7 +920,7 @@ float bin_seq::get_align_score_mid(const Read &read, const string &consense,
 			gALIGN_SCORES[(unsigned int)consense[i]][1],
 			gALIGN_SCORES[(unsigned int)consense[i]][2],
 			gALIGN_SCORES[(unsigned int)consense[i]][3]);
-		}
+		//}
 #endif
 	}
 	
