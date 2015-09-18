@@ -112,30 +112,27 @@ class Genome {
 		 * @par begin - the beginning of the string to return
 		 * @par size - the size of the string to return.
 		 */
-		string GetString(const unsigned long begin, const unsigned int size);
-		string GetString(const unsigned long begin, const unsigned int size, 
-					const unsigned int hash_start, const bool extend_past);
-		char GetChar(const unsigned long begin);
+		virtual string GetString(const unsigned long begin, const unsigned int size) = 0;
+        //string GetString(const unsigned long begin, const unsigned int size, 
+		//			const unsigned int hash_start, const bool extend_past);
+        
+        char GetChar(const unsigned long begin);
 		
 		/*
 		 * GetMatches will return the vector that represents the given hash.
 		 *
 		 * @return the vector of the given hash.
 		 */
-#if defined(GENOME_BWT)
         virtual void get_sa_int( string& str, uint64_t* in_start, uint64_t* in_end ) = 0;
         virtual uint64_t get_sa_coord( uint64_t sa_pos ) = 0;
-#else
-		virtual HashLocation* GetMatches(unsigned int hash) = 0;
-		virtual HashLocation* GetMatches(string &) = 0;
-#endif
 		
 		/**
 		 * LoadGenome is responsible for loading the genome into memory--whether it be by reading from
 		 * a binary file or from a set of fasta files, it should be the same.
 
 		 */
-		void LoadGenome();
+		virtual void LoadGenome() = 0;
+
 		/**
 		 * This function was pulled out of LoadGenome so it could also be used in Store Genome.
 		 * It simply allocates space for the 'read' and 'genome' arrays, as necessary.
@@ -146,11 +143,7 @@ class Genome {
 		 * hash_and_store() will cause the genome to be hashed--from the file fn given above.
 		 * it will then store the genome in a smaller binary array.
 		 */
-#if defined(GENOME_BWT)
         virtual void index_and_store() = 0;
-#else
-		virtual void hash_and_store() = 0;
-#endif
 		void inc_counter(int,unsigned int&, unsigned long&, unsigned int);
 		void ReplaceSpaceWithUnderscore(string &str);
 
@@ -163,8 +156,10 @@ class Genome {
 		/**
 		 * StoreGenome is used by the sam2sgr program to store the genome (doesn't need to hash it)
 		 */
-		virtual void StoreGenome() { StoreGenome(true); }
-		virtual void StoreGenome(bool make_extra);
+		//virtual void StoreGenome() { StoreGenome(true); }
+		//virtual void StoreGenome(bool make_extra);
+        virtual void StoreGenome() = 0;
+        virtual void StoreGenome( bool make_extra ) = 0;
 		
 		/*! 
 		 * AddScore will add the given score, amt, to the genomic position, pos.
@@ -211,7 +206,7 @@ class Genome {
 		 * GetStringAtPosition will go one step further from GetAbsolutePosition and will
 		 * actually produce the string at that position
 		 */
-		string GetStringRelative(const char* chr, const unsigned long &pos, const unsigned int length);
+		virtual string GetStringRelative(const char* chr, const unsigned long &pos, const unsigned int length) = 0;
 
 		
 #ifdef SET_POS
@@ -311,27 +306,14 @@ class Genome {
 		 * fix_hash will remove all the high-density matches in the hash.  Anything over the
 		 * threshold (MAX_HASH_SIZE) will be removed.
 		 */
-#if defined(GENOME_STL_H) || defined(GENOME_MEM_H)
-		virtual void fix_hash() = 0;
-#endif
-
-		inline int base2int(char c);
+		
+        inline int base2int(char c);
 		inline char int2base(int i);
 				
 		string reverse(string &s);
 
 		// Reads the genome file from memory
-		unsigned int readGen(char* fn);
-#if defined(GENOME_STL_H) || defined(GENOME_MEM_H)
-		virtual void readHash(FILE* readF, bool ldebug) = 0;
-#endif
-		virtual void readGenome(FILE* readF, bool ldebug);
-		// Saves the genome file to memory
-		unsigned int saveGen(char* fn);
-#if defined(GENOME_STL_H) || defined(GENOME_MEM_H)
-		virtual void saveHash(FILE* saveF, bool ldebug) = 0;
-#endif
-		virtual void saveGenome(FILE* saveF, bool ldebug);
+        virtual unsigned int readGen(char* fn) = 0;
 		
 		GEN_TYPE offset;
 		unsigned int bin_offset;

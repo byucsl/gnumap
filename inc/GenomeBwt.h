@@ -78,8 +78,8 @@ class GenomeBwt : public Genome {
 		 * Constructor.  Creates new Genome with filename.
 		 * fn - the filename of the file to be parsed into the genome.
 		 */
-		GenomeBwt(const char* fn);
 		GenomeBwt();
+		GenomeBwt(const char* fn);
 		
 		~GenomeBwt();
 
@@ -141,6 +141,7 @@ class GenomeBwt : public Genome {
 		 * StoreGenome is used by the sam2sgr program to store the genome (doesn't need to hash it)
 		 */
 		void StoreGenome();
+        void StoreGenome( bool make_extra );
 		
 		/*! 
 		 * AddScore will add the given score, amt, to the genomic position, pos.

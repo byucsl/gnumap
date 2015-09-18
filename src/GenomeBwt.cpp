@@ -412,6 +412,12 @@ void GenomeBwt::ReplaceSpaceWithUnderscore(string &str)
 	}
 }
 
+
+void GenomeBwt::StoreGenome( bool make_extra )
+{
+    StoreGenome();
+}
+
 #define READ_EXTRA	1000
 
 void GenomeBwt::StoreGenome() {

@@ -714,8 +714,8 @@ void create_match_output(GENOME_t &gen, unsigned int rIndex, string &consensus) 
 
 /**
  * This function will print the corresponding strings for all locations at this hash
- */
-string print(GENOME_t &gen, HashLocation* pos, long begin, int size) {
+ * deprecate?/
+/*string print(GENOME_t &gen, HashLocation* pos, long begin, int size) {
 	string to_return = "";
 	
 	//cout << "matches: " << pos.size() << endl;
@@ -724,7 +724,7 @@ string print(GENOME_t &gen, HashLocation* pos, long begin, int size) {
 	}
 	
 	return to_return;
-}
+}*/
 
 
 /* GetPWM is used for getting a PWM matrix representing the match (m) and mismatch (mm)

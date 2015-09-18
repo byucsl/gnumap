@@ -25,80 +25,143 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 
 	bin_seq bs;
 	
-	unsigned int i,j,last_hash=search.length-gMER_SIZE;
+	unsigned int i, j, last_hash = search.length - gMER_SIZE;
+    
+#if defined(GENOME_BWT)
+    int sa_num_hits = 0;
+#endif
+
 	
 	// A map of genome positions and the number of times they are referenced
 	map<unsigned long, unsigned int> possible_locs;
 
 
-	for(i=0; i<last_hash; i+=gJUMP_SIZE) {
+	for( i = 0; i < last_hash; i += gJUMP_SIZE)
+    {
+#if defined(GENOME_STL) || defined(GENOME_MEM)
 		HashLocation* hashes = NULL;
-		string consensus_piece;
+#else
+        uint64_t start, end;
+#endif
+	
+        string consensus_piece;
 
 		// If we've run accross a hash location that is clear (possibly because we've
 		// cleared it in a previous step of the algorithm), we want to get another hash
 		// that's right next to it instead of jumping over everything.
-		for(j=0; j+i<last_hash; j++) {
-			consensus_piece = consensus.substr(i+j,gMER_SIZE);
+		for( j = 0; j + i < last_hash; j++ )
+        {
+			consensus_piece = consensus.substr( i + j, gMER_SIZE );
 #ifdef DEBUG
-			fprintf(stderr,"Consensus piece: >%s<\n",consensus_piece.c_str());
+			fprintf( stderr, "Consensus piece: >%s<\n", consensus_piece.c_str() );
 #endif
 
-			// Let's move this into the Genome class
+#if defined(GENOME_STL) || defined(GENOME_MEM)
+            // Let's move this into the Genome class
 			//p_hash = bs.get_hash(consensus_piece);
 			//hashes = gen.GetMatches(p_hash.second);
-			hashes = gen.GetMatches(consensus_piece);
-			
-			// p_hash.first would only be zero if there were n's in the sequence.
+			hashes = gen.GetMatches( consensus_piece );
+
+            // p_hash.first would only be zero if there were n's in the sequence.
 			// Just step to a location that doesn't (?) have any n's.
-			if(!hashes)  {
+			if( !hashes )
+            {
 #ifdef DEBUG
 				//if(gVERBOSE > 2)
-					cerr << "Invalid hash sequence at step " << j+i << endl;
+				cerr << "Invalid hash sequence at step " << j + i << endl;
 #endif
 				continue;
 			}
 
-			if(hashes->size)	// we've found a valid location
+			if( hashes->size )
+            {	// we've found a valid location
 				break;
+            }
+		
+#else
+            gen.get_sa_int( consensus_piece, &start, &end );
+            if( start == -1 )
+            {
+                continue;
+            }
+            else
+            {
+                sa_num_hits = end - start + 1;
+                break;
+            }
+#endif
+			
 #ifdef DEBUG
-			//if(gVERBOSE > 2)
-				cerr << "At location " << j+i << ", no valid hashes found." << endl;
+			cerr << "At location " << j+i << ", no valid hashes found." << endl;
 #endif
 		} // end of for-loop identifying valid hash location
 
 		// Increment i by j so we don't look here again.
-		i+=j;
+		i += j;
 		
-		if(!hashes || !hashes->size) {	// There are no valid locations for this specific hash
+#if defined(GENOME_STL) || defined(GENOME_MEM)
+        if( !hashes || !hashes->size )
+        {	// There are no valid locations for this specific hash
 #ifdef DEBUG
 			//if(gVERBOSE > 2)
-				cerr << "No valid hashes for this sequence." << endl;
+			cerr << "No valid hashes for this sequence." << endl;
 #endif
 			break;	// Go to the next location
-		}
+        }
 
 #ifdef DEBUG
 		cerr << "At location " << i << ", found " << hashes->size << " hashes for this string." << endl;
 #endif
+
+#else
+        if( start == -1 )
+        {
+            break;
+        }
+
+#ifdef DEBUG
+    //cerr << "At location " << i << ", found " << hashes->size << " hashes for this string." << endl;
+    if( start != -1 )
+    {
+        cerr << "At location " << i << ", found " << ( end - start + 1 ) << " hits for this string." << endl;
+    }
+    else
+    {
+        cerr << "At location " << i << ", found " << 0 << " hits for this string." << endl;
+    }
+#endif
+
+#endif
 		
-		for(unsigned int vit = 0; vit<hashes->size; ++vit) {
+#if defined(GENOME_STL) || defined(GENOME_MEM)
+		for( unsigned int vit = 0; vit < hashes->size; ++vit )
+#else
+        for( unsigned int vit = start; vit <= end; vit++ )
+#endif
+        {
 			//Match the sequence to a sequence that has two characters before and after.
 			//string to_match = gen.GetString((*vit)-i-2, search.size()+4);
 			
-			unsigned long beginning = (hashes->hash_arr[vit]<=i) ? 0 : (hashes->hash_arr[vit]-i);
+#if defined(GENOME_STL) || defined(GENOME_MEM)
+			unsigned long beginning = ( hashes->hash_arr[ vit ] <= i ) ? 0 : ( hashes->hash_arr[ vit ] - i );
+#else
+            unsigned long beginning = ( gen.get_sa_coord( vit ) <= i ) ? 0 : ( gen.get_sa_coord( vit ) - i );
+#endif
 			
 			// Increment the number of times this occurs
-			possible_locs[beginning]++;
+			possible_locs[ beginning ]++;
 		}
 
-		map<unsigned long, unsigned int>::iterator loc_it;
-		for(loc_it = possible_locs.begin(); loc_it != possible_locs.end(); ++loc_it) {
+		map< unsigned long, unsigned int >::iterator loc_it;
+		for( loc_it = possible_locs.begin(); loc_it != possible_locs.end(); ++loc_it )
+        {
 			
 			// Define the number of hash locations that have to be matching at each genomic position
 			// before we'll even match it
 			if(loc_it->second < gMIN_JUMP_MATCHES)
+            {
 				continue;
+            }
 
 			string to_match = gen.GetString(loc_it->first, search.length);
 			
@@ -132,12 +195,15 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 												  << "\tand min " << min_align_score << endl;
 #endif
 					 			
-			if(align_score > top_align_score)
+			if( align_score > top_align_score )
+            {
 				top_align_score = align_score;
+            }
 				
 			string unique_string = to_match;
 			
-			if(align_score >= min_align_score) {
+			if( align_score >= min_align_score )
+            {
 				//fprintf(stderr,"\t**Aligned!\n");
 
 				// take the rev_c before so we don't need to take it inside the ScoredSeq
@@ -145,26 +211,31 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 
 				ScoredSeq* temp;
 				
-				if(gSNP)
-					temp = 
-						new SNPScoredSeq(to_match, align_score, loc_it->first, strand);
-				else if(gBISULFITE || gATOG) {
-					temp =
-						new BSScoredSeq(to_match,align_score, loc_it->first, strand);
+				if( gSNP )
+                {
+					temp = new SNPScoredSeq( to_match, align_score, loc_it->first, strand );
+                }
+				else if( gBISULFITE || gATOG )
+                {
+					temp = new BSScoredSeq(to_match,align_score, loc_it->first, strand );
 					//fprintf(stderr,"New BSScoredSeq\n");
 				}
 				else
-					temp =
-						new NormalScoredSeq(to_match,align_score, loc_it->first, strand);
+                {
+					temp = new NormalScoredSeq( to_match, align_score, loc_it->first, strand );
+                }
 
-				if(strand == NEG_STRAND)
-					to_match = reverse_comp(to_match);
+				if( strand == NEG_STRAND )
+                {
+					to_match = reverse_comp( to_match );
+                }
 				
-				seq_map::iterator it = unique.find(to_match);
+				seq_map::iterator it = unique.find( to_match );
 				
 				//pair<seq_map::iterator,bool> it_bool = unique.insert(pair<string,ScoredSeq*>(to_match,temp));
 
-				if(it == unique.end()) {	// It wasn't found in the set
+				if( it == unique.end() )
+                {	// It wasn't found in the set
 					unique.insert(pair<string,ScoredSeq*>(to_match,temp));
 					denominator += exp(align_score);
 #ifdef DEBUG
