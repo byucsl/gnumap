@@ -36,12 +36,18 @@ Reader::Reader() :
 }
 
 Reader::~Reader() {
-	delete[] filename;
+    if( filename != NULL )
+    {
+	    delete[] filename;
+    }
 }
 
 void Reader::Init(const char* fn) {
 	if(filename)
+    {
 		delete[] filename;
+    }
+
 	filename = new char[strlen(fn)+1];
 	strcpy(filename,fn);
 
@@ -50,23 +56,28 @@ void Reader::Init(const char* fn) {
 	
 	ifstream infile;
 	infile.open(fn);
-	if(!infile) {
+	if(!infile)
+    {
 		perror("");
-		char* errstr = new char[150];
+	    char* errstr = new char[150];
 		strcpy(errstr,"Bad File: ");
 		strncat(errstr,fn,150-strlen(errstr));
 		throw errstr;
 	}
 	
 	getline(infile,chr_name);
-	if(chr_name[0] == '>') {
+	if(chr_name[0] == '>')
+    {
 		chr_name = chr_name.substr(1,chr_name.size());
 		if(gVERBOSE)
+        {
 			cout << "Reading: " << chr_name << endl;
+        }
 
 		current_offset = chr_name.size() + 1;
 	}
-	else {
+	else
+    {
 		current_offset = 0;
 		chr_name = filename;
 	}
@@ -79,15 +90,18 @@ void Reader::Init(const char* fn) {
 	infile.close();
 }
 
-long Reader::GetFileSize() const {
+long Reader::GetFileSize() const
+{
 	return file_size;
 }
 
-void Reader::use(const char* fn) {
+void Reader::use(const char* fn)
+{
 	Init(fn);
 }
 
-Reader& Reader::operator =(const Reader &other) {
+Reader& Reader::operator =(const Reader &other)
+{
 	filename = other.filename;
 	buffer_read = other.buffer_read;
 	current_offset = other.current_offset; 

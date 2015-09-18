@@ -42,15 +42,23 @@ Genome::~Genome() {
 	delete reader;
 	
 	if(packed_genome)
+    {
 		free(packed_genome);
+    }
+
 	if(amount_genome)
+    {
 		free(amount_genome);
+    }
 #ifdef SET_POS
 	if(gs_positions)
+    {
 		free(gs_positions);
+    }
 #endif
 	
 	if(gSNP)
+    {
 #if defined( DISCRETIZE )
 		delete[] read_allot;
 #elif defined( INTDISC )
@@ -58,52 +66,65 @@ Genome::~Genome() {
 		delete[] reads;
 		reads = 0;
 #else
-        for(unsigned int i=0; i<NUM_SNP_VALS; i++) {
+
+        for(unsigned int i=0; i<NUM_SNP_VALS; i++)
+        {
             delete[] reads[i];
             reads[i] = 0;
         }
 #endif // DISCRETIZE/INTDISC
+    }
 
-    if(gBISULFITE) {
+    if(gBISULFITE)
+    {
 #if defined( DISCRETIZE )
 		delete[] read_allot;
 #elif defined( INTDISC )
 		delete[] reads;
 		reads = 0;
 #else
-        for(unsigned int i=0; i<NUM_SNP_VALS; i++) {
+        for(unsigned int i=0; i<NUM_SNP_VALS; i++)
+        {
             delete[] reads[i];
             reads[i] = 0;
         }
 #endif // DISCRETIZE/INTDISC
     }
 
-    if(gATOG) {
+    if(gATOG)
+    {
     	// We can have the SNP option and the ATOG option at the same time
 #if defined( DISCRETIZE )
 		delete[] read_allot;
 #elif defined( INTDISC )
-		if(reads) {
+		if(reads)
+        {
 			delete[] reads;
 			reads = 0;
 		}
 #else
         for(unsigned int i=0; i<NUM_SNP_VALS; i++)
-        	if(reads[i]) {
+        {
+        	if(reads[i])
+            {
 				delete[] reads[i];
 				reads[i] = 0;
 			}
+        }
 #endif // DISCRETIZE/INTDISC
     }
-	
 } 
 
-void Genome::Init(const char* fn) {
+void Genome::Init(const char* fn)
+{
 
 	// Don't need to init names if we're going to do so in the read file
-	if(!gREAD) 	{
+	if(!gREAD)
+    {
 		if(names.size()) //if we've already set up the "names" vector, just return.
+        {
 			return;
+        }
 
 		char files[strlen(fn)];
 		strcpy(files,fn);
@@ -111,11 +132,16 @@ void Genome::Init(const char* fn) {
 		const char* delims = ", \"\n";
 		char* token = strtok(files,delims);
 		if(gVERBOSE > 1)
+        {
 			cout << "Found:" << endl;
+        }
 
-		while(token != NULL) {
+		while(token != NULL)
+        {
 			if(gVERBOSE)
+            {
 				cout << "\t" << token << endl;
+            }
 			string temp_str = token;
 			
 			// Get rid of spaces that make it impossible to handle
@@ -136,7 +162,8 @@ void Genome::Init(const char* fn) {
 #elif defined( INTDISC )
 	reads = 0;
 #else
-	for(int i=0; i<NUM_SNP_VALS; i++) {
+	for(int i=0; i<NUM_SNP_VALS; i++)
+    {
 		reads[i] = 0;
 	}
 #endif // DISCRETIZE/INTDISC
@@ -158,10 +185,12 @@ void Genome::use(const char* fn, unsigned long s, unsigned long e) {
 	
 	//fprintf(stderr,"Reading Genome from %lu to %lu, read_all=%d\n",s,e,read_all);
 	
-	if(reader != NULL) {
+	if(reader != NULL)
+    {
 		cout << "non-null reader" << endl;
 		delete reader;
 	}
+
 	Init(fn);
 	reader = new Reader();
 }
@@ -393,7 +422,9 @@ unsigned long Genome::count() {
 	unsigned char gen_piece[gBUFFER_SIZE+1];
 
 	if(gVERBOSE)
+    {
 		printf("Counting Genome to Reserve Size...\n");
+    }
 
 	
 	// If we've already calculated the genome size (read from a file), just return the size

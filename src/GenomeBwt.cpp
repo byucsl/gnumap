@@ -18,65 +18,7 @@ GenomeBwt::GenomeBwt() : Genome()
 
 GenomeBwt::~GenomeBwt() {
 	//fprintf(stderr,"[-/%d] Genome destructor...\n",iproc);
-	delete reader;
-	
-	if(packed_genome)
-		free(packed_genome);
-	if(amount_genome)
-		free(amount_genome);
-#ifdef SET_POS
-	if(gs_positions)
-		free(gs_positions);
-#endif
-	
-	if(gSNP)
-#if defined( DISCRETIZE )
-		delete[] read_allot;
-#elif defined( INTDISC )
-		// To maintain cache consistency, store them as reads[pos][char]
-		delete[] reads;
-		reads = 0;
-#else
-        for(unsigned int i=0; i<NUM_SNP_VALS; i++) {
-            delete[] reads[i];
-            reads[i] = 0;
-        }
-#endif // DISCRETIZE/INTDISC
-
-    if(gBISULFITE) {
-#if defined( DISCRETIZE )
-		delete[] read_allot;
-#elif defined( INTDISC )
-		delete[] reads;
-		reads = 0;
-#else
-        for(unsigned int i=0; i<NUM_SNP_VALS; i++) {
-            delete[] reads[i];
-            reads[i] = 0;
-        }
-#endif // DISCRETIZE/INTDISC
-    }
-
-    if(gATOG) {
-    	// We can have the SNP option and the ATOG option at the same time
-#if defined( DISCRETIZE )
-		delete[] read_allot;
-#elif defined( INTDISC )
-		if(reads) {
-			delete[] reads;
-			reads = 0;
-		}
-#else
-        for(unsigned int i=0; i<NUM_SNP_VALS; i++)
-        	if(reads[i]) {
-				delete[] reads[i];
-				reads[i] = 0;
-			}
-#endif // DISCRETIZE/INTDISC
-    }
-	
-    //if(gen_hash.has_data_ptr())
-    //	gen_hash.free_data_ptr();
+	//TODO: fix destructor for bwt/sa
 } 
 
 char * GenomeBwt::bwa_idx_infer_prefix(const char *hint)
