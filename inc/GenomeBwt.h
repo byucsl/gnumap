@@ -299,52 +299,6 @@ class GenomeBwt : public Genome {
 		// Saves the genome file to memory
 		unsigned int saveGen(char* fn);
 		
-		/**
-		 * convertToVector will convert the hashed-and-stored genome to the non-STL version
-		 *
-		 * @post gh and g will be deleted
-		 */
-		//void convertToVector(hash_map<unsigned int, vector<unsigned long> > *gh,
-		//                     //gvector<GenomeLocation> *g);
-		//                     gvector<GEN_TYPE> *pg);
-
-		GEN_TYPE offset;
-		unsigned int bin_offset;
-		Reader* reader;
-
-		//genome is the compressed genome
-		//GenomeLocation* genome;
-		GEN_TYPE* packed_genome;
-		float* amount_genome;
-		
-		// Should be a char so we can have 8 bits
-		char* gs_positions;
-		unsigned long gs_positions_size;
-		
-		unsigned long genome_size;
-
-#if defined( DISCRETIZE )
-		// All we need is a character array for the reads as we'll discretize them
-		center_d* read_allot;
-#elif defined( INTDISC )
-		// "Parts per 255" for each character
-		// one-dimensional array of size genome_size*NUM_SNP_VALS
-		unsigned char* reads;
-#else
-		float* reads[NUM_SNP_VALS];
-#endif
-
-		//gen_piece is used to store a portion of the genome as we read it in.
-		//unsigned char* gen_piece;
-		//hash_map<unsigned int, HashLocation> gen_hash;
-		unsigned long num_hash_elements;
-		//hash_map<unsigned int, vector<unsigned long> > gen_hash_vec;
-		vector<pair<string,unsigned long> > names;
-		
-		unsigned long my_start;	// The position we should start reading from
-		unsigned long my_end;
-		bool read_all;
-		bool include_hash;	// So we can just store the genome for sam2sgr
         bwaidx_t * index;
         char* ref_genome_fn;
 };

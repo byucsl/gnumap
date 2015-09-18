@@ -4,16 +4,14 @@
  * Constructor.  Creates new Genome with filename.
  * fn - the filename of the file to be parsed into the genome.
  */
-GenomeBwt::GenomeBwt(const char* fn) : Genome(fn),
-	offset(0), bin_offset(0), packed_genome(NULL), amount_genome(NULL), gs_positions(NULL), genome_size(0)
+GenomeBwt::GenomeBwt(const char* fn) : Genome(fn)
 {
     std::cout << "constructor 1" << std::endl;
 	Init(fn);
 	reader = new Reader();
 }
 
-GenomeBwt::GenomeBwt() : Genome(),
-	offset(0), bin_offset(0), reader(NULL), packed_genome(NULL), amount_genome(NULL), gs_positions(NULL), genome_size(0)
+GenomeBwt::GenomeBwt() : Genome()
 {
     std::cout << "constructor 2" << std::endl;
 }

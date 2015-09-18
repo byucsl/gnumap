@@ -168,7 +168,7 @@ class Genome {
 		 * @param amt - the amount to be given to this specific position on the genome.
 		 */
 		float GetScore(const unsigned long &pos);
-		void AddScore(const unsigned long &pos, const float &amt);
+		virtual void AddScore(const unsigned long &pos, const float &amt) = 0;
 		void AddScore(const unsigned long &pos, const float &amt, float a_add, float b_add, float gen_a, float gen_b);
 		void AddScore(const unsigned long &pos, const float &amt, float a_add, float c_add, float g_add, float t_add,
 					float gen_a, float gen_c, float gen_g, float gen_t);

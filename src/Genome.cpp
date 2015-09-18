@@ -562,17 +562,6 @@ float Genome::GetScore(const unsigned long &pos) {
 	return amount_genome[pos_temp];
 }
 
-void Genome::AddScore(const unsigned long &pos, const float &amt) {
-//	if(amt > 1)
-//		fprintf(stderr,"Genome Error!! %d\n",__LINE__);
-		
-	unsigned long pos_temp = pos-my_start;
-	//fprintf(stderr,"pos: %lu, myStart: %lu pos_temp: %lu\n",pos,my_start,pos_temp);
-	//if(pos_temp > genome_size)
-	//	fprintf(stderr,"Adding %f to %lu with max of %lu\n",amt,pos_temp/gGEN_SIZE,genome_size);
-	amount_genome[pos_temp/gGEN_SIZE] += amt;
-}
-
 /**
  * INVARIANT:  must add to the genome previous to this call
  *			thus, amount_genome[pos] will never be 0
