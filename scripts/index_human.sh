@@ -15,4 +15,4 @@ export PBS_QUEUE=batch
 export OMP_NUM_THREADS=$SLURM_CPUS_ON_NODE
 
 # LOAD MODULES, INSERT CODE, AND RUN YOUR PROGRAMS HERE
-bin/gnumap-plain -g /fslhome/masaki/compute/human_genome/GCA_000001405.18_GRCh38.p3_genomic.fna --save=index/human.index --print_all_sam -o stuff examples/1.fq
+time bin/gnumap-plain -g /fslhome/masaki/compute/human_genome/GCA_000001405.18_GRCh38.p3_genomic.fna --save=index/human.index --print_all_sam -o stuff examples/1.fq
