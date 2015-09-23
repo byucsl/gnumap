@@ -43,10 +43,12 @@ inline void fix_CIGAR_for_deletions(string &cigar) {
 
 inline string trim_end_string(string &s, unsigned int start2trim0) {
   string temp = "";
-  int len = s.length();
+  //int len = s.length();
   
-  for(int i=0; i<start2trim0; i++)
+  for(unsigned int i=0; i<start2trim0; i++)
+  {
     temp+=s[i];
+  }
   
   return temp;
 }

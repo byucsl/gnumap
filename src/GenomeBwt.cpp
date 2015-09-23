@@ -476,8 +476,8 @@ void GenomeBwt::get_sa_int( string& seq, uint64_t* in_start, uint64_t* in_end )
     }
     else
     {
-        *in_start = -1;
-        *in_end = -1;
+        *in_start = 0;
+        *in_end = 0;
     }
 
     //std::cout << "start:\t" << start << "\nend:\t" << end << std::endl;

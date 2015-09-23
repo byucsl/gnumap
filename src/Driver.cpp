@@ -440,9 +440,9 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 	// Too short to align
 	if( search->length < ( unsigned int ) gMER_SIZE )
     {
-#ifdef DEBUG
+//#ifdef DEBUG
 		fprintf( stderr, "%s Too short to align\n", consensus.c_str() );
-#endif
+//#endif
 		num_not_matched++;
 		gReadDenominator[ rIndex ] = 0;
 		gTopReadScore[ rIndex ] = READ_TOO_SHORT;
@@ -452,17 +452,16 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 
 
 	// We need to do the length-1 because it will go to the base at that position.
-	double max_align_score = 
-		bs.get_align_score( *search, consensus, 0, search->length - 1 );
+	double max_align_score = bs.get_align_score( *search, consensus, 0, search->length - 1 );
 
 	
 	// Too low of quality to align
 	if( max_align_score < gCUTOFF_SCORE )
     { 
-#ifdef DEBUG
+//#ifdef DEBUG
 		fprintf( stderr, "%s:%s didn't meet cutoff: %f vs %f\n", consensus.c_str(), search->fq.c_str(),
 							max_align_score, gCUTOFF_SCORE );
-#endif
+//#endif
 		num_not_matched++;
 		gReadDenominator[ rIndex ] = 0;
 		gTopReadScore[ rIndex ] = READ_TOO_POOR;
@@ -496,9 +495,9 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 									POS_STRAND, thread_id );
 		if( !aligned )
         {
-#ifdef DEBUG
+//#ifdef DEBUG
 			fprintf( stderr, "%s didn't align forward: too many!\n", search->name );
-#endif
+//#endif
 			clearMapAt( rIndex );
 			
 			num_matched++;
@@ -527,11 +526,11 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 
 
 		//printReadPWM(&search);
-#ifdef DEBUG
+//#ifdef DEBUG
 //		if(gVERBOSE > 2) {
 			cerr << "\tPerforming reverse compliment alignment with sequence " << consensus << " vs " << rev_consensus << endl;
 //		}
-#endif
+//#endif
 		
 
 		bool aligned = align_sequence(gen, *unique, rc, rev_consensus, 
@@ -545,11 +544,11 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 		}
 		delete[] rev_pwm;
 
-#ifdef DEBUG
+//#ifdef DEBUG
 //		if(gVERBOSE > 2) {
 			cerr << "\tFound " << gReadLocs[rIndex].size() << " matches for this sequence\n";
 //		}
-#endif
+//#endif
 		if( !aligned )
         {
 			// Too many sequences
@@ -567,11 +566,13 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 		
 	}
 
-#ifdef DEBUG
-	fprintf(stderr,"**[%d/%d] Sequence [%s] has %lu matching locations\n",iproc,nproc,consensus.c_str(),unique->size());
-#endif
+//#ifdef DEBUG
+	fprintf( stderr, "**[%d/%d] Sequence [%s] has %lu matching locations\n", iproc, nproc, consensus.c_str(), unique->size() );
+//#endif
+
 	if( gReadLocs[ rIndex ].size() == 0 )
     {
+        fprintf( stderr, "unmatched!\n" );
 		num_not_matched++;
 		gReadDenominator[rIndex] = 0;
 		gTopReadScore[rIndex] = 0;
@@ -581,9 +582,9 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 	//fprintf(stderr,"Index %d has %u elements\n",rIndex,gReadLocs[rIndex].size());
 	num_matched++;
 	gReadDenominator[rIndex] = denominator;
-#ifdef DEBUG
-	fprintf(stderr,"Index %d has denominator of %f\n",rIndex,denominator);
-#endif
+//#ifdef DEBUG
+	fprintf( stderr, "Index %d has denominator of %f\n", rIndex, denominator );
+//#endif
 	gTopReadScore[rIndex] = top_align_score;
 	return;
 }
@@ -591,7 +592,7 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 void create_match_output(GENOME_t &gen, unsigned int rIndex, string &consensus) {
 
 #ifdef DEBUG
-	fprintf(stderr,"[%d/%d] [%s] has %lu matches\n",iproc,nproc,gReadArray[rIndex]->name,gReadLocs[rIndex].size());
+	fprintf( stderr,"[%d/%d] [%s] has %lu matches\n", iproc, nproc, gReadArray[rIndex]->name, gReadLocs[rIndex].size() );
 #endif
 
 	if(gReadLocs[rIndex].size() == 0) {
@@ -622,7 +623,8 @@ void create_match_output(GENOME_t &gen, unsigned int rIndex, string &consensus) 
 		}
 */		
 		// Here's the flag for printing a SAM record at every position
-		if(gPRINT_ALL_SAM) {
+		if(gPRINT_ALL_SAM)
+        {
 			vector<TopReadOutput> out_vec = 
 					//max->get_SAM(gReadDenominator[rIndex],*gReadArray[rIndex],consensus,gen,rIndex);
 					(*sit).second->get_SAM(gReadDenominator[rIndex],*gReadArray[rIndex],consensus,gen,rIndex);
@@ -728,7 +730,7 @@ void create_match_output(GENOME_t &gen, unsigned int rIndex, string &consensus) 
 /**
  * This function will print the corresponding strings for all locations at this hash
  * deprecate?/
-/*string print(GENOME_t &gen, HashLocation* pos, long begin, int size) {
+string print(GENOME_t &gen, HashLocation* pos, long begin, int size) {
 	string to_return = "";
 	
 	//cout << "matches: " << pos.size() << endl;
@@ -1262,14 +1264,16 @@ int main(const int argc, const char* argv[]) {
 	*/
 
 	if(gVERBOSE)
+    {
 		cerr << "Hashing the genome." << endl;
+    }
 	// Use the global genome: gGen
 	//GENOME_t gen; 
 	unsigned long my_start=0, my_end=0;
 	
 	try {
 
-		unsigned long gen_size=0;
+		//unsigned long gen_size=0;
 		
 
 #ifdef MPI_RUN
@@ -1328,8 +1332,10 @@ int main(const int argc, const char* argv[]) {
 		return -1;
 	}
 
-	if(gVERBOSE) 
+	if(gVERBOSE)
+    {
 		fprintf(stderr,"\nTime to hash: %.0f seconds\n",When()-prog_start_time);
+    }
 		//cerr << "\nTime to hash: " << When()-prog_start_time << endl;
 	
 	// Don't want to print any header information in this file
@@ -1337,9 +1343,7 @@ int main(const int argc, const char* argv[]) {
 		// Output SAM by default
 		//of << "# <QNAME>\t<FLAG>\t<RNAME>\t<POS>\t<MAPQ>\t<CIGAR>\t<MRNM>\t<MPOS>\t<ISIZE>\t<SEQ>\t<QUAL>\t<OPT>\n";
 	
-	
 	gSM = new SeqManager(gReadArray, seq_file, nReads, gNUM_THREADS);
-	
 
 	/*
 	if(!iproc)
@@ -1352,8 +1356,6 @@ int main(const int argc, const char* argv[]) {
 			sleep(5);
 	}
 	*/
-	
-	
 
 	/************************************************************************/
 	/* Here is where we'll begin the process of matching and writing to the	*/
@@ -1363,7 +1365,6 @@ int main(const int argc, const char* argv[]) {
 	unsigned int seqs_not_matched = 0;
 	cond_thread_num = gNUM_THREADS;
 	setup_complete = true;
-
 
 	/************************************
 	 * Do the threading					*
@@ -1731,10 +1732,10 @@ void comm_cond_wait() {
 		cond_lock_time += end_time-begin_time;
 #endif
 		
-		MUTEX_UNLOCK(&cond_lock);
-		
+		MUTEX_UNLOCK(&cond_lock);	
 	}
-	else {
+	else
+    {
 		//fprintf(stderr,"[%d/%d] Thread %d/%d made it in!\n",iproc,nproc,cond_count,cond_thread_num);
 		// Do your stuff
 
@@ -1746,29 +1747,35 @@ void comm_cond_wait() {
 #endif
 		
 		// Do a reduce-all with a SUM on the denominators
-		double sendDenominator[nReads];
-		memcpy(sendDenominator,gReadDenominator,nReads*sizeof(double));
+		double sendDenominator[ nReads ];
+		memcpy( sendDenominator, gReadDenominator, nReads * sizeof( double ) );
 
-		MPI::COMM_WORLD.Allreduce(sendDenominator, gReadDenominator, nReads,
-					MPI::DOUBLE, MPI_SUM);
+		MPI::COMM_WORLD.Allreduce(sendDenominator, gReadDenominator, nReads, MPI::DOUBLE, MPI_SUM);
 
 #ifdef DEBUG_TIME
 		double end_time = When();
 #endif
+
 #ifdef DEBUG_NW
 		unsigned int total_nw = 0;
 		unsigned int max_nw = 0;
-		unsigned int min_nw = num_nw[0];
+		unsigned int min_nw = num_nw[ 0 ];
 
-		for(int i=0; i<nproc; i++) {
-			total_nw += num_nw[i];
-			if(num_nw[i] > max_nw)
-				max_nw = num_nw[i];
-			if(num_nw[i] < min_nw)
-				min_nw = num_nw[i];
+		for( int i = 0; i < nproc; i++ )
+        {
+			total_nw += num_nw[ i ];
+
+			if( num_nw[ i ] > max_nw )
+            {
+				max_nw = num_nw[ i ];
+            }
+			if( num_nw[ i ] < min_nw )
+            {
+				min_nw = num_nw[ i ];
+            }
 		}
-		fprintf(stderr,"[%d] Total time for Denoms is %f.  Total NW: %u, Max NW: %u, Min NW: %u, DIFF: %u\n",
-				iproc,end_time-start_time, total_nw,max_nw,min_nw,max_nw-min_nw);
+
+		fprintf( stderr,"[%d] Total time for Denoms is %f.  Total NW: %u, Max NW: %u, Min NW: %u, DIFF: %u\n", iproc, end_time - start_time, total_nw, max_nw, min_nw, max_nw - min_nw );
 #endif		
 #ifdef DEBUG_TIME
 		start_time = When();
@@ -1778,16 +1785,15 @@ void comm_cond_wait() {
 		double sendReads[nReads];
 		memcpy(sendReads, gTopReadScore, nReads*sizeof(double));
 
-		MPI::COMM_WORLD.Allreduce(sendReads, gTopReadScore, nReads,
-					MPI::DOUBLE, MPI_MAX);
+		MPI::COMM_WORLD.Allreduce( sendReads, gTopReadScore, nReads, MPI::DOUBLE, MPI_MAX );
 #ifdef DEBUG_TIME
 		end_time = When();
-		fprintf(stderr,"[%d] Total time for TopReads is %f\n",iproc,end_time-start_time);
+		fprintf( stderr, "[%d] Total time for TopReads is %f\n", iproc, end_time - start_time );
 #endif
 
 		cond_count = 0;
-		MUTEX_UNLOCK(&cond_lock);
-		pthread_cond_broadcast(&comm_barrier_cond);
+		MUTEX_UNLOCK( &cond_lock );
+		pthread_cond_broadcast( &comm_barrier_cond );
 	}
 #endif
 }
@@ -1801,7 +1807,8 @@ void write_cond_wait() {
 	double end_time = When();
 	cond_lock_time += end_time-begin_time;
 #endif
-	if(++cond_count < cond_thread_num) {
+	if(++cond_count < cond_thread_num)
+    {
 		//fprintf(stderr,"Thread %d/%d waiting...\n",cond_count,cond_thread_num);
 #ifdef DEBUG_TIME
 		begin_time = When();
@@ -2078,6 +2085,8 @@ void single_clean_cond_wait(bool my_finished, int thread_no, bool verbose) {
  */
 void* parallel_thread_run(void* t_opts) {
 
+    cerr << "Parallel thread run" << endl;
+
 	//cout << "New Thread\n";
 	unsigned int thread_id = ((thread_opts*)t_opts)->thread_id;
 
@@ -2147,16 +2156,41 @@ void* parallel_thread_run(void* t_opts) {
 		
 	// Make sure we wait for everyone to finish here
 	if(thread_id == 0)
+    {
 		while(!finished)
+        {
 			single_clean_cond_wait(my_finished, thread_id, false);
+        }
+    }
 
 	//fprintf(stderr,"[%d/%d] getting ready to enter single_write_cond_wait...\n",iproc,thread_id);
 	// Print them out here, just to make sure
 	if(thread_id == 0)
+    {
 		single_write_cond_wait(thread_id);
+    }
 
 	//fprintf(stderr,"[%d/%d] Finished after processing %d/%u reads with %u good and %u bad\n",iproc,thread_id,seqs_processed,gSM->getTotalSeqCount(),good_seqs,bad_seqs);
-	
+    unsigned int total_nw = 0;
+    unsigned int max_nw = 0;
+    unsigned int min_nw = num_nw[ 0 ];
+
+    for( int i = 0; i < nproc; i++ )
+    {
+        total_nw += num_nw[ i ];
+
+        if( num_nw[ i ] > max_nw )
+        {
+            max_nw = num_nw[ i ];
+        }
+        if( num_nw[ i ] < min_nw )
+        {
+            min_nw = num_nw[ i ];
+        }
+    }
+
+    fprintf( stderr, "Total NW: %u, Max NW: %u, Min NW: %u, DIFF: %u\n", total_nw, max_nw, min_nw, max_nw - min_nw );
+
 	struct thread_rets* ret = new thread_rets;
 	ret->good_seqs = good_seqs;
 	ret->bad_seqs = bad_seqs;
@@ -2172,6 +2206,7 @@ void* parallel_thread_run(void* t_opts) {
  */
 #ifdef OMP_RUN
 thread_rets* omp_thread_run(thread_opts* t_opts) {
+    cerr << "OMP thread run" << endl;
 	//fprintf(stderr,"CALLING OMP_THREAD_RUN\n");
 
 	unsigned int i,j, nReadsRead, good_seqs=0, bad_seqs=0;
@@ -2283,6 +2318,7 @@ thread_rets* omp_thread_run(thread_opts* t_opts) {
  * This function will be used by each thread when the MPI_largmem flag is used.
  */
 void* mpi_thread_run(void* t_opts) {
+    cerr << "MPI thread run" << endl;
 	//fprintf(stderr,"CALLING MPI_THREAD_RUN\n");
 
 	while(!setup_complete);	// Busy-Wait for the setup to complete
@@ -2336,17 +2372,13 @@ void* mpi_thread_run(void* t_opts) {
 
 		//fprintf(stderr,"[%d/%d] Thread %d about to enter cond_wait\n",iproc,nproc,((thread_opts*)t_opts)->thread_id);
 		// Wait for each thread to finish
-#ifdef DEBUG_TIME
-		double b_time = When();
-#endif
 		comm_cond_wait();
-#ifdef DEBUG_TIME
-		double e_time = When();
-#endif
 
 #ifdef DEBUG_NW
-		fprintf(stderr,"%u - [%d/%d] Total time for comm_wait: %f, since start: %f, difference: %f, num_nw: %u\n",
-				iter_num,iproc,thread_id, e_time-b_time, gTimeBegin-b_time, e_time-gTimeBegin,num_nw[thread_id]);
+		double b_time = When();
+		double e_time = When();
+		fprintf( stderr, "%u - [%d/%d] Total time for comm_wait: %f, since start: %f, difference: %f, num_nw: %u\n",
+				iter_num, iproc, thread_id, e_time-b_time, gTimeBegin - b_time, e_time - gTimeBegin, num_nw[ thread_id ] );
 		//fprintf(stderr,"Thread %d just exited cond_wait\n",((thread_opts*)t_opts)->thread_id);
 #elif defined(DEBUG_TIME)
 		fprintf(stderr,"%u - [%d/%d] Total time for comm_wait: %f, since start: %f, difference: %f\n",

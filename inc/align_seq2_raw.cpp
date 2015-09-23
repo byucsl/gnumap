@@ -46,25 +46,26 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 			fprintf( stderr, "Consensus piece: >%s<\n", consensus_piece.c_str() );
 #endif
             gen.get_sa_int( consensus_piece, &start, &end );
-            if( start == -1 )
+            if( end == 0 && start == 0 )
             {
                 continue;
             }
             else
             {
                 sa_num_hits = end - start + 1;
+                //cerr << "At location " << j + i << ", " << sa_num_hits << " hits found." << endl;
                 break;
             }
 
 #ifdef DEBUG
-			cerr << "At location " << j+i << ", no valid hashes found." << endl;
+			cerr << "At location " << j + i << ", no valid hashes found." << endl;
 #endif
 		} // end of for-loop identifying valid hash location
 
 		// Increment i by j so we don't look here again.
 		i += j;
 		
-        if( start == -1 )
+        if( end == 0 && start == 0 )
         {
             break;
         }
@@ -72,7 +73,7 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 //#ifdef DEBUG
     //cerr << "At location " << i << ", found " << hashes->size << " hashes for this string." << endl;
 
-        if( start != -1 )
+        if( end != 0 && start != 0 )
         {
             cerr << "At location " << i << ", found " << ( end - start + 1 ) << " hits for this string." << endl;
         }
