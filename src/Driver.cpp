@@ -440,9 +440,9 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 	// Too short to align
 	if( search->length < ( unsigned int ) gMER_SIZE )
     {
-//#ifdef DEBUG
+#ifdef DEBUG
 		fprintf( stderr, "%s Too short to align\n", consensus.c_str() );
-//#endif
+#endif
 		num_not_matched++;
 		gReadDenominator[ rIndex ] = 0;
 		gTopReadScore[ rIndex ] = READ_TOO_SHORT;
@@ -458,10 +458,10 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 	// Too low of quality to align
 	if( max_align_score < gCUTOFF_SCORE )
     { 
-//#ifdef DEBUG
+#ifdef DEBUG
 		fprintf( stderr, "%s:%s didn't meet cutoff: %f vs %f\n", consensus.c_str(), search->fq.c_str(),
 							max_align_score, gCUTOFF_SCORE );
-//#endif
+#endif
 		num_not_matched++;
 		gReadDenominator[ rIndex ] = 0;
 		gTopReadScore[ rIndex ] = READ_TOO_POOR;
@@ -469,12 +469,13 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 		return;
 	}
 
-//#ifdef DEBUG
-//	if(gVERBOSE > 2) {
+#ifdef DEBUG
+	if(gVERBOSE > 2)
+    {
 		cerr << "\nNext Read ("<< search->name << ") aligned with " << max_align_score << ", less than " << gCUTOFF_SCORE << "?\n";
 		cerr << consensus << "\n";
-//	}
-//#endif
+	}
+#endif
 
 	if( perc )
     {
@@ -495,9 +496,10 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 									POS_STRAND, thread_id );
 		if( !aligned )
         {
-//#ifdef DEBUG
+
+#ifdef DEBUG
 			fprintf( stderr, "%s didn't align forward: too many!\n", search->name );
-//#endif
+#endif
 			clearMapAt( rIndex );
 			
 			num_matched++;
@@ -524,13 +526,15 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 		Read rc(rev_pwm,search->length);
 		rc.name = search->name;
 
-
 		//printReadPWM(&search);
-//#ifdef DEBUG
-//		if(gVERBOSE > 2) {
+
+        
+#ifdef DEBUG
+		if(gVERBOSE > 2)
+        {
 			cerr << "\tPerforming reverse compliment alignment with sequence " << consensus << " vs " << rev_consensus << endl;
-//		}
-//#endif
+		}
+#endif
 		
 
 		bool aligned = align_sequence(gen, *unique, rc, rev_consensus, 
@@ -544,11 +548,12 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 		}
 		delete[] rev_pwm;
 
-//#ifdef DEBUG
-//		if(gVERBOSE > 2) {
+#ifdef DEBUG
+		if(gVERBOSE > 2)
+        {
 			cerr << "\tFound " << gReadLocs[rIndex].size() << " matches for this sequence\n";
-//		}
-//#endif
+		}
+#endif
 		if( !aligned )
         {
 			// Too many sequences
@@ -566,9 +571,9 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 		
 	}
 
-//#ifdef DEBUG
+#ifdef DEBUG
 	fprintf( stderr, "**[%d/%d] Sequence [%s] has %lu matching locations\n", iproc, nproc, consensus.c_str(), unique->size() );
-//#endif
+#endif
 
 	if( gReadLocs[ rIndex ].size() == 0 )
     {
@@ -582,9 +587,9 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 	//fprintf(stderr,"Index %d has %u elements\n",rIndex,gReadLocs[rIndex].size());
 	num_matched++;
 	gReadDenominator[rIndex] = denominator;
-//#ifdef DEBUG
+#ifdef DEBUG
 	fprintf( stderr, "Index %d has denominator of %f\n", rIndex, denominator );
-//#endif
+#endif
 	gTopReadScore[rIndex] = top_align_score;
 	return;
 }
@@ -595,10 +600,13 @@ void create_match_output(GENOME_t &gen, unsigned int rIndex, string &consensus) 
 	fprintf( stderr,"[%d/%d] [%s] has %lu matches\n", iproc, nproc, gReadArray[rIndex]->name, gReadLocs[rIndex].size() );
 #endif
 
-	if(gReadLocs[rIndex].size() == 0) {
+	if(gReadLocs[rIndex].size() == 0)
+    {
 #ifdef DEBUG
 		if(gTopReadScore[rIndex] != READ_TOO_POOR)
+        {
 			fprintf(stderr,"[%d/%d] Sequence [%s] does not have any matches\n", iproc, nproc, gReadArray[rIndex]->name);
+        }
 #endif
 		return;
 	}
@@ -727,21 +735,6 @@ void create_match_output(GENOME_t &gen, unsigned int rIndex, string &consensus) 
 	
 }
 
-/**
- * This function will print the corresponding strings for all locations at this hash
- * deprecate?/
-string print(GENOME_t &gen, HashLocation* pos, long begin, int size) {
-	string to_return = "";
-	
-	//cout << "matches: " << pos.size() << endl;
-	for(unsigned long i=0; i<pos->size; i++) {
-		to_return += gen.GetString(pos->hash_arr[i] - begin, size) + "\t";
-	}
-	
-	return to_return;
-}*/
-
-
 /* GetPWM is used for getting a PWM matrix representing the match (m) and mismatch (mm)
  * penalties.
  * The input is a file, which should be a 4x4 matrix of the format:
@@ -777,16 +770,22 @@ void readPWM(const char* fn) {
 	while(in.getline(temp_chr,THIS_BUFFER) && count < num_lines) {
 		if(sscanf(temp_chr,"%s %s %s %s",alabel,clabel,label,label) == 4 
 				&& (tolower(*alabel) == 'a')
-				&& (tolower(*clabel) == 'c') ) {
+				&& (tolower(*clabel) == 'c') )
+        {
 			if(gVERBOSE > 1)
+            {
 				printf("Matched here: %s\n",temp_chr);
+            }
 			in.getline(temp_chr,THIS_BUFFER);
 			contains_labels=true;
 		}
 		if(gVERBOSE > 1)
+        {
 			cout << "Line: " << temp_chr << endl;
+        }
 
-		if(contains_labels) {
+		if(contains_labels)
+        {
 			if(sscanf(temp_chr,"%s %f %f %f %f",label,&a,&c,&g,&t) != 5) {
 				char* error = new char[THIS_BUFFER];
 				strcat(error,"Error in Score File: ");
@@ -818,7 +817,8 @@ void readPWM(const char* fn) {
 
 #ifdef DEBUG
 	//for testing purposes...
-	if(gVERBOSE > 1) {
+	if(gVERBOSE > 1)
+    {
 		cout << "Matrix: " << endl;
 		cout << "\t0\t1\t2\t3" << endl;
 		for(int i=0; i<5; i++) {
@@ -928,14 +928,17 @@ void setup_matrices() {
 
 
 #ifdef DEBUG
-	printf("int\tbs\tgen\n");
-	for(int i=0; i<256; i++) {
-		printf("%d\t%c\t%d\t%d\n",i,(char)i,g_bs_CONVERSION[i],g_gen_CONVERSION[i]);
-	}
-	printf("int2base\n");
-	for(int i=0; i<16; i++) {
-		printf("%d\t%c\n",i,gINT2BASE[i]);
-	}
+    if( gVERBOSE > 1 )
+    {
+        printf("int\tbs\tgen\n");
+        for(int i=0; i<256; i++) {
+            printf("%d\t%c\t%d\t%d\n",i,(char)i,g_bs_CONVERSION[i],g_gen_CONVERSION[i]);
+        }
+        printf("int2base\n");
+        for(int i=0; i<16; i++) {
+            printf("%d\t%c\n",i,gINT2BASE[i]);
+        }
+    }
 #endif
 
 }
@@ -1011,22 +1014,28 @@ int main(const int argc, const char* argv[]) {
 
 	cout << endl << "Command Line Arguments:  ";
 	for(int i=0; i<argc; i++)
+    {
 		cout << argv[i] << ' ';
+    }
 	cout << endl;
 	
 	gVERBOSE = 0;
 
 	if(argc == 1) //means only the bin/gnumap parameter
+    {
 		usage(0,"");
+    }
 
-	if(argc < 2) {
+	if(argc < 2)
+    {
 		usage(1, "Need at least a genome and a file to map.");
 		exit(1);
 	}
 
 	int rc = ParseCmdLine(argc,argv);
 	// an error occurred during option processing
-	if(rc != 0) {
+	if(rc != 0)
+    {
 		GetParseError(cerr, argv);
 		return -1;
 	}
@@ -1229,7 +1238,8 @@ int main(const int argc, const char* argv[]) {
 			1.0/gADJUST*gALIGN_SCORES[(int)'n'][2],1.0/gADJUST*gALIGN_SCORES[(int)'n'][3]);
 #endif
 
-	if(gVERBOSE) {
+	if(gVERBOSE)
+    {
 		cerr << params.str() << endl;
 	}
 	
@@ -1265,7 +1275,7 @@ int main(const int argc, const char* argv[]) {
 
 	if(gVERBOSE)
     {
-		cerr << "Hashing the genome." << endl;
+		cerr << "Indexing the genome." << endl;
     }
 	// Use the global genome: gGen
 	//GENOME_t gen; 
@@ -1445,19 +1455,25 @@ int main(const int argc, const char* argv[]) {
 	}
 #endif //end OMP_RUN
 	
-	if(gVERBOSE) 
-		cerr << endl;
+	if(gVERBOSE)
+    {
+        cerr << endl;
+    }
 		
 	
 	if(gVERBOSE)
+    {
 		cerr << "\n[" << iproc << "/-] Time since start: " << When()-prog_start_time << endl;
+    }
 	if(gVERBOSE)
+    {
 		cerr << "\n[" << iproc << "/-] Printing output." << endl;
+    }
 
 #ifdef MPI_RUN
 	// If it's not the largemem (where we each print out our genome), we need to reduce
-	if(!gMPI_LARGEMEM && nproc > 1) {
-			
+	if(!gMPI_LARGEMEM && nproc > 1)
+    {		
 		fprintf(stderr,"[-/%d] Sending genomes...",iproc);
 		float* gen_ptr = gGen.GetGenomeAmtPtr();
 		unsigned int gen_size = (unsigned int)gGen.size()/gGEN_SIZE;
@@ -1518,7 +1534,9 @@ int main(const int argc, const char* argv[]) {
 			if(gSNP || gBISULFITE || gATOG) {
 #ifdef DISCRETIZE
 				if(gVERBOSE > 0)
+                {
 					fprintf(stderr,"Getting character allocations...\n");
+                }
 				center_d* read_ptr = gGen.GetGenomeAllotPtr();
 				
 				// We already have summed our amount pointer, so adjust our weights and then sum them
@@ -1551,60 +1569,81 @@ int main(const int argc, const char* argv[]) {
 				MPI::COMM_WORLD.Reduce(sendReads, read_ptr+i*NUM_SNP_VALS, spots_used*NUM_SNP_VALS, MPI::UNSIGNED_CHAR, MPI_SUM, 0);
 				//fprintf(stderr, "[%d] AFT: %u %u %u %u %u\n", iproc, read_ptr[500035*NUM_SNP_VALS], read_ptr[500035*NUM_SNP_VALS+1], read_ptr[500035*NUM_SNP_VALS+2], read_ptr[500035*NUM_SNP_VALS+3], read_ptr[500035*NUM_SNP_VALS+4]);
 #else  //not defined INTDISC or DISCRETIZED
-				if(gVERBOSE > 0) 
+				if(gVERBOSE > 0)
+                {
 					fprintf(stderr,"A...");
+                }
 				// Do the read A's now
 				gen_ptr = gGen.GetGenomeAPtr();
-				if(gen_ptr) {
+				if(gen_ptr)
+                {
 					memcpy(sendGenome,&gen_ptr[i],spots_used*sizeof(float));
 					MPI::COMM_WORLD.Reduce(sendGenome, &gen_ptr[i], spots_used, MPI::FLOAT, MPI_SUM, 0);
 				}
-				if(gVERBOSE > 0) 
+				if(gVERBOSE > 0)
+                {
 					fprintf(stderr,"C...");
+                }
 				// C's
 				gen_ptr = gGen.GetGenomeCPtr();
-				if(gen_ptr) {
+				if(gen_ptr)
+                {
 					memcpy(sendGenome,&gen_ptr[i],spots_used*sizeof(float));
 					MPI::COMM_WORLD.Reduce(sendGenome, &gen_ptr[i], spots_used, MPI::FLOAT, MPI_SUM, 0);
 				}
-				if(gVERBOSE > 0) 
+				if(gVERBOSE > 0)
+                {
 					fprintf(stderr,"G...");
+                }
 				// G's
 				gen_ptr = gGen.GetGenomeGPtr();
-				if(gen_ptr) {
+				if(gen_ptr)
+                {
 					memcpy(sendGenome,&gen_ptr[i],spots_used*sizeof(float));
 					MPI::COMM_WORLD.Reduce(sendGenome, &gen_ptr[i], spots_used, MPI::FLOAT, MPI_SUM, 0);
 				}
-				if(gVERBOSE > 0) 
+				if(gVERBOSE > 0)
+                {
 					fprintf(stderr,"T...");
+                }
 				// T's
 				gen_ptr = gGen.GetGenomeTPtr();
-				if(gen_ptr) {
+				if(gen_ptr)
+                {
 					memcpy(sendGenome,&gen_ptr[i],spots_used*sizeof(float));
 					MPI::COMM_WORLD.Reduce(sendGenome, &gen_ptr[i], spots_used, MPI::FLOAT, MPI_SUM, 0);
 				}
-				if(gVERBOSE > 0) 
+				if(gVERBOSE > 0)
+                {
 					fprintf(stderr,"N...");
+                }
 				// N's
 				gen_ptr = gGen.GetGenomeNPtr();
-				if(gen_ptr) {
+				if(gen_ptr)
+                {
 					memcpy(sendGenome,&gen_ptr[i],spots_used*sizeof(float));
 					MPI::COMM_WORLD.Reduce(sendGenome, &gen_ptr[i], spots_used, MPI::FLOAT, MPI_SUM, 0);
 				}
 #ifdef _INDEL
-				if(gVERBOSE > 0) 
+				if(gVERBOSE > 0)
+                {
 					fprintf(stderr,"Insertion...");
+                }
 				// Insertions's
 				gen_ptr = gGen.GetGenomeIPtr();
-				if(gen_ptr) {
+				if(gen_ptr)
+                {
 					memcpy(sendGenome,&gen_ptr[i],spots_used*sizeof(float));
 					MPI::COMM_WORLD.Reduce(sendGenome, &gen_ptr[i], spots_used, MPI::FLOAT, MPI_SUM, 0);
 				}
-				if(gVERBOSE > 0) 
+				if(gVERBOSE > 0)
+                {
 					fprintf(stderr,"Deletion...");
+                }
 				// Deletions's
 				gen_ptr = gGen.GetGenomeDPtr();
-				if(gen_ptr) {
+				if(gen_ptr)
+                {
 					memcpy(sendGenome,&gen_ptr[i],spots_used*sizeof(float));
 					MPI::COMM_WORLD.Reduce(sendGenome, &gen_ptr[i], spots_used, MPI::FLOAT, MPI_SUM, 0);
 				}
@@ -1617,7 +1656,9 @@ int main(const int argc, const char* argv[]) {
 		fprintf(stderr,"\n[-/%d] Finished!  Printing final .sgr/.gmp file\n",iproc);
 		// Then print out our new genome
 		if ((gSAM2GMP) && (iproc == 0)) //added by CJ to select an option of creating gmp file, 04/23/2012
+        {
 			gGen.PrintFinal(output_file);
+        }
 
 #ifdef DISCRETIZE
 		MPImyOp.Free();
@@ -1629,23 +1670,29 @@ int main(const int argc, const char* argv[]) {
 	else
 		// Even if we're doing MPI, have everyone print to their (separate) output files
 		if (gSAM2GMP) //added by CJ to select an option of creating gmp file, 04/23/2012
+        {
 			gGen.PrintFinal(output_file);
+        }
 		
 #else //MPI_RUN
 	if (gSAM2GMP) //added by CJ to select an option of creating gmp file, 04/23/2012
+    {
 		gGen.PrintFinal(output_file);
+    }
 #endif //MPI_RUN
 
 #ifdef MPI_RUN
 	//fprintf(stderr,"[-/%d] Reducing seqs_matched from [%u] and not matched from [%u]...\n",iproc,seqs_matched,seqs_not_matched);
 	unsigned int bseqs_matched = seqs_matched;
 	unsigned int bseqs_not_matched = seqs_not_matched;
-	if(gMPI_LARGEMEM) {
+	if(gMPI_LARGEMEM)
+    {
 		// This won't be accuracte, but we'll just get the best matches and return them
 		MPI::COMM_WORLD.Reduce(&bseqs_matched, &seqs_matched, 1, MPI_UNSIGNED, MPI_MAX, 0);
 		MPI::COMM_WORLD.Reduce(&bseqs_not_matched, &seqs_not_matched, 1, MPI_UNSIGNED, MPI_MIN, 0);
 	}
-	else {
+	else
+    {
 		// Here, we DO want to get a sum over all the matches
 		MPI::COMM_WORLD.Reduce(&bseqs_matched, &seqs_matched, 1, MPI_UNSIGNED, MPI_SUM, 0);
 		MPI::COMM_WORLD.Reduce(&bseqs_not_matched, &seqs_not_matched, 1, MPI_UNSIGNED, MPI_SUM, 0);
@@ -1654,8 +1701,8 @@ int main(const int argc, const char* argv[]) {
 	
 #endif //MPI_RUN
 
-	if(iproc == 0) {
-	
+	if(iproc == 0)
+    {
 		double time_prog_end = When();
 		
 		ostringstream stats;
@@ -1680,7 +1727,9 @@ int main(const int argc, const char* argv[]) {
 	fprintf(stderr, "[%d/-] Freeing memory...\n", iproc);
 #endif //DEBUG
 	if(!gMPI_LARGEMEM)
+    {
 		delete gSM;
+    }
 	delete[] finished_arr;
 	delete[] sam_file;
 
@@ -1704,7 +1753,9 @@ int main(const int argc, const char* argv[]) {
 void comm_cond_wait() {
 	// We only want to wait in here if we need to communicate anything.  Otherwise, just continue
 	if(!gMPI_LARGEMEM)
+    {
 		return;
+    }
 		
 #ifdef MPI_RUN
 #ifdef DEBUG_TIME
@@ -1718,7 +1769,8 @@ void comm_cond_wait() {
 	cond_lock_time += end_time-begin_time;
 #endif
 
-	if(++cond_count < cond_thread_num) {
+	if(++cond_count < cond_thread_num)
+    {
 		//fprintf(stderr,"Thread %d/%d waiting...\n",cond_count,cond_thread_num);
 		
 #ifdef DEBUG_TIME		
@@ -2069,11 +2121,15 @@ void single_clean_cond_wait(bool my_finished, int thread_no, bool verbose) {
 			total += finished_arr[i];
 		}
 		if(total == gNUM_THREADS)
+        {
 			finished = true;
+        }
 			
 		iter_num++;
 		if(verbose)
+        {
 			gSM->resetCounter();
+        }
 			
 	}
 	MUTEX_UNLOCK(&cond_lock);
@@ -2171,6 +2227,8 @@ void* parallel_thread_run(void* t_opts) {
     }
 
 	//fprintf(stderr,"[%d/%d] Finished after processing %d/%u reads with %u good and %u bad\n",iproc,thread_id,seqs_processed,gSM->getTotalSeqCount(),good_seqs,bad_seqs);
+
+#if defined(DEBUG) && defined(DEBUG_NW)
     unsigned int total_nw = 0;
     unsigned int max_nw = 0;
     unsigned int min_nw = num_nw[ 0 ];
@@ -2190,6 +2248,7 @@ void* parallel_thread_run(void* t_opts) {
     }
 
     fprintf( stderr, "Total NW: %u, Max NW: %u, Min NW: %u, DIFF: %u\n", total_nw, max_nw, min_nw, max_nw - min_nw );
+#endif
 
 	struct thread_rets* ret = new thread_rets;
 	ret->good_seqs = good_seqs;

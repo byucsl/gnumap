@@ -240,28 +240,6 @@ float** bin_seq::pairHMM(const Read &r, const string &consensus, const string &g
 		}
 	}
 
-
-	/*
-	fprintf(stderr,"pMXY:\n");
-	for(i=0; i<n+1; i++) {
-		for(j=0; j<m+1; j++) {
-			//printf("%.2f\t",pGenScore[i][j]);
-			//fprintf(stderr,"%.2e,%.2e,%.2e\t",fMXY[i*col_size + 3*j],fMXY[i*col_size + 3*j +1],fMXY[i*col_size + 3*j +2]);
-			fprintf(stderr,"%.2f,%.2f,%.2f\t",pMXY[i*p_col_size + 3*j],pMXY[i*p_col_size + 3*j +1],pMXY[i*p_col_size + 3*j +2]);
-		}
-		fprintf(stderr,"\n");
-	}
-	fprintf(stderr,"\n");
-	fprintf(stderr,"pGenScore:\n");
-	for(i=0; i<n; i++) {
-		for(j=0; j<NUM_CHAR_VALS; j++) {
-			fprintf(stderr,"%.2f\t",pGenScore[i][j]);
-		}
-		fprintf(stderr,"\n");
-	}
-	fprintf(stderr,"\n");
-	//*/
-	
 	return pGenScore;
 }
 
@@ -558,24 +536,27 @@ pair<string,string> bin_seq::get_align_score_w_traceback(const Read &read, const
 
 #ifdef DEBUG
 	// Print the NW matrix
- 	for(int i=0; i<=SEQ_LENGTH; i++) {
-		for(unsigned int j=0; j<=gen.size(); j++) {
-			fprintf(stderr,"%.2f\t",nm[i*row_size + j]);
-			
-		}
-		cerr << endl;
-	}
-	cerr << endl;
-	
-	// Print the "moves" matrix
-	for(int i=0; i<=SEQ_LENGTH; i++) {
-		for(unsigned int j=0; j<=gen.size(); j++) {
-			fprintf(stderr,"%c\t",moves[i*row_size + j]);
-			
-		}
-		cerr << endl;
-	}
-	cerr << endl;
+    if( gVERBOSE > 1 )
+    {
+        for(int i=0; i<=SEQ_LENGTH; i++) {
+            for(unsigned int j=0; j<=gen.size(); j++) {
+                fprintf(stderr,"%.2f\t",nm[i*row_size + j]);
+                
+            }
+            cerr << endl;
+        }
+        cerr << endl;
+        
+        // Print the "moves" matrix
+        for(int i=0; i<=SEQ_LENGTH; i++) {
+            for(unsigned int j=0; j<=gen.size(); j++) {
+                fprintf(stderr,"%c\t",moves[i*row_size + j]);
+                
+            }
+            cerr << endl;
+        }
+        cerr << endl;
+    }
 #endif
 
 	//Trace back though the NW matrix to find the best alignment.
@@ -835,6 +816,7 @@ float bin_seq::get_align_score_begin(const Read &read, const string &gen, const 
 
 #ifdef DEBUG
 			if(gVERBOSE > 2)
+            {
 				for(unsigned int q=0; q<=end; q++) {
 					for(unsigned int p=0; p<=end; p++) {
 						cerr << nm[q*size+p] << '\t';
@@ -843,6 +825,7 @@ float bin_seq::get_align_score_begin(const Read &read, const string &gen, const 
 					cerr << endl;
 				}
 				cerr << endl;
+            }
 #endif
 
 			m_mm1 = nm[(i+1)*size+(j+1)];
@@ -857,25 +840,6 @@ float bin_seq::get_align_score_begin(const Read &read, const string &gen, const 
 			nm[i*size+j] = max_score;
 		}	
 	}
-
-#ifdef DEBUG
-/*
-	cerr << "\nBEGIN\nend: " << end << endl;
-	for(unsigned int i=0; i<=end; i++) {
-		for(unsigned int j=0; j<=end; j++) {
-			if((int)i-(int)j > gMAX_GAP)
-				fprintf(stderr,"---\t");				
-			else if((int)j-(int)i > gMAX_GAP)
-				fprintf(stderr,"---\t");		
-			else
-				fprintf(stderr,"%.2f\t",nm[i*size+j]);
-		}
-		cerr << endl;
-	}
-	cerr << endl;
-	fprintf(stderr,"Returning %f\n",nm[0]);
-*/
-#endif	
 
 	//float align_score = nm[0][0];
 	float align_score = nm[0];
@@ -998,21 +962,6 @@ float bin_seq::get_align_score_end(const Read &read, const string &gen, const un
 		}	
 	}
 	
-#ifdef DEBUG
-/*
-	cerr << "\nEND\nstart: " << start << endl;
-	for(unsigned int i=0; i<length; i++) {
-		for(unsigned int j=0; j<length; j++) {
-			fprintf(stderr,"%.2f\t",nm[i*length+j]);
-			
-		}
-		cerr << endl;
-	}
-	cerr << endl;
-	fprintf(stderr,"Returning %f\n",nm[(length-1)*length+(length-1)]);
-//*/
-#endif	
-
 	//float align_score = nm[length-1][length-1];
 	float align_score = nm[(length-1)*length+(length-1)];
 	// Keep the default array in memory

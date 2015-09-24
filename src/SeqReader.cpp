@@ -440,7 +440,9 @@ bool SeqReader::get_more_prb() {
 
 #ifdef DEBUG
 	if(gVERBOSE > 1)
+    {
 		cout << "Reading more reads" << endl;
+    }
 #endif
 	
 	char *temp_chr = new char[gBUFFER_SIZE];
@@ -531,8 +533,10 @@ bool SeqReader::get_more_prb() {
 
 #ifdef DEBUG
 			if(gVERBOSE > 2)
+            {
 				cout << "a: " << a << "\tc: "  << c << "\tg: " << g << "\tt: "  << t << endl;
-				cout << "\ttotal: " << a+c+g+t << endl;
+            }
+			cout << "\ttotal: " << a+c+g+t << endl;
 #endif
 
 			one_char[0] = a;
@@ -647,7 +651,9 @@ bool SeqReader::get_more_int() {
 
 #ifdef DEBUG
 		if(gVERBOSE > 2)
+        {
 			cout << temp_chr << endl;
+        }
 #endif
 			
 		token = strtok(temp_chr,delims);
@@ -717,7 +723,9 @@ bool SeqReader::get_more_int() {
 			}
 #ifdef DEBUG
 			if(gVERBOSE > 2)
+            {
 				cout << "a: " << a << "\tc: "  << c << "\tg: " << g << "\tt: "  << t << endl;
+            }
 #endif
 			one_char[0] = a;
 			one_char[1] = c;
@@ -732,7 +740,9 @@ bool SeqReader::get_more_int() {
 		//  if there was an g_adaptor sequence defined, remove it from the end
 		//  of this read.
 		if(g_adaptor)
+        {
 			FixReads(one_read);
+        }
 
 		//Read* temp_read = new Read;
 		reads[num_reads] = new Read;
@@ -936,7 +946,9 @@ bool SeqReader::get_more_fasta() {
 
 #ifdef DEBUG
 			if(gVERBOSE > 2)
+            {
 				cout << "a: " << one_char[A_POS] << "\tc: "  << one_char[A_POS] << "\tg: " << one_char[A_POS] << "\tt: "  << one_char[A_POS] << endl;
+            }
 #endif
 
 			one_read.push_back(one_char);
@@ -987,12 +999,16 @@ bool SeqReader::get_more_fasta() {
 bool SeqReader::get_more_fastq() {
 	unsigned int J;
 	if(gVERBOSE > 1)
+    {
 		fprintf(stderr,"[%d/-] Reading more reads FASTQ style",iproc);
+    }
 
 	clearReads(reads);
 	
 	if(file_finished)
+    {
 		return false;
+    }
 		
 	//reads.clear();
 	seq_counter = 0;
@@ -1193,7 +1209,9 @@ bool SeqReader::get_more_fastq() {
 
 #ifdef DEBUG
 			if(gVERBOSE > 2)
+            {
 				cout << sequence[i] << "(" << fastq[i] << ") has\ta: " << one_char[A_POS] << "\tc: "  << one_char[C_POS] << "\tg: " << one_char[G_POS] << "\tt: "  << one_char[T_POS] << endl;
+            }
 #endif
 			one_read.push_back(one_char);
 			
@@ -1289,7 +1307,9 @@ void SeqReader::FixReads(vector<vector<double> > &m_read) {
 
 #ifdef DEBUG
 	if(gVERBOSE > 1)
+    {
 		printf("Chopping read %s at pos %d (chopped %d bases) with diff %f\n",consense.c_str(),i,c_len-i,diff);
+    }
 #endif
 	// if there was a portion of the g_adaptor that matched the read,
 	// pop it off the read.

@@ -561,16 +561,21 @@ unsigned long Genome::count() {
 //	fprintf(stderr,"Size of genome: %lu vs %lu\n",counter,chr_begin_pos);
 
 		
-#ifdef DEBUG 
+#ifdef DEBUG
+    if( gVERBOSE > 0 )
+    {
 		for(unsigned int i=0; i<names.size(); i++) {
 			printf("Name[%d]: %s\tBegin: %lu\n",i,names[i].first.c_str(),names[i].second);
 		}
 		fflush(stdout);
 		printf("Last Hash number: %lu\n",counter);
+    }
 #endif
 
 	if(gVERBOSE)
+    {
 		printf("...Finished!\n\n");
+    }
 	
 	return counter;
 

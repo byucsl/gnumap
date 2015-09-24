@@ -130,12 +130,14 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 			align_score = bs.get_align_score( search, to_match );
 
 #ifdef DEBUG
-//			if(gVERBOSE > 1) 
-				cerr << loc_it->first << "," << loc_it->second << ") " << "matching: " << to_match
+			if(gVERBOSE > 0)
+            {
+				cerr << "(" << loc_it->first << "," << loc_it->second << ") " << "matching: " << to_match
 					 << "  with  : " << consensus << "\tat pos   " << loc_it->first 
 					 							  << "\tand step " << i
 												  << "\tand alignment " << align_score 
 												  << "\tand min " << min_align_score << endl;
+            }
 #endif
 					 			
 			if( align_score > top_align_score )

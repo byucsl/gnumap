@@ -103,7 +103,9 @@ void SNPScoredSeq::score(double denom, Genome &gen, unsigned int len, Read &read
 void SNPScoredSeq::score(double denom, Genome &gen, unsigned int len, Read &read, pthread_mutex_t &lock) {
 
 	if(!positions.size())	//if there were no matches, just return.
+    {
 		return;
+    }
 
 	double total_score = log_align_score / denom;
 	//set<pair<unsigned int,bool> >::iterator sit;
@@ -122,21 +124,25 @@ void SNPScoredSeq::score(double denom, Genome &gen, unsigned int len, Read &read
 	set<pair<unsigned long,int> >::iterator sit;
 
 	MUTEX_LOCK(&lock);
-	for(sit=positions.begin(); sit!=positions.end(); sit++) {
-		if(sit->second == firstStrand) {
-		for(unsigned int i=0; i<aligned.size(); i++) {
-			gen.AddScore( (*sit).first+i,total_score );
+	for(sit=positions.begin(); sit!=positions.end(); sit++)
+    {
+		if(sit->second == firstStrand)
+        {
+		    for(unsigned int i=0; i<aligned.size(); i++)
+            {
+			    gen.AddScore( (*sit).first+i,total_score );
 
-			gen.AddSeqScore((*sit).first+i,total_score,g_gen_CONVERSION[(unsigned int)aligned[i]]);
+			    gen.AddSeqScore((*sit).first+i,total_score,g_gen_CONVERSION[(unsigned int)aligned[i]]);
+		    }
 		}
-		}
-		else {
-		for(unsigned int i=0; i<aligned.size(); i++) {
-			gen.AddScore( (*sit).first+i,total_score );
+		else
+        {
+		    for(unsigned int i=0; i<aligned.size(); i++)
+            {
+			    gen.AddScore( (*sit).first+i,total_score );
 
-			gen.AddSeqScore((*sit).first+i,total_score,g_gen_CONVERSION[(unsigned int)aligned[i]]);
-		}
-
+			    gen.AddSeqScore((*sit).first+i,total_score,g_gen_CONVERSION[(unsigned int)aligned[i]]);
+		    }
 		}
 	}
 	MUTEX_UNLOCK(&lock);

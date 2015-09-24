@@ -308,11 +308,14 @@ void GenomeBwt::LoadGenome()
     names.push_back( pair< string, unsigned long >( "end", index->bns->l_pac ) );
 
 #ifdef DEBUG
+    if( gVERBOSE > 0 )
+    {
 		for( unsigned int i = 0; i < names.size(); i++ )
         {
 			printf( "Name[%d]: %s\tBegin: %ld\n", i, names[ i ].first.c_str(), names[ i ].second );
 		}
 		cout.flush();
+    }
 #endif
 
 	make_extra_arrays();
@@ -397,7 +400,10 @@ unsigned int GenomeBwt::saveGen(char* fn)
 string GenomeBwt::GetString(const unsigned long begin, const unsigned int size)
 {
 #ifdef DEBUG
-	fprintf(stderr,"[%d] Getting string at %lu",iproc,begin);
+    if( gVERBOSE > 1 )
+    {
+	    fprintf(stderr,"[%d] Getting string at %lu\n",iproc,begin);
+    }
 #endif
 
     uint64_t l_pac = index->bns->l_pac;
@@ -419,10 +425,6 @@ string GenomeBwt::GetString(const unsigned long begin, const unsigned int size)
         ref_seq[ i ] = "acgtn"[ ( int ) rseq[ i ] ];
     }
     
-#ifdef DEBUG
-    fprintf(stderr,"\n");
-#endif
-
 	return ref_seq;
 }
 
