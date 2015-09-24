@@ -237,10 +237,6 @@ void usage(int has_error, const char * errmessage) {
 		 << "  --MPI_largemem               If the run requires a large amount of memory, this\n"
 		 << "                               flag will spread it accross several nodes.\n"
 		 << "                               (default:  not included)\n"
-		 << "\n"
-		 << "For reading and writing to a binary file:\n"
-		 << "  --save=FILENAME              Save the genome out to a file\n"
-		 << "  --read=FILENAME              Read the genome in from a file\n"
 		 << "\n";
 	exit(1);
 }
@@ -1073,23 +1069,32 @@ int main(const int argc, const char* argv[]) {
 	ostringstream params;
 	params << "Parameters: " << endl;
 	params << "\tVerbose: " << gVERBOSE << endl;
-	if(gREAD)
-		params << "\tGenome file to read from: " << gREAD_FN << endl;
-	else 
-		params << "\tGenome file(s): " << genome_file << endl;
-	if(gSAVE)
-		params << "\tGenome file to save to: " << gSAVE_FN << endl;
+	params << "\tGenome file(s): " << genome_file << endl;
 	params << "\tOutput file: " << output_file << endl;
-	if(gPRINT_ALL_SAM)
+	
+    if(gPRINT_ALL_SAM)
+    {
 		params << "\t\tPrinting all SAM records\n";
+    }
+
 	params << "\tSequence file(s): " << seq_file << endl;
-	if(!perc)
+	
+    if(!perc)
+    {
 		params << "\tAlign score: " << gALIGN_SCORE << endl;
+    }
 	else
+    {
 		params << "\tAlign percentage: " << gALIGN_SCORE*100 << "%" << endl;
-	if(gCUTOFF_SCORE != 0) {
+    }
+	
+    if(gCUTOFF_SCORE != 0)
+    {
 		if(gCUTOFF_SCORE < 0)
+        {
 			usage(1, "-q: Invalid cutoff score.  Must be >= 0");
+        }
+
 		params << "\tUsing cutoff score of " << gCUTOFF_SCORE << endl;
 	}
 
@@ -2860,18 +2865,6 @@ int set_arg_ext(const char* param, const char* assign, int &count) {
 		which = PAR_GEN_SKIP;
 		adjust = 10;
 	}
-	else if(strncmp(param+2,"read=",5) == 0) {
-		//which = 1;
-		which = PAR_READ;
-		adjust = 6;
-		gREAD=true;
-	}
-	else if(strncmp(param+2,"save=",5) == 0) {
-		//which = 2;
-		which = PAR_SAVE;
-		adjust = 6;
-		gSAVE=true;
-	}
 	else if(strncmp(param+2,"bin_size=",9) == 0) {
 		//which = 3;
 		which = PAR_GEN_SIZE;
@@ -3040,24 +3033,6 @@ int set_arg_ext(const char* param, const char* assign, int &count) {
 		case PAR_GEN_SKIP:
 			if(sscanf(param,"%d",&gGEN_SKIP) < 1)
 				return PARSE_ERROR;
-			break;
-		//case 1:	//read
-		case PAR_READ:
-			if(strlen(param) == 0)
-				return PARSE_ERROR;
-
-			gREAD_FN = new char[strlen(param)+10];
-			sprintf(gREAD_FN,"%s",param);
-
-			break;
-		//case 2:	//save
-		case PAR_SAVE:
-			if(strlen(param) == 0)
-				return PARSE_ERROR;
-
-			gSAVE_FN = new char[strlen(param)+10];
-			sprintf(gSAVE_FN,"%s",param);
-
 			break;
 		case PAR_GEN_SIZE:
 			if(sscanf(param,"%d",&gGEN_SIZE) < 1)

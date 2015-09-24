@@ -36,8 +36,8 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
         uint64_t start, end;
         string consensus_piece;
 
-		// If we've run accross a hash location that is clear (possibly because we've
-		// cleared it in a previous step of the algorithm), we want to get another hash
+		// If we've run accross a kmer location that is clear (possibly because we've
+		// cleared it in a previous step of the algorithm), we want to get another kmer
 		// that's right next to it instead of jumping over everything.
 		for( j = 0; j + i < last_kmer_pos; j++ )
         {
@@ -58,9 +58,9 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
             }
 
 #ifdef DEBUG
-			cerr << "At location " << j + i << ", no valid hashes found." << endl;
+			cerr << "At location " << j + i << ", no valid locations found." << endl;
 #endif
-		} // end of for-loop identifying valid hash location
+		} // end of for-loop identifying valid index location
 
 		// Increment i by j so we don't look here again.
 		i += j;
@@ -70,9 +70,6 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
             break;
         }
 
-//#ifdef DEBUG
-    //cerr << "At location " << i << ", found " << hashes->size << " hashes for this string." << endl;
-
         if( end != 0 && start != 0 )
         {
             cerr << "At location " << i << ", found " << ( end - start + 1 ) << " hits for this string." << endl;
@@ -81,7 +78,6 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
         {
             cerr << "At location " << i << ", found " << 0 << " hits for this string." << endl;
         }
-//#endif
 		
         for( unsigned int vit = start; vit <= end; vit++ )
         {
@@ -98,7 +94,7 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 		for( loc_it = possible_locs.begin(); loc_it != possible_locs.end(); ++loc_it )
         {
 			
-			// Define the number of hash locations that have to be matching at each genomic position
+			// Define the number of hits that have to be matching at each genomic position
 			// before we'll even match it
 			if( loc_it->second < gMIN_JUMP_MATCHES )
             {
@@ -225,13 +221,13 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
         }
 		
 		
-		// If we want to do the fast mode, only look at one hash location
+		// If we want to do the fast mode, only look at one hit location
 		if( gFAST)
         {
 			break;
         }
 	
-	}  // end of for over all the hash positions
+	}  // end of for over all the hit positions
 	
     cerr << "mapping found!" << endl;
 	return true;

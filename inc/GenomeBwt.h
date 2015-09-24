@@ -103,18 +103,10 @@ class GenomeBwt : public Genome {
 		string GetString(const unsigned long begin, const unsigned int size);
 		char GetChar(const unsigned long begin);
 		
-		/*
-		 * GetMatches will return the vector that represents the given hash.
-		 *
-		 * @return the vector of the given hash.
-		 */
-		//HashLocation* GetMatches(unsigned int hash);
-		//HashLocation* GetMatches(string &);
-		
 		/**
 		 * LoadGenome is responsible for loading the genome into memory--whether it be by reading from
 		 * a binary file or from a set of fasta files, it should be the same.
-		 * Basically, it does what the hash_and_store function used to do.
+		 * Basically, it does what the index_and_store function used to do.
 		 */
 		void LoadGenome();
 		/**
@@ -124,7 +116,7 @@ class GenomeBwt : public Genome {
 		void make_extra_arrays();
 
 		/*
-		 * hash_and_store() will cause the genome to be hashed--from the file fn given above.
+		 * index_and_store() will cause the genome to be indexed--from the file fn given above.
 		 * it will then store the genome in a smaller binary array.
 		 */
 		void index_and_store();	
@@ -136,13 +128,9 @@ class GenomeBwt : public Genome {
 		 * count is used to determine the genome size to split for using MPI
 		 */
 		unsigned long count();
-		
-		/**
-		 * StoreGenome is used by the sam2sgr program to store the genome (doesn't need to hash it)
-		 */
-		void StoreGenome();
+    	void StoreGenome();
         void StoreGenome( bool make_extra );
-		
+
 		/*! 
 		 * AddScore will add the given score, amt, to the genomic position, pos.
 		 *
@@ -272,23 +260,10 @@ class GenomeBwt : public Genome {
 		inline double LRT(float chars[5], int &snp_pos);
 		inline double dipLRT(float chars[5], int &, int&, bool&);
 
-		
-		//! Mostly used in testing...
-		void print_to_file(hash_map<unsigned int, HashLocation> & gh, char* ofn);
-
 		static bool Test(ostream &os, unsigned int&);
 
 	private:
 		void Init(const char* fn);
-		
-		/*!
-		 * fix_hash will remove all the high-density matches in the hash.  Anything over the
-		 * threshold (MAX_HASH_SIZE) will be removed.
-		 */
-		//void fix_hash();
-		//void fix_hash(hash_map<unsigned int, vector<unsigned long> > *,
-		//					 gvector<GEN_TYPE> *);
-
 		inline int base2int(char c);
 		inline char int2base(int i);
 				

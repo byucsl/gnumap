@@ -145,46 +145,6 @@ void GenomeBwt::use(const char* fn, unsigned long s, unsigned long e) {
 	reader = new Reader();
 }
 
-void GenomeBwt::print_to_file(hash_map<unsigned int, HashLocation> & gh, char* ofn) { 
-	printf("Printing to file: %s\n",ofn);
-	int SEQ_LENGTH = gMER_SIZE; //This is an archaic #def'd element that needed to be removed.
-	ofstream out;
-	out.open(ofn,ios_base::out);
-	
-	bin_seq bs;
-	
-	unsigned int i;
-		
-	for(i=0; i<gHASH_SIZE; ++i) {
-		if(gh[i].size == 0)
-			continue;
-		//fprintf(stderr,"[%d] arry position %u (%s) has size %lu\n",
-		//		iproc,i,bs.hash2str(i,gMER_SIZE).c_str(),gh[i].size);
-		out << i << "\t" << gh[i].size;
-		unsigned int j;
-		out << '\t' << bs.hash2str(i,gMER_SIZE);
-		for(j=0; j<gh[i].size; j++) {
-			//fprintf(stderr,"\t[%d] gh[%u].hash_arr[%u]\n",iproc,i,j);
-			out << '\t' << gh[i].hash_arr[j] << "[" << GetPos(gh[i].hash_arr[j],true) << "] :" 
-				<< GetString(gh[i].hash_arr[j],SEQ_LENGTH);
-		}
-		out << endl;
-		
-	}
-
-	out << "Finished\n" << endl;
-	
-	/*
-	string gen_str = GetString(0,genome_size);
-	cout << gen_str << endl;
-	
-	for(unsigned int i=0; i<names.size(); i++) {
-		cout << names[i].first << "\t" << names[i].second << endl;
-	}
-	*/
-	out.close();
-}
-
 unsigned int GenomeBwt::readGen(char* fn) {
     //std::cout << "readgen:\t" << fn << std::endl;
 	index = bwa_idx_load_from_disk( fn, BWA_IDX_ALL );
@@ -287,10 +247,12 @@ void GenomeBwt::LoadGenome()
 {
     //std::cout << "load genome" << std::endl;
     unsigned int read_status = readGen( ref_genome_fn );
+    bool read_from_disk = false;
     
     if( read_status )
     {
         std::cout << "Genome reference already exists and loaded successfully!" << std::endl;
+        read_from_disk = true;
     }
     else
     {
@@ -320,14 +282,6 @@ void GenomeBwt::LoadGenome()
 
 	make_extra_arrays();
 
-    // only save if the save flag is set and you haven't read it from disk
-    // no need to save if you're already able to read it from disk.    
-	if( gSAVE && !gREAD )
-    {
-		fprintf( stderr, "\tSaving to file: %s\n", gSAVE_FN );
-		saveGen( gSAVE_FN );
-	}
-	
     {
 	    amount_genome = ( float* ) malloc( sizeof( float ) * index->bns->l_pac / gGEN_SIZE );
 	    gs_positions = ( char* ) malloc( index->bns->l_pac );
@@ -367,10 +321,6 @@ void GenomeBwt::StoreGenome() {
     //std::cout << "store genome" << std::endl;
 	// We'll set it in here so we don't need to take care of it elsewhere
 	gMER_SIZE = MAX_MER_SIZE;
-	
-	// Don't hash anything--not needed
-	include_hash = false;
-	index_and_store();
 	
 	// Still need to create extra arrays.
 	make_extra_arrays();
@@ -484,25 +434,6 @@ void GenomeBwt::get_sa_int( string& seq, uint64_t* in_start, uint64_t* in_end )
 
     //std::cout << "start:\t" << start << "\nend:\t" << end << std::endl;
 }
-
-/*HashLocation* GenomeBwt::GetMatches(string &str) {
-	pair<int, unsigned long> p_hash = bin_seq::get_hash(str);
-
-    std::cout << "GetMatches" << std::endl;
-    std::cout << "\tfind:\t" << str << std::endl;
-
-	if(!p_hash.first)
-		return NULL;
-		
-	//return &gen_hash[p_hash.second];
-    return NULL;
-}
-
-HashLocation* GenomeBwt::GetMatches(unsigned int hash) {
-
-	//return &gen_hash[hash];
-    return NULL;
-}*/
 
 float GenomeBwt::GetScore(const unsigned long &pos) {
 
@@ -1516,7 +1447,6 @@ bool GenomeBwt::Test(ostream &os, unsigned int &warnings) {
 
 
 		GenomeBwt gen45;
-		gREAD = true;
 		gREAD_FN = "/data/public/genomes/human/gnumap/gnumap_human_s2_h100k_m11";
 		gen45.use("/data/public/genomes/human/gnumap/gnumap_human_s2_h100k_m11");
 		gen45.LoadGenome();
@@ -1527,7 +1457,6 @@ bool GenomeBwt::Test(ostream &os, unsigned int &warnings) {
 		gen45.AddScore(2866253375,4.76);
 		os << "Getting value at 2866253375: " << gen45.GetScore(2866253375) << endl;
 		os << "                    Should be 4.76" << endl;
-		gREAD = false;
 		
 	}
 	catch(const char* erro) {

@@ -61,33 +61,6 @@
 #define MAX_NAME_LEN	200
 #define MAX_FN_LEN		1024
 
-struct HashLocation {
-	HashLocation() {
-		size = 0;
-	}
-
-	unsigned long* hash_arr;
-	unsigned long size;
-};
-
-// An ugly hack, but it made it object-oriented.
-#if defined(GENOME_STL)
-// The following are for GENOME_STL, but needed here
-//#define MAP_USE_STRING
-#ifdef MAP_USE_STRING
-	typedef string MAP_TYPE;
-#else //MAP_USE_STRING
-	typedef unsigned long MAP_TYPE;
-#endif //MAP_USE_STRING
-
-typedef map<MAP_TYPE, HashLocation> map_type;
-
-#else // GENOME_STL
-
-typedef hash_map<unsigned int, HashLocation> map_type;
-
-#endif // GENOME_STL
-
 class Genome {
 	friend class bin_seq;
 	
@@ -113,15 +86,14 @@ class Genome {
 		 * @par size - the size of the string to return.
 		 */
 		virtual string GetString(const unsigned long begin, const unsigned int size) = 0;
-        //string GetString(const unsigned long begin, const unsigned int size, 
-		//			const unsigned int hash_start, const bool extend_past);
         
         char GetChar(const unsigned long begin);
 		
 		/*
-		 * GetMatches will return the vector that represents the given hash.
+		 * GetMatches will return the start and end indices into the suffix array for a given
+         * kmer.
 		 *
-		 * @return the vector of the given hash.
+		 * @return the vector of the given kmer.
 		 */
         virtual void get_sa_int( string& str, uint64_t* in_start, uint64_t* in_end ) = 0;
         virtual uint64_t get_sa_coord( uint64_t sa_pos ) = 0;
@@ -140,7 +112,7 @@ class Genome {
 		void make_extra_arrays();
 
 		/*
-		 * hash_and_store() will cause the genome to be hashed--from the file fn given above.
+		 * index_and_store() will cause the genome to be indexed--from the file fn given above.
 		 * it will then store the genome in a smaller binary array.
 		 */
         virtual void index_and_store() = 0;
@@ -152,14 +124,6 @@ class Genome {
 		 * count is used to determine the genome size to split for using MPI
 		 */
 		unsigned long count();
-		
-		/**
-		 * StoreGenome is used by the sam2sgr program to store the genome (doesn't need to hash it)
-		 */
-		//virtual void StoreGenome() { StoreGenome(true); }
-		//virtual void StoreGenome(bool make_extra);
-        virtual void StoreGenome() = 0;
-        virtual void StoreGenome( bool make_extra ) = 0;
 		
 		/*! 
 		 * AddScore will add the given score, amt, to the genomic position, pos.
@@ -290,10 +254,6 @@ class Genome {
 		inline double LRT(float chars[5], int &snp_pos);
 		inline double dipLRT(float chars[5], int &, int&, bool&);
 
-		
-		//! Mostly used in testing...
-		virtual void print_to_file(map_type& gh, char* ofn) = 0;
-
 	protected:
 		void Init(const char* fn);
 		//unsigned long int store(vector<GenomeLocation> *g, unsigned char* gen, 
@@ -301,11 +261,6 @@ class Genome {
 		//						unsigned long int, unsigned long &);
 		void store(gvector<GEN_TYPE> *pg, unsigned char* gen, 
 								unsigned long int, unsigned long &);
-		
-		/*!
-		 * fix_hash will remove all the high-density matches in the hash.  Anything over the
-		 * threshold (MAX_HASH_SIZE) will be removed.
-		 */
 		
         inline int base2int(char c);
 		inline char int2base(int i);
@@ -343,13 +298,11 @@ class Genome {
 
 		//gen_piece is used to store a portion of the genome as we read it in.
 		//unsigned char* gen_piece;
-		unsigned long num_hash_elements;
 		vector<pair<string,unsigned long> > names;
 		
 		unsigned long my_start;	// The position we should start reading from
 		unsigned long my_end;
 		bool read_all;
-		bool include_hash;	// So we can just store the genome for sam2sgr
 };
 
 #endif
