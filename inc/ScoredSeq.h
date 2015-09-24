@@ -28,7 +28,7 @@
 #include <pthread.h>
 #include "const_include.h"
 #include "SequenceOperations.h"
-#include "GenomeMem.h"
+#include "Genome.h"
 
 class ScoredSeq {
 	protected:
