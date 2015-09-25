@@ -116,8 +116,6 @@ Usage: gnumap [options] <file_to_parse>
   -B, --buffer=INT             Buffer size
   -T, --max_match=INT          Maximum number of matches for a given
                                sequence (default: 1000)
-  -h, --max_hash=INT           Maximum values to store in the hash
-                               (default: none)
   -S, --subst_file=STRING      Position-Weight Matrix file for DNA
                                Substitutions
   -G, --gap_penalty=DOUBLE     Gap Penalty for Substitution Matrix
@@ -136,9 +134,9 @@ Usage: gnumap [options] <file_to_parse>
   -s, --gen_skip=INT           Number of bases to skip when the genome is aligned
                                (default: none)
   --bin_size=INT               The resolution for GNUMAP (default: 8)
-  -j, --jump=INT               The number of bases to jump in the sequence hashing
+  -j, --jump=INT               The number of bases to jump in the sequence indexing
                                (default: mer_size)
-  -k, --num_seed=INT           The total number of seed hashes that must match to a
+  -k, --num_seed=INT           The total number of seed hits that must match to a
                                location before it is considered for alignment
                                (default: 2)
   --snp                        Turn on SNP mapping (will output a .sgrex file)
@@ -159,11 +157,6 @@ For MPI usage:
   --MPI_largemem               If the run requires a large amount of memory, this
                                flag will spread it accross several nodes.
                                (default:  not included)
-
-For reading and writing to a binary file:
-  --save=FILENAME              Save the genome out to a file
-  --read=FILENAME              Read the genome in from a file
-
 
 Help options:
   -?, --help                   Show this help message
@@ -238,7 +231,7 @@ processors, use
 	-c 8
 
 -m, --mer_size: Mer length
-gnumap uses a hash table to store the genome. The -m option controls the length
+gnumap uses a BWT/suffix array table to store the genome. The -m option controls the length
 of these hashes (creating an m-mer hash). Using a longer mer-size, ie:
 	-m 9
 will increase the sequence alignment, but could potentially decrease the 
@@ -257,14 +250,6 @@ are reported and scored. If a given sequence has too many matches (whether its
 base qualities are too low, or it comes from a heavily-duplicated region), the
 sequence will not be used. The current default is 1000, but can be changed, ie:
 	-T 100000
-
--h, --max_hash: Maximum Hash Size
-For the human genome, there are over 3 million occurances of a 9-mer sequence of
-A's. By decreasing the hash size, the mers with an occurance greater than the 
-threshhold will not be used. This will speed up the program, as there are fewer
-mers to compute a match to for each sequence. Currently, this option is not
-used, but can be set using
-	-h 10000
 
 -S, --subst_file: Position-Weight Matrix Substitution file
 The position-weight matrix used by the algorithm as default is a simple matrix with
@@ -455,6 +440,7 @@ quotation marks.  This can be accomplished on the command line as follows:
 
 6. History
 ==========
+September, 2015: Moved the repository to a git repo
 July 25, 2011:  Version 2.9.0 Some stability fixes.  Also included code for memory
 	optimizations
 June 3, 2011: sam2sgr Version 2.0 Uses threading via openmp
