@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #SBATCH --time=24:00:00   # walltime
-#SBATCH --ntasks=1   # number of processor cores (i.e. tasks)
+#SBATCH --ntasks=16   # number of processor cores (i.e. tasks)
 #SBATCH --nodes=1   # number of nodes
-#SBATCH --mem-per-cpu=131072M   # memory per CPU core
+#SBATCH --mem-per-cpu=2048M   # memory per CPU core
 
 # Compatibility variables for PBS. Delete if not needed.
 export PBS_NODEFILE=`/fslapps/fslutils/generate_pbs_nodefile`
@@ -15,4 +15,4 @@ export PBS_QUEUE=batch
 export OMP_NUM_THREADS=$SLURM_CPUS_ON_NODE
 
 # LOAD MODULES, INSERT CODE, AND RUN YOUR PROGRAMS HERE
-time bin/gnumap-plain -g /fslhome/masaki/compute/human_genome/GCA_000001405.18_GRCh38.p3_genomic.fna --read=index/human.index --print_all_sam -o stuff examples/1.fq
+time bin/gnumap-plain -c 16 -g /fslhome/masaki/compute/human_genome/GCA_000001405.18_GRCh38.p3_genomic.fna --read=index/human.index --print_all_sam -o y.sim_reads.filtered /fslhome/masaki/compute/human_genome/chr/y.sim_reads.filtered.fq

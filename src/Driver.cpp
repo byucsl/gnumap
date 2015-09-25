@@ -1447,7 +1447,23 @@ int main(const int argc, const char* argv[]) {
 		delete (thread_rets*)pthread_ret[i];
 	}
 #endif //end OMP_RUN
-	
+
+#ifdef DEBUG_NW
+    unsigned int total_nw = 0;
+    unsigned int max_nw = 0;
+    unsigned int min_nw = num_nw[0];
+
+    for(int i=0; i<nproc; i++) {
+        total_nw += num_nw[i];
+        if(num_nw[i] > max_nw)
+            max_nw = num_nw[i];
+        if(num_nw[i] < min_nw)
+            min_nw = num_nw[i];
+    }
+    fprintf(stderr,"Total NW: %u, Max NW: %u, Min NW: %u, DIFF: %u\n",
+            total_nw,max_nw,min_nw,max_nw-min_nw);
+#endif		
+
 	if(gVERBOSE) 
 		cerr << endl;
 		

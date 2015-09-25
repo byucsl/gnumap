@@ -3,7 +3,7 @@
 #SBATCH --time=24:00:00   # walltime
 #SBATCH --ntasks=1   # number of processor cores (i.e. tasks)
 #SBATCH --nodes=1   # number of nodes
-#SBATCH --mem-per-cpu=131072M   # memory per CPU core
+#SBATCH --mem-per-cpu=31072M   # memory per CPU core
 
 # Compatibility variables for PBS. Delete if not needed.
 export PBS_NODEFILE=`/fslapps/fslutils/generate_pbs_nodefile`
