@@ -1287,9 +1287,6 @@ void SeqReader::FixReads(vector<vector<double> > &m_read) {
 	unsigned int c_len = consense.length();
 	unsigned int a_len = s_adaptor.length();
 
-	//if(c_len-a_length < HASH_SIZE)
-	//	return;	//don't adapt it if it'll be shorter than the hash size
-
 	//Chop Adaptor length here.
 	// we only are worried about the last *i* characters of the sequence
 	//int i;

@@ -22,7 +22,7 @@
 #ifndef CONST_INCLUDE_H
 #define CONST_INCLUDE_H
 
-#define gVERSION "3.1.0 BETA"
+#define gVERSION "4.0.0 BETA"
 
 #include <cmath>
 #include <string>

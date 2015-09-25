@@ -203,7 +203,9 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 					if( gUNIQUE )
                     {	            // Need to return early because this matches to
 									// more than one location
+#ifdef DEBUG
                         cerr << "not a unique mapping! returning no mapping!" << endl;
+#endif
 						return false;
 					}
 
@@ -227,7 +229,9 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 		
 		if( unique.size() > gMAX_MATCHES )
         {
+#ifdef DEBUG
             cerr << "too many matches! returning no mapping!" << endl;
+#endif
 			return false;
         }
 		
@@ -240,6 +244,5 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 	
 	}  // end of for over all the hit positions
 	
-    cerr << "mapping found!" << endl;
 	return true;
 }

@@ -31,18 +31,21 @@ Reader::Reader(const char* fn) :
 }
 
 Reader::Reader() :
-	filename(0), file_size(0) {
+	filename(0), file_size(0)
+{
 	//Init("");
 }
 
-Reader::~Reader() {
+Reader::~Reader()
+{
     if( filename != NULL )
     {
 	    delete[] filename;
     }
 }
 
-void Reader::Init(const char* fn) {
+void Reader::Init(const char* fn)
+{
 	if(filename)
     {
 		delete[] filename;
@@ -112,15 +115,20 @@ Reader& Reader::operator =(const Reader &other)
 }
 
 
-bool Reader::read(unsigned char genome[]) {
+bool Reader::read(unsigned char genome[])
+{
   
-	if (finished_reading) 
+	if (finished_reading)
+    {
     	return false;
+    }
 
 	ifstream in(filename);
 
 	if (!in)
+    {
 		return false;
+    }
   
 	//genome = ""; 
 	in.seekg(current_offset);
@@ -143,12 +151,13 @@ bool Reader::read(unsigned char genome[]) {
 	}*/
 	
   	// If it didn't pull out gBUFFER_SIZE characters, we can assume it has reached an eof
-  	// place an \0 at the end so it will be recognized by the hash code.
+  	// place an \0 at the end so it will be recognized by the indexed code.
   	//if (buffer_read < gBUFFER_SIZE)
 		//genome[buffer_read+1] = '\0';
 		genome[buffer_read] = '\0';
 	
-	if(in.eof()) {
+	if(in.eof())
+    {
 		finished_reading = true;
 		return false;
 	}
@@ -161,14 +170,16 @@ bool Reader::read(unsigned char genome[]) {
 	return true;
 }
 
-void Reader::ShiftOffset(int to_shift) {
+void Reader::ShiftOffset(int to_shift)
+{
 	current_offset += to_shift;
 }
 
 /**
  * ReadLine will read the next line, starting at the current offset
  */
-char* Reader::ReadLine() {
+char* Reader::ReadLine()
+{
 	int LINE_SZ = 1024;
 
 	char* buffer = new char[LINE_SZ+2];
@@ -187,8 +198,10 @@ char* Reader::ReadLine() {
 	in.close();
 	streamsize bases_read = in.gcount();
 	if(gVERBOSE > 1)
+    {
 		printf("Read %d bases just barely.  Going to increment by %d: %s\n",
 			(int)bases_read,(int)(strlen(buffer) + gMER_SIZE),buffer);
+    }
 
 	//we want to increment the current offset the number of bases we've just read.  But the
 	//next time around, we don't want to return those same bases, so we need to make up for
@@ -197,11 +210,13 @@ char* Reader::ReadLine() {
 	return buffer;
 }
 
-string Reader::GetName() const {
+string Reader::GetName() const
+{
 	return chr_name;
 }
 
-bool Reader::Test(ostream &os, unsigned int &warnings) {
+bool Reader::Test(ostream &os, unsigned int &warnings)
+{
 	bool success = true;
 	
 	os << "**EMPTY**" << endl;

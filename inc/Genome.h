@@ -123,7 +123,7 @@ class Genome {
 		/**
 		 * count is used to determine the genome size to split for using MPI
 		 */
-		unsigned long count();
+		virtual unsigned long count() = 0;
 		
 		/*! 
 		 * AddScore will add the given score, amt, to the genomic position, pos.

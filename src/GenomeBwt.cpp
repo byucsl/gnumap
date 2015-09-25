@@ -17,8 +17,9 @@ GenomeBwt::GenomeBwt() : Genome()
 }
 
 GenomeBwt::~GenomeBwt() {
-	//fprintf(stderr,"[-/%d] Genome destructor...\n",iproc);
-	//TODO: fix destructor for bwt/sa
+	//fprintf(stderr,"[-/%d] GenomeBwt destructor...\n",iproc);
+    delete index;
+    delete ref_genome_fn;
 } 
 
 char * GenomeBwt::bwa_idx_infer_prefix(const char *hint)
@@ -297,7 +298,7 @@ void GenomeBwt::index_and_store()
 
     //extern int bwa_index(int argc, char *argv[]);
 
-    char* indexing_args[] = { "index", ref_genome_fn };
+    char* indexing_args[] = { strdup( "index" ), ref_genome_fn };
     bwa_index( 2, indexing_args );
 }
 
@@ -326,12 +327,9 @@ void GenomeBwt::StoreGenome() {
 	make_extra_arrays();
 }
 
-/*
- * This function will just count the genome--it won't store anything.
- */
 unsigned long GenomeBwt::count()
 {
-    return index->bns->l_pac;
+        return index->bns->l_pac;
 }
 
 unsigned int GenomeBwt::saveGen(char* fn)
@@ -470,7 +468,7 @@ void GenomeBwt::AddSeqScore(unsigned long pos, const float* amt, const float sca
 		fprintf(stderr,"For position %lu, total T is %f = %f*%f\n",pos,amt[T_POS]*scale,amt[T_POS],scale);
 	if(amt[N_POS] * scale > 0.0)
 		fprintf(stderr,"For position %lu, total N is %f = %f*%f\n",pos,amt[N_POS]*scale,amt[N_POS],scale);
-//*/
+*/
 
 #if defined( DISCRETIZE )
 	int i;
@@ -1447,7 +1445,7 @@ bool GenomeBwt::Test(ostream &os, unsigned int &warnings) {
 
 
 		GenomeBwt gen45;
-		gREAD_FN = "/data/public/genomes/human/gnumap/gnumap_human_s2_h100k_m11";
+		gREAD_FN = strdup( "/data/public/genomes/human/gnumap/gnumap_human_s2_h100k_m11" );
 		gen45.use("/data/public/genomes/human/gnumap/gnumap_human_s2_h100k_m11");
 		gen45.LoadGenome();
 		os << "Getting string at the end of chr4: " << 1877852952-200 << " " << gen45.GetPos(1877852952-200,true) << endl;

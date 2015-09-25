@@ -243,20 +243,21 @@ float** bin_seq::pairHMM(const Read &r, const string &consensus, const string &g
 	return pGenScore;
 }
 
+string bin_seq::hash2str(const unsigned int h, int length)
+{
+    char to_return[length];
+    unsigned int temp = h;
 
-string bin_seq::hash2str(const unsigned int h, int length) {
-	char to_return[length];
-	unsigned int temp = h;
+    for(int i=1; i<=length; i++)
+    {
+        //to_return[length-i] = int2base((temp % 4));
+        to_return[length-i] = gINT2BASE[(temp % 4)];
+        temp >>= 2;
+    }
 
-	for(int i=1; i<=length; i++) {
-		//to_return[length-i] = int2base((temp % 4));
-		to_return[length-i] = gINT2BASE[(temp % 4)];
-		temp >>= 2;
-	}
-	
-	to_return[length] = '\0';
-	
-	return to_return;
+    to_return[length] = '\0';
+
+    return to_return;
 }
 
 pair<bool,unsigned long> bin_seq::get_hash(const char* str) {

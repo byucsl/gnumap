@@ -186,9 +186,9 @@ void usage(int has_error, const char * errmessage) {
 		 << "                               sequence (default: "<<gMAX_MATCHES<<")\n"
 		 << "  -u, --unique_only            Only match sequences that map uniquely\n"
 		 << "                               (default: not included)\n"
-		 << "  -j, --jump=INT               The number of bases to jump in the sequence hashing\n"
+		 << "  -j, --jump=INT               The number of bases to jump in the sequence indexing\n"
 		 << "                               (default: mer_size)\n"
-		 << "  -k, --num_seed=INT           The total number of seed hashes that must match to a\n"
+		 << "  -k, --num_seed=INT           The total number of seed hits that must match to a\n"
 		 << "                               location before it is considered for alignment\n"
 		 << "                               (default: "<<gMIN_JUMP_MATCHES<<")\n"
 		 << "  --up_strand                  Will only search the positive strand of the genome\n"
@@ -207,8 +207,6 @@ void usage(int has_error, const char * errmessage) {
 		 << "Options for Creating Hash and Genome\n"
 		 << "  -m, --mer_size=INT           Mer size (default="<<DEF_MER_SIZE<<")\n"
 		 << "  -s, --gen_skip=INT           Number of bases to skip when the genome is aligned\n"
-		 << "  -h, --max_hash=INT           Maximum values to store in the hash.\n"
-		 << "                               (default: none )\n"
 		 << "  --bin_size=INT               The resolution for GNUMAP (default: 8)\n"
 		 << "\n"
 		 << "Options for Printing:\n"
@@ -485,7 +483,7 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 	// Match the positive strand
 	if( gMATCH_POS_STRAND )
     {
-        cerr << "checking positive strand" << endl;
+        //cerr << "checking positive strand" << endl;
 		//fprintf(stderr,"Aligning to UP_Strand\n");
 		bool aligned = align_sequence( gen, *unique, *search, consensus, 
 									min_align_score, denominator, top_align_score,
@@ -512,7 +510,7 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 	// If we only want to do the positive strand, skip the reverse compliment stuff
 	if( gMATCH_NEG_STRAND )
     {
-        cerr << "checking negative strand" << endl;
+        //cerr << "checking negative strand" << endl;
 		//fprintf(stderr,"Aligning to DOWN_Strand\n");
 		//TODO: trim consensus before flipping and then send a query!
 		//consensus = trim_end_string(consensus,search->length);
@@ -573,7 +571,9 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 
 	if( gReadLocs[ rIndex ].size() == 0 )
     {
+#ifdef DEBUG
         fprintf( stderr, "unmatched!\n" );
+#endif
 		num_not_matched++;
 		gReadDenominator[rIndex] = 0;
 		gTopReadScore[rIndex] = 0;
@@ -1109,53 +1109,92 @@ int main(const int argc, const char* argv[]) {
 	}
 #endif
 	params << "\tNumber of threads: " << gNUM_THREADS << endl;
-	if(gFAST) {
+	if(gFAST)
+    {
 		if(!gMER_SIZE)	//if the user didn't specify one
+        {
 			gMER_SIZE = 14;
+        }
+
 		gJUMP_SIZE = gMER_SIZE;
 		params << "\tUsing FAST alignment mode" << endl;
 	}
-	if(gGEN_SKIP != 0) {
+
+	if(gGEN_SKIP != 0)
+    {
 		if(gGEN_SKIP < 0)
+        {
 			usage(1, "-s: Invalid Genome Skip size\n");
-		params << "\tSkipping " << gGEN_SKIP << " bases during hash step" << endl;
+        }
+
+		params << "\tSkipping " << gGEN_SKIP << " bases during indexing step" << endl;
 	}
-	gGEN_SKIP++;	// We're mod'ing in the function, so we want to mod by GEN_SKIP+1
-	if(gMAX_HASH_SIZE > 0)
+	
+    gGEN_SKIP++;	// We're mod'ing in the function, so we want to mod by GEN_SKIP+1
+	
+    if(gMAX_HASH_SIZE > 0)
+    {
 		params << "\tLargest Hash Size: " << gMAX_HASH_SIZE << endl;
-	if(!gMER_SIZE)	//if the user didn't specify one
+    }
+	
+    if(!gMER_SIZE)	//if the user didn't specify one
+    {
 		gMER_SIZE = DEF_MER_SIZE;
-	params << "\tMer size: " << gMER_SIZE << endl;
-	if(gJUMP_SIZE) {
+    }
+	
+    params << "\tMer size: " << gMER_SIZE << endl;
+	
+    if(gJUMP_SIZE)
+    {
 		if(gJUMP_SIZE < 1)
+        {
 			usage(1, "-j/--jump: Invalid jump size\n");
+        }
 	}
-	else {
+	else
+    {
 		gJUMP_SIZE = gMER_SIZE/2;
 	}
-	params << "\tUsing jump size of " << gJUMP_SIZE << endl;
-	if(gMIN_JUMP_MATCHES < 1)
+	
+    params << "\tUsing jump size of " << gJUMP_SIZE << endl;
+	
+    if(gMIN_JUMP_MATCHES < 1)
+    {
 		usage(1, "-k/--num_seed: Invalid matching seed number\n");
+    }
+
 	params << "\tUsing min seed matches for each sequence of " << gMIN_JUMP_MATCHES << endl;
 
-	if(pos_matrix != NULL) {
+	if(pos_matrix != NULL)
+    {
 		params << "\tUsing User-Defined Alignment Scores: " << endl;
 		params << PWMtoString();
 	}	
-	else 
+	else
+    {
 		params << "\tUsing Default Alignment Scores" << endl;
+    }
+
 	params << "\tGap score: " << gGAP << endl;
 	params << "\tMaximum Gaps: " << gMAX_GAP << endl;
-	if(g_adaptor) {
+	
+    if(g_adaptor)
+    {
 		params << "\tUsing Adaptor Sequence: " << g_adaptor << endl;
 	}
-	if(gSNP) {
+
+	if(gSNP)
+    {
 		params << "\tEmploying SNP calling" << endl;
 		params << "\t  SNP p-value is "<<gSNP_PVAL<<endl;
 		if(gSNP_MONOP)
+        {
 			params << "\t  Only allowing for monoploid SNPs"<<endl;
+        }
 	}
-	if(gBISULFITE) {
+
+	if(gBISULFITE)
+    {
 		gPRINT_FULL = true;
 		params << "\tUsing BISULFITE conversion" << endl;
 		//gALIGN_SCORES[3][1] = MATCH;
@@ -1168,23 +1207,31 @@ int main(const int argc, const char* argv[]) {
 			// exit
 		*/
 
-		if(gMATCH_POS_STRAND && !gBISULFITE2) {	
-			g_bs_CONVERSION[(int)'c'] = g_bs_CONVERSION[(int)'C'] = 3;	//change it so every 'c' will be *hashed* as a 't'
+		if(gMATCH_POS_STRAND && !gBISULFITE2)
+        {
+			g_bs_CONVERSION[(int)'c'] = g_bs_CONVERSION[(int)'C'] = 3;	//change it so every 'c' will be *indexed* as a 't'
 			// If they've supplied a matrix, we don't want to mess with this
-			if(pos_matrix == NULL) 
+			if(pos_matrix == NULL)
+            {
 				gALIGN_SCORES[(int)'c'][3] = gMATCH;
+            }
 		}
-		else {	// we don't want to match to the positive strand, by default only mapping to one strand
+		else // we don't want to match to the positive strand, by default only mapping to one strand
+        {
 			// when doing the opposite strand, we want to allow 'G->A' (the rev comp)
-			g_bs_CONVERSION[(int)'g'] = g_bs_CONVERSION[(int)'G'] = 0;	//change it so every 'g' will be *hashed* as a 'a'
+			g_bs_CONVERSION[(int)'g'] = g_bs_CONVERSION[(int)'G'] = 0;	//change it so every 'g' will be *indexed* as a 'a'
 			// If they've supplied a matrix, we don't want to mess with this
-			if(pos_matrix == NULL) 
+			if(pos_matrix == NULL)
+            {
 				gALIGN_SCORES[(int)'g'][0] = gMATCH;
+            }
 
 		}
 				
 	}
-	if(gATOG) {
+
+	if(gATOG)
+    {
 		gPRINT_FULL = true;
 		params << "\tUsing A to G conversion" << endl;
 	
@@ -1196,37 +1243,50 @@ int main(const int argc, const char* argv[]) {
 			// exit
 		 */
 
-		if(gMATCH_POS_STRAND) {	
-			g_bs_CONVERSION[(int)'a'] = g_bs_CONVERSION[(int)'A'] = 2;	//change it so every 'a' will be *hashed* as a 'g'
-			// If they've supplied a matrix, we don't want to mess with this
-			if(pos_matrix == NULL) 
-				gALIGN_SCORES[(int)'a'][2] = gMATCH;
-		}
-		else { // only if we don't want to match to both strands...
-			// when doing the opposite strand, we want to allow 'T->C' (the rev comp)
-			g_bs_CONVERSION[(int)'t'] = g_bs_CONVERSION[(int)'T'] = 1;	//change it so every 't' will be *hashed* as a 'c'
+		if(gMATCH_POS_STRAND)
+        {	
+			g_bs_CONVERSION[(int)'a'] = g_bs_CONVERSION[(int)'A'] = 2;	//change it so every 'a' will be *indexed* as a 'g'
 			// If they've supplied a matrix, we don't want to mess with this
 			if(pos_matrix == NULL)
+            {
+				gALIGN_SCORES[(int)'a'][2] = gMATCH;
+            }
+		}
+		else // only if we don't want to match to both strands...
+        {
+			// when doing the opposite strand, we want to allow 'T->C' (the rev comp)
+			g_bs_CONVERSION[(int)'t'] = g_bs_CONVERSION[(int)'T'] = 1;	//change it so every 't' will be *indexed* as a 'c'
+			// If they've supplied a matrix, we don't want to mess with this
+			if(pos_matrix == NULL)
+            {
 				gALIGN_SCORES[(int)'t'][1] = gMATCH;
+            }
 		}
 
 	}
-	if(gGEN_SIZE != 8) {
+
+	if(gGEN_SIZE != 8)
+    {
 		if(gGEN_SIZE < 1)
+        {
 			usage(1,"Invalid bin size (must be more than 0)\n");
+        }
 		if(gGEN_SIZE > 8)
+        {
 			usage(1,"Invalid bin size (must be 8 or less)\n");
+        }
 		params << "\tUsing irregular bin size of " << gGEN_SIZE << endl;
 	}
-	if(!gMATCH_NEG_STRAND) {
+
+	if(!gMATCH_NEG_STRAND)
+    {
 		params << "\tOnly matching to positive strand of genome\n";
 	}
-	if(!gMATCH_POS_STRAND) {
+
+	if(!gMATCH_POS_STRAND)
+    {
 		params << "\tOnly matching to negative strand of genome\n";
 	}
-
-	//determine the size of the hash
-	gHASH_SIZE = (unsigned int) pow(4.0,gMER_SIZE);
 
 #ifdef DEBUG
     if( gVERBOSE > 0 )
@@ -1252,20 +1312,23 @@ int main(const int argc, const char* argv[]) {
 	}
 	
 	// This works for MPI and for everything else
-	if(nproc > 1) {
+	if(nproc > 1)
+    {
 		// rename the output file to have the processor number after it
 		char* output_ext = new char[strlen(output_file)+10];
 		sprintf(output_ext,"%s_%d",output_file,iproc);
 		output_file = output_ext;
 
 	}
+
 	char* sam_file = new char[strlen(output_file)+10];
 	sprintf(sam_file,"%s.sam",output_file);
 
 	// Everyone opens up their output file
 	of.open(sam_file);
 	// Check to make sure the output file/directory exists
-	if(of.bad() || of.fail()) {
+	if(of.bad() || of.fail())
+    {
 		cerr << "ERROR:\n\t";
 		perror("Error in reading output file");
 		return -1;
@@ -1352,9 +1415,8 @@ int main(const int argc, const char* argv[]) {
 
 	if(gVERBOSE)
     {
-		fprintf(stderr,"\nTime to hash: %.0f seconds\n",When()-prog_start_time);
+		fprintf(stderr,"\nTime to index: %.0f seconds\n",When()-prog_start_time);
     }
-		//cerr << "\nTime to hash: " << When()-prog_start_time << endl;
 	
 	// Don't want to print any header information in this file
 	//if(iproc == 0)
@@ -2806,11 +2868,6 @@ int set_arg_ext(const char* param, const char* assign, int &count) {
 		//which = 'T';
 		which = PAR_MAX_MATCH;
 		adjust = 10;
-	}
-	else if(strncmp(param+2,"max_hash=",10) == 0) {
-		//which = 'h';
-		which = PAR_MAX_HASH;
-		adjust = 11;
 	}
 	else if(strncmp(param+2,"subst_file=",9) == 0) {
 		//which = 'S';

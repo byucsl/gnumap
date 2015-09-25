@@ -699,14 +699,14 @@ int main(const int argc, const char* argv[]) {
 	if(gBISULFITE) {
 		gPRINT_FULL = true;
 		params << "\tUsing BISULFITE conversion" << endl;
-		g_bs_CONVERSION[(int)'c'] = g_bs_CONVERSION[(int)'C'] = 3;	//change it so every 'c' will be *hashed* as a 't'
+		g_bs_CONVERSION[(int)'c'] = g_bs_CONVERSION[(int)'C'] = 3;	//change it so every 'c' will be *indexed* as a 't'
 		//gALIGN_SCORES[3][1] = MATCH;
 		gALIGN_SCORES[(int)'c'][3] = gMATCH;
 	}
 	if(gATOG) {
 		gPRINT_FULL = true;
 		params << "\tUsing A to G conversion" << endl;
-		g_bs_CONVERSION[(int)'a'] = g_bs_CONVERSION[(int)'A'] = 2;	//change it so every 'a' will be *hashed* as a 'g'
+		g_bs_CONVERSION[(int)'a'] = g_bs_CONVERSION[(int)'A'] = 2;	//change it so every 'a' will be *indexed* as a 'g'
 		//gALIGN_SCORES[2][0] = MATCH;
 		gALIGN_SCORES[(int)'a'][2] = gMATCH;
 	}

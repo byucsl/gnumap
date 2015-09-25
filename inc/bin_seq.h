@@ -100,7 +100,7 @@ class bin_seq {
 		static unsigned int str2int();
 		static unsigned int str2int(string &a);
 		static string hash2str(const unsigned int h, int length);
-		
+
 		/*
 		 * get_hash will get the hashing value for either a given string or
 		 * a given location on genome.  The return value of get_hash is a pair
