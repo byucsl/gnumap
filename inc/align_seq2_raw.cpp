@@ -29,7 +29,7 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
     int sa_num_hits = 0;
 	
 	// A map of genome positions and the number of times they are referenced
-	map<unsigned long, unsigned int> possible_locs;
+	map<unsigned long, int> possible_locs;
 
 	for( i = 0; i < last_kmer_pos; i += gJUMP_SIZE)
     {
@@ -70,6 +70,7 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
             break;
         }
 
+#ifdef DEBUG
         if( end != 0 && start != 0 )
         {
             cerr << "At location " << i << ", found " << ( end - start + 1 ) << " hits for this string." << endl;
@@ -78,6 +79,7 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
         {
             cerr << "At location " << i << ", found " << 0 << " hits for this string." << endl;
         }
+#endif
 		
         for( unsigned int vit = start; vit <= end; vit++ )
         {
@@ -87,21 +89,30 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
             unsigned long beginning = ( gen.get_sa_coord( vit ) <= i ) ? 0 : ( gen.get_sa_coord( vit ) - i );
 			
 			// Increment the number of times this occurs
-			possible_locs[ beginning ]++;
+            if( possible_locs[ beginning ] != -1 )
+            {
+			    possible_locs[ beginning ]++;
+            }
 		}
 
-		map< unsigned long, unsigned int >::iterator loc_it;
+		map< unsigned long, int >::iterator loc_it;
 		for( loc_it = possible_locs.begin(); loc_it != possible_locs.end(); ++loc_it )
         {
-			
 			// Define the number of hits that have to be matching at each genomic position
 			// before we'll even match it
 			if( loc_it->second < gMIN_JUMP_MATCHES )
             {
 				continue;
             }
+            if( loc_it->second == -1 )
+            {
+                // we've already aligned this position
+                continue;
+            }
 
-			string to_match = gen.GetString(loc_it->first, search.length);
+            possible_locs[ loc_it->first ] = -1;
+			
+            string to_match = gen.GetString(loc_it->first, search.length);
 			
 			if( to_match.size() == 0 )
             {	//means it's on a chromosome boundary--not valid sequence

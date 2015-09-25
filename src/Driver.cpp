@@ -1229,18 +1229,21 @@ int main(const int argc, const char* argv[]) {
 	gHASH_SIZE = (unsigned int) pow(4.0,gMER_SIZE);
 
 #ifdef DEBUG
-	printf("Alignment scores:\n");
-	printf("\tA\tC\tG\tT\n");
-	printf("A\t%f\t%f\t%f\t%f\n",1.0/gADJUST*gALIGN_SCORES[(int)'a'][0],1.0/gADJUST*gALIGN_SCORES[(int)'a'][1],
-			1.0/gADJUST*gALIGN_SCORES[(int)'a'][2],1.0/gADJUST*gALIGN_SCORES[(int)'a'][3]);
-	printf("C\t%f\t%f\t%f\t%f\n",1.0/gADJUST*gALIGN_SCORES[(int)'c'][0],1.0/gADJUST*gALIGN_SCORES[(int)'c'][1],
-			1.0/gADJUST*gALIGN_SCORES[(int)'c'][2],1.0/gADJUST*gALIGN_SCORES[(int)'c'][3]);
-	printf("G\t%f\t%f\t%f\t%f\n",1.0/gADJUST*gALIGN_SCORES[(int)'g'][0],1.0/gADJUST*gALIGN_SCORES[(int)'g'][1],
-			1.0/gADJUST*gALIGN_SCORES[(int)'g'][2],1.0/gADJUST*gALIGN_SCORES[(int)'g'][3]);
-	printf("T\t%f\t%f\t%f\t%f\n",1.0/gADJUST*gALIGN_SCORES[(int)'t'][0],1.0/gADJUST*gALIGN_SCORES[(int)'t'][1],
-			1.0/gADJUST*gALIGN_SCORES[(int)'t'][2],1.0/gADJUST*gALIGN_SCORES[(int)'t'][3]);
-	printf("N\t%f\t%f\t%f\t%f\n",1.0/gADJUST*gALIGN_SCORES[(int)'n'][0],1.0/gADJUST*gALIGN_SCORES[(int)'n'][1],
-			1.0/gADJUST*gALIGN_SCORES[(int)'n'][2],1.0/gADJUST*gALIGN_SCORES[(int)'n'][3]);
+    if( gVERBOSE > 0 )
+    {
+        printf("Alignment scores:\n");
+        printf("\tA\tC\tG\tT\n");
+        printf("A\t%f\t%f\t%f\t%f\n",1.0/gADJUST*gALIGN_SCORES[(int)'a'][0],1.0/gADJUST*gALIGN_SCORES[(int)'a'][1],
+                1.0/gADJUST*gALIGN_SCORES[(int)'a'][2],1.0/gADJUST*gALIGN_SCORES[(int)'a'][3]);
+        printf("C\t%f\t%f\t%f\t%f\n",1.0/gADJUST*gALIGN_SCORES[(int)'c'][0],1.0/gADJUST*gALIGN_SCORES[(int)'c'][1],
+                1.0/gADJUST*gALIGN_SCORES[(int)'c'][2],1.0/gADJUST*gALIGN_SCORES[(int)'c'][3]);
+        printf("G\t%f\t%f\t%f\t%f\n",1.0/gADJUST*gALIGN_SCORES[(int)'g'][0],1.0/gADJUST*gALIGN_SCORES[(int)'g'][1],
+                1.0/gADJUST*gALIGN_SCORES[(int)'g'][2],1.0/gADJUST*gALIGN_SCORES[(int)'g'][3]);
+        printf("T\t%f\t%f\t%f\t%f\n",1.0/gADJUST*gALIGN_SCORES[(int)'t'][0],1.0/gADJUST*gALIGN_SCORES[(int)'t'][1],
+                1.0/gADJUST*gALIGN_SCORES[(int)'t'][2],1.0/gADJUST*gALIGN_SCORES[(int)'t'][3]);
+        printf("N\t%f\t%f\t%f\t%f\n",1.0/gADJUST*gALIGN_SCORES[(int)'n'][0],1.0/gADJUST*gALIGN_SCORES[(int)'n'][1],
+                1.0/gADJUST*gALIGN_SCORES[(int)'n'][2],1.0/gADJUST*gALIGN_SCORES[(int)'n'][3]);
+    }
 #endif
 
 	if(gVERBOSE)
@@ -1459,6 +1462,29 @@ int main(const int argc, const char* argv[]) {
 		delete (thread_rets*)pthread_ret[i];
 	}
 #endif //end OMP_RUN
+
+#if defined(DEBUG_NW)
+    unsigned int total_nw = 0;
+    unsigned int max_nw = 0;
+    unsigned int min_nw = num_nw[ 0 ];
+
+    for( int i = 0; i < nproc; i++ )
+    {
+        total_nw += num_nw[ i ];
+
+        if( num_nw[ i ] > max_nw )
+        {
+            max_nw = num_nw[ i ];
+        }
+        if( num_nw[ i ] < min_nw )
+        {
+            min_nw = num_nw[ i ];
+        }
+    }
+
+    fprintf( stderr, "Total NW: %u, Max NW: %u, Min NW: %u, DIFF: %u\n", total_nw, max_nw, min_nw, max_nw - min_nw );
+#endif
+
 	
 	if(gVERBOSE)
     {
@@ -2233,27 +2259,6 @@ void* parallel_thread_run(void* t_opts) {
 
 	//fprintf(stderr,"[%d/%d] Finished after processing %d/%u reads with %u good and %u bad\n",iproc,thread_id,seqs_processed,gSM->getTotalSeqCount(),good_seqs,bad_seqs);
 
-#if defined(DEBUG) && defined(DEBUG_NW)
-    unsigned int total_nw = 0;
-    unsigned int max_nw = 0;
-    unsigned int min_nw = num_nw[ 0 ];
-
-    for( int i = 0; i < nproc; i++ )
-    {
-        total_nw += num_nw[ i ];
-
-        if( num_nw[ i ] > max_nw )
-        {
-            max_nw = num_nw[ i ];
-        }
-        if( num_nw[ i ] < min_nw )
-        {
-            min_nw = num_nw[ i ];
-        }
-    }
-
-    fprintf( stderr, "Total NW: %u, Max NW: %u, Min NW: %u, DIFF: %u\n", total_nw, max_nw, min_nw, max_nw - min_nw );
-#endif
 
 	struct thread_rets* ret = new thread_rets;
 	ret->good_seqs = good_seqs;
