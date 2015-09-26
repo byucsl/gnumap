@@ -17,10 +17,9 @@ GenomeBwt::GenomeBwt() : Genome()
 }
 
 GenomeBwt::~GenomeBwt() {
-	fprintf(stderr,"[-/%d] GenomeBwt destructor...\n",iproc);
+	//fprintf(stderr,"[-/%d] GenomeBwt destructor...\n",iproc);
     if( index->bwt )
     {
-        cerr << "destroy bwt" << endl;
         if( index->bwt->sa )
         {
             free( index->bwt->sa );
@@ -36,19 +35,16 @@ GenomeBwt::~GenomeBwt() {
 
     if( index->bns )
     {
-        cerr << "destroy bns" << endl;
         bns_destroy( index->bns );
     }
 
     if( index->pac )
     {
-        cerr << "destroy pac" << endl;
         free( index->pac );
     }
 
     if( index->mem )
     {
-        cerr << "destroy mem" << endl;
         free( index->mem );
     }
     
