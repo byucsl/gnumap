@@ -50,12 +50,12 @@ Genome::~Genome() {
     {
 		free(amount_genome);
     }
-#ifdef SET_POS
+//#ifdef SET_POS
 	if(gs_positions)
     {
 		free(gs_positions);
     }
-#endif
+//#endif
 	
 	if(gSNP)
     {

@@ -17,9 +17,43 @@ GenomeBwt::GenomeBwt() : Genome()
 }
 
 GenomeBwt::~GenomeBwt() {
-	//fprintf(stderr,"[-/%d] GenomeBwt destructor...\n",iproc);
-    delete index;
-    delete ref_genome_fn;
+	fprintf(stderr,"[-/%d] GenomeBwt destructor...\n",iproc);
+    if( index->bwt )
+    {
+        cerr << "destroy bwt" << endl;
+        if( index->bwt->sa )
+        {
+            free( index->bwt->sa );
+        }
+
+        if( index->bwt->bwt )
+        {
+            free( index->bwt->bwt );
+        }
+
+        free( index->bwt );
+    }
+
+    if( index->bns )
+    {
+        cerr << "destroy bns" << endl;
+        bns_destroy( index->bns );
+    }
+
+    if( index->pac )
+    {
+        cerr << "destroy pac" << endl;
+        free( index->pac );
+    }
+
+    if( index->mem )
+    {
+        cerr << "destroy mem" << endl;
+        free( index->mem );
+    }
+    
+    free( index );
+    free( ref_genome_fn );
 } 
 
 char * GenomeBwt::bwa_idx_infer_prefix(const char *hint)
@@ -372,6 +406,8 @@ string GenomeBwt::GetString(const unsigned long begin, const unsigned int size)
     {
         ref_seq[ i ] = "acgtn"[ ( int ) rseq[ i ] ];
     }
+
+    free( rseq );
     
 	return ref_seq;
 }
@@ -399,7 +435,8 @@ uint64_t GenomeBwt::get_sa_coord( uint64_t sa_pos )
 
 void GenomeBwt::get_sa_int( string& seq, uint64_t* in_start, uint64_t* in_end )
 {
-    unsigned char* c_seq = new unsigned char[ seq.size() ];
+    unsigned char* c_seq = new unsigned char[ seq.size() + 1 ];
+    c_seq[ seq.size() ] = '\0';
 
     for (int i = 0; i < seq.size(); ++i) // convert to 2-bit encoding if we have not done so
     {
@@ -417,6 +454,7 @@ void GenomeBwt::get_sa_int( string& seq, uint64_t* in_start, uint64_t* in_end )
     bwtint_t start, end;
 
     int search_result = bwt_match_exact( index->bwt, seq.size(), c_seq, &start, &end );
+    delete[] c_seq;
     //std::cout << "search result:\t" << search_result << std::endl;
 
     if( search_result > 0 )
