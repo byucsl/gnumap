@@ -160,6 +160,7 @@ void MPISumCenters( const void *in, void *inout, int len, const MPI::Datatype &d
 
 typedef GenomeBwt GENOME_t;
 GENOME_t gGen;
+string cl_args;
 
 SeqManager* gSM;
 
@@ -1008,10 +1009,13 @@ int main(const int argc, const char* argv[]) {
 	//print_stats(stderr);
 #endif
 
+    cl_args = "";
 	cout << endl << "Command Line Arguments:  ";
 	for(int i=0; i<argc; i++)
     {
 		cout << argv[i] << ' ';
+        cl_args += argv[ i ];
+        cl_args += " ";
     }
 	cout << endl;
 	
@@ -1966,7 +1970,8 @@ void write_cond_wait() {
 		
 		MUTEX_UNLOCK(&cond_lock);
 	}
-	else {
+	else
+    {
 		//fprintf(stderr,"Thread %d/%d made it in!\n",cond_count,cond_thread_num);
 
 #ifdef MPI_RUN
@@ -1986,6 +1991,8 @@ void write_cond_wait() {
 			end_time = When();
 			write_lock_time += end_time-begin_time;
 #endif
+
+            // print out all of the reads to a sam file
 			vector<TopReadOutput>::iterator vit;
 			for(vit = gTopReadOutput.begin(); vit != gTopReadOutput.end(); vit++) {
 				if((*vit).MAPQ >= 0) {
@@ -2102,7 +2109,6 @@ void single_write_cond_wait(int thread_no) {
 	double wait_end = When();
 	write_lock_time += wait_end - wait_begin;
 #endif
-
 	// Write it all to the file 
 	vector<TopReadOutput>::iterator vit;
 	for(vit = gTopReadOutput.begin(); vit != gTopReadOutput.end(); vit++) {
@@ -2233,9 +2239,6 @@ void single_clean_cond_wait(bool my_finished, int thread_no, bool verbose) {
  * This is NOT MPI_largemem.
  */
 void* parallel_thread_run(void* t_opts) {
-
-    cerr << "Parallel thread run" << endl;
-
 	//cout << "New Thread\n";
 	unsigned int thread_id = ((thread_opts*)t_opts)->thread_id;
 
@@ -2250,6 +2253,20 @@ void* parallel_thread_run(void* t_opts) {
 	unsigned int seqs_processed = 0;
 	
 	bool my_finished = false;
+
+    // print the header lines
+    if( thread_id == 0 )
+    {
+        vector< pair< string,unsigned long> >::iterator header_it;
+        for( header_it = gGen.GetNames().begin(); header_it != gGen.GetNames().end() - 1; header_it++ )
+        {
+            of << "@SQ\tSN:" << ( *header_it ).first << "\tLN:" << ( ( * ( header_it + 1 ) ).second - ( *header_it ).second ) << endl;
+        }
+        
+        of << "@PG\tID:gnumap\tPN:gnumap\tVN:" << gVERSION << "\tCL:" << cl_args << endl;
+    }
+
+
 
 	// Fill the read buffer
 	while(!my_finished) {
@@ -2337,7 +2354,6 @@ void* parallel_thread_run(void* t_opts) {
  */
 #ifdef OMP_RUN
 thread_rets* omp_thread_run(thread_opts* t_opts) {
-    cerr << "OMP thread run" << endl;
 	//fprintf(stderr,"CALLING OMP_THREAD_RUN\n");
 
 	unsigned int i,j, nReadsRead, good_seqs=0, bad_seqs=0;
@@ -2449,7 +2465,6 @@ thread_rets* omp_thread_run(thread_opts* t_opts) {
  * This function will be used by each thread when the MPI_largmem flag is used.
  */
 void* mpi_thread_run(void* t_opts) {
-    cerr << "MPI thread run" << endl;
 	//fprintf(stderr,"CALLING MPI_THREAD_RUN\n");
 
 	while(!setup_complete);	// Busy-Wait for the setup to complete

@@ -6,14 +6,12 @@
  */
 GenomeBwt::GenomeBwt(const char* fn) : Genome(fn)
 {
-    std::cout << "constructor 1" << std::endl;
 	Init(fn);
 	reader = new Reader();
 }
 
 GenomeBwt::GenomeBwt() : Genome()
 {
-    std::cout << "constructor 2" << std::endl;
 }
 
 GenomeBwt::~GenomeBwt() {

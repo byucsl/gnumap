@@ -17,4 +17,4 @@ export OMP_NUM_THREADS=$SLURM_CPUS_ON_NODE
 # LOAD MODULES, INSERT CODE, AND RUN YOUR PROGRAMS HERE
 
 
-bin/gnumap-plain -c 16 -g /fslhome/masaki/compute/human_genome/GCA_000001405.18_GRCh38.p3_genomic.fna --print_all_sam -o y.sim_reads.filtered /fslhome/masaki/compute/human_genome/chr/y.sim_reads.filtered.fq
+bin/gnumap-plain -c 16 -g /fslgroup/fslg_genome/compute/human/hg19/chrX.fa --print_all_sam -o chrx.mappings /fslhome/masaki/fsl_groups/fslg_genome/compute/bodily_paul/ScaffScaffOnHuman/data/NA19240/SAMPLEFILE
