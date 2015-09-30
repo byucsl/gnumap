@@ -3,3 +3,6 @@ obj/*
 lib/*
 stuff.*
 slurm*
+analysis.txt
+gmon.out
+y.*

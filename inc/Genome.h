@@ -172,6 +172,8 @@ class Genome {
 		 */
 		virtual string GetStringRelative(const char* chr, const unsigned long &pos, const unsigned int length) = 0;
 
+        vector< pair< string,unsigned long> > GetNames(){ return names; }
+
 		
 #ifdef SET_POS
 		/**
@@ -298,7 +300,7 @@ class Genome {
 
 		//gen_piece is used to store a portion of the genome as we read it in.
 		//unsigned char* gen_piece;
-		vector<pair<string,unsigned long> > names;
+		vector< pair< string,unsigned long> > names;
 		
 		unsigned long my_start;	// The position we should start reading from
 		unsigned long my_end;
