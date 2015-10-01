@@ -52,8 +52,8 @@ SeqReader& SeqReader::operator =(const SeqReader &other) {
 }
 
 
-void SeqReader::Construct(const char* fn) {
-
+void SeqReader::Construct(const char* fn)
+{
 	//fprintf(stderr,"CALLING CLEARREAD (%d).  DID WE INTEND TO?\n",__LINE__);
 	clearReads(reads);
 	
@@ -64,17 +64,22 @@ void SeqReader::Construct(const char* fn) {
 	const char* delims = " \"\n,";
 	char* token = strtok(files,delims);
 	if(gVERBOSE > 1)
+    {
 		cout << "Found:" << endl;
+    }
 
-	while(token != NULL) {
-		if(gVERBOSE > 1)
-			cout << "\t" << token << endl;
+	while(token != NULL)
+    {
+		//if(gVERBOSE > 1)
+        {
+			cout << "construct\t" << token << endl;
+        }
+
 		string temp_str = token;
 		seq_files.push_back(temp_str);
 		
 		token = strtok(NULL,delims);
 	}
-
 }
 		
 SeqReader::~SeqReader() {
@@ -128,17 +133,24 @@ void SeqReader::Init(const char* fn) {
 	find_type();	
 }
 
-void SeqReader::ReadBatch() {
-
+void SeqReader::ReadBatch()
+{
 	if(this_type == PRB)
+    {
 		get_more_prb();
+    }
 	else if(this_type == INT)
+    {
 		get_more_int();
+    }
 	else if(this_type == FASTQ)
+    {
 		get_more_fastq();
+    }
 	else if(this_type == FASTA)
+    {
 		get_more_fasta();
-
+    }
 }
 
 /*
@@ -246,6 +258,7 @@ void SeqReader::use(const char* fn) {
 void SeqReader::use(const string &str, unsigned int nBurn) {
 	use(str.c_str(),nBurn);
 }
+
 void SeqReader::use(const char* fn, unsigned int nBurn) {
 	this_filename = fn;
 	Init(fn);
@@ -257,18 +270,18 @@ void SeqReader::use(const char* fn, unsigned int nBurn) {
 			
 	// Now we need to burn some reads
 	switch(this_type) {
-	case PRB:
-	case INT:
-		burnPRBINT(nBurn);
-		break;
-	case FASTA:
-		burnFASTA(nBurn);
-		break;
-	case FASTQ:
-		burnFASTQ(nBurn);
-		break;
-	default:
-		break;
+        case PRB:
+        case INT:
+            burnPRBINT(nBurn);
+            break;
+        case FASTA:
+            burnFASTA(nBurn);
+            break;
+        case FASTQ:
+            burnFASTQ(nBurn);
+            break;
+        default:
+            break;
 	}
 	
 	seq_num += nBurn;
@@ -377,17 +390,28 @@ Read* SeqReader::GetNextSequence() {
 
 	
 	//if(seq_counter >= reads.size()) {
-	if(seq_counter >= num_reads) {
+	if(seq_counter >= num_reads)
+    {
 		if(this_type == PRB)
+        {
 			has_more = get_more_prb();
+        }
 		else if(this_type == INT)
+        {
 			has_more = get_more_int();
+        }
 		else if(this_type == FASTQ)
+        {
 			has_more = get_more_fastq();
+        }
 		else if(this_type == FASTA)
+        {
 			has_more = get_more_fasta();
+        }
 		else
+        {
 			throw new Exception("Could not determine sequence file type");
+        }
 	}
 	
 	if(!has_more)
@@ -998,7 +1022,7 @@ bool SeqReader::get_more_fasta() {
 /************************************/
 bool SeqReader::get_more_fastq() {
 	unsigned int J;
-	if(gVERBOSE > 1)
+	//if(gVERBOSE > 1)
     {
 		fprintf(stderr,"[%d/-] Reading more reads FASTQ style",iproc);
     }

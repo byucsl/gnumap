@@ -172,7 +172,7 @@ class Genome {
 		 */
 		virtual string GetStringRelative(const char* chr, const unsigned long &pos, const unsigned int length) = 0;
 
-        vector< pair< string,unsigned long> > GetNames(){ return names; }
+        vector< pair< string,unsigned long> >* GetNames(){ return &names; }
 
 		
 #ifdef SET_POS

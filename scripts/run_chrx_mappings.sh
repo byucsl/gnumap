@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --time=24:00:00   # walltime
+#SBATCH --time=72:00:00   # walltime
 #SBATCH --ntasks=16   # number of processor cores (i.e. tasks)
 #SBATCH --nodes=1   # number of nodes
 #SBATCH --mem-per-cpu=2048M   # memory per CPU core
@@ -17,4 +17,4 @@ export OMP_NUM_THREADS=$SLURM_CPUS_ON_NODE
 # LOAD MODULES, INSERT CODE, AND RUN YOUR PROGRAMS HERE
 
 
-bin/gnumap-plain -c 16 -g /fslgroup/fslg_genome/compute/human/hg19/chrX.fa --print_all_sam -o chrx.mappings /fslhome/masaki/fsl_groups/fslg_genome/compute/bodily_paul/ScaffScaffOnHuman/data/NA19240/SAMPLEFILE
+bin/gnumap-plain -c 16 -g /fslgroup/fslg_genome/compute/human/hg19/chrX.fa --print_all_sam -o chrx.mappings.SAMPLEFILE /fslhome/masaki/fsl_groups/fslg_genome/compute/bodily_paul/ScaffScaffOnHuman/data/NA19240/SAMPLEFILE.fastq

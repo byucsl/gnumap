@@ -374,7 +374,8 @@ float** subvector(float** &vec, int start, int length) {
 	return to_return;
 }
 
-struct thread_opts {
+struct thread_opts
+{
 	thread_opts(GENOME_t &g, SeqManager &s, int ti) :
 		gen(g), sm(s), thread_id(ti) {}
 	
@@ -1426,8 +1427,10 @@ int main(const int argc, const char* argv[]) {
 	//if(iproc == 0)
 		// Output SAM by default
 		//of << "# <QNAME>\t<FLAG>\t<RNAME>\t<POS>\t<MAPQ>\t<CIGAR>\t<MRNM>\t<MPOS>\t<ISIZE>\t<SEQ>\t<QUAL>\t<OPT>\n";
-	
+
+    cerr << "gsm" << endl;    
 	gSM = new SeqManager(gReadArray, seq_file, nReads, gNUM_THREADS);
+    cerr << "gsm done!" << endl;
 
 	/*
 	if(!iproc)
@@ -1478,6 +1481,7 @@ int main(const int argc, const char* argv[]) {
 	}
 	
 #ifdef OMP_RUN
+    cerr << "open mp" << endl;
 	cond_thread_num = 1;
 	omp_set_num_threads(gNUM_THREADS);
 	thread_opts* t_o = new thread_opts(gGen,*gSM,0);
@@ -1496,11 +1500,18 @@ int main(const int argc, const char* argv[]) {
 
 #ifdef MPI_RUN
 		if(gMPI_LARGEMEM) 
+        {
+            cerr << "mpi large mem" << endl;
 			pthread_create(&pthread_hand[i], NULL, mpi_thread_run, (void*)t_o);
+        }
 		else
+        {
+            cerr << "parallel thread" << endl;
 			pthread_create(&pthread_hand[i], NULL, parallel_thread_run, (void*)t_o);
+        }
 
 #else //MPI_RUN not defined
+        cerr << "parallel thread 2" << endl;
 		pthread_create(&pthread_hand[i], NULL, parallel_thread_run, (void*)t_o);
 #endif //end MPI_RUN
 	}
@@ -1509,19 +1520,22 @@ int main(const int argc, const char* argv[]) {
 	/********************************************************/
 	/* wait for all the threads to join back together... 	*/
 	/********************************************************/
-	for (unsigned int i=0; i<gNUM_THREADS; i++) {
+	for (unsigned int i=0; i<gNUM_THREADS; i++)
+    {
 		pthread_join(pthread_hand[i], &pthread_ret[i]);
 	}
 	
 	/********************************************************/
 	/* clean up the memory leaks stuff					 	*/
 	/********************************************************/
-	for(unsigned int i=0; i<gNUM_THREADS; i++) {
+	for(unsigned int i=0; i<gNUM_THREADS; i++)
+    {
 		//delete[] seq_ptr[i];
 		delete t_o_ptr[i];
 	}
 	
-	for(unsigned int i=0; i<gNUM_THREADS; i++) {
+	for(unsigned int i=0; i<gNUM_THREADS; i++)
+    {
 		seqs_matched += ((thread_rets*)pthread_ret[i])->good_seqs;
 		seqs_not_matched += ((thread_rets*)pthread_ret[i])->bad_seqs;
 
@@ -2240,6 +2254,8 @@ void single_clean_cond_wait(bool my_finished, int thread_no, bool verbose) {
  */
 void* parallel_thread_run(void* t_opts) {
 	//cout << "New Thread\n";
+	fprintf(stderr,"CALLING PARALLEL_THREAD_RUN\n");
+    
 	unsigned int thread_id = ((thread_opts*)t_opts)->thread_id;
 
 	unsigned int numRPT = READS_PER_PROC;
@@ -2258,7 +2274,8 @@ void* parallel_thread_run(void* t_opts) {
     if( thread_id == 0 )
     {
         vector< pair< string,unsigned long> >::iterator header_it;
-        for( header_it = gGen.GetNames().begin(); header_it != gGen.GetNames().end() - 1; header_it++ )
+
+        for( header_it = gGen.GetNames()->begin(); header_it != gGen.GetNames()->end() - 1; header_it++ )
         {
             of << "@SQ\tSN:" << ( *header_it ).first << "\tLN:" << ( ( * ( header_it + 1 ) ).second - ( *header_it ).second ) << endl;
         }
@@ -2280,11 +2297,14 @@ void* parallel_thread_run(void* t_opts) {
 		//		thread_id,iproc,!my_finished ? "Y" : "**N**",read_begin,read_end);
 
 
-		for(unsigned int k=read_begin; k<read_end; k++) {
+		for(unsigned int k=read_begin; k<read_end; k++)
+        {
 			//vector<vector<double> > temp_vect = ((thread_opts*)t_opts)->seqs[k];
 			Read* temp_read = gReadArray[k];
 			if(!temp_read)
+            {
 				break;
+            }
 			
 			string consensus = GetConsensus(*temp_read);
 			set_top_matches(((thread_opts*)t_opts)->gen, k, consensus, bad_seqs, good_seqs, thread_id);
@@ -2294,9 +2314,12 @@ void* parallel_thread_run(void* t_opts) {
 		
 		// We'll break these two loops up so they can be doing different work instead of
 		// getting caught up on all the mutex locks.
-		for(unsigned int k=read_begin; k<read_end; k++) {
+		for(unsigned int k=read_begin; k<read_end; k++)
+        {
 			if(!gReadArray[k])
+            {
 				break;
+            }
 			
 			string consensus = GetConsensus(*(gReadArray[k]));
 			create_match_output(((thread_opts*)t_opts)->gen, k, consensus);
@@ -2354,7 +2377,7 @@ void* parallel_thread_run(void* t_opts) {
  */
 #ifdef OMP_RUN
 thread_rets* omp_thread_run(thread_opts* t_opts) {
-	//fprintf(stderr,"CALLING OMP_THREAD_RUN\n");
+	fprintf(stderr,"CALLING OMP_THREAD_RUN\n");
 
 	unsigned int i,j, nReadsRead, good_seqs=0, bad_seqs=0;
 #ifdef DEBUG_TIME
@@ -2465,7 +2488,7 @@ thread_rets* omp_thread_run(thread_opts* t_opts) {
  * This function will be used by each thread when the MPI_largmem flag is used.
  */
 void* mpi_thread_run(void* t_opts) {
-	//fprintf(stderr,"CALLING MPI_THREAD_RUN\n");
+	fprintf(stderr,"CALLING MPI_THREAD_RUN\n");
 
 	while(!setup_complete);	// Busy-Wait for the setup to complete
 	

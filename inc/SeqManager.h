@@ -44,10 +44,13 @@ class SeqManager {
 			fprintf(stderr,"Total wait time is %f\n",wait_time);
 #endif
 			if(sr)
+            {
 				delete sr;
+            }
 		}
 		
-		void Init(Read** reads, const char* readsStr, const unsigned int nR, const unsigned int nP) {
+		void Init(Read** reads, const char* readsStr, const unsigned int nR, const unsigned int nP)
+        {
 			num_files = 0;
 			finished = false;
 
@@ -83,21 +86,27 @@ class SeqManager {
 		/**
 		 * Resets the counter--adds to the beginning of the global read array
 		 */
-		void resetCounter() {
+		void resetCounter()
+        {
 			if(gVERBOSE)
+            {
 				printProgress();
+            }
 			readCount = 0;
 		}
 		
-		unsigned int getTotalSeqCount() {
+		unsigned int getTotalSeqCount()
+        {
 			return totalSeqs;
 		}
 
-		void printProgress() {
+		void printProgress()
+        {
 			fprintf(stderr,"[%d/0] %.0f%% reads complete\n",iproc,((float)fileReadCount)/readPerFile * 100);
 		}
 		
-		unsigned int getCurrNumReads() {
+		unsigned int getCurrNumReads()
+        {
 			return readPerFile;
 		}
 
@@ -112,7 +121,8 @@ class SeqManager {
 		 * @param num_reads Will be the number of reads we've added to the array
 		 * @return true if we added any reads, false if we're entirely done adding reads
 		 */	
-		bool fillReadArray(Read** readArr, const unsigned int size, unsigned int &num_reads) {
+		bool fillReadArray(Read** readArr, const unsigned int size, unsigned int &num_reads)
+        {
 			unsigned int i;
 			Read* temp;
 
@@ -137,23 +147,30 @@ class SeqManager {
 			//fprintf(stderr,"Wait time for fillReadArray is %f, at %f\n",end_time-begin_time,wait_time);
 #endif
 
-			for(i=0; i<size; i++) {
-				try {
-					while((temp = sr->GetNextSequence()) == NULL) {
-						if(!getNextFile()) {
+			for( i = 0; i < size; i++ )
+            {
+				try
+                {
+					while( ( temp = sr->GetNextSequence() ) == NULL )
+                    {
+						if( !getNextFile() )
+                        {
 							//fprintf(stderr,"CANNOT READ MORE FROM FILE...RETURNING\n");
 							MUTEX_UNLOCK(&read_lock);
 							return false;
 						}
 					}
 				}
-				catch(Exception* e) {
+				catch( Exception* e )
+                {
 					fprintf(stderr,"ERROR(%s:%u):  %s\n",__FILE__,__LINE__,e->GetMessage());
-					if(!getNextFile()) {
+					if(!getNextFile())
+                    {
 						MUTEX_UNLOCK(&read_lock);
 						return false;
 					}
-					else {
+					else
+                    {
 						MUTEX_UNLOCK(&read_lock);
 						return true;
 					}
@@ -181,7 +198,8 @@ class SeqManager {
 		 * @par end The ending location of where the reads will be placed
 		 * @par set true iff we should set 'begin', false if we should use the value of 'begin'
 		 */
-		bool getMoreReads(unsigned int &begin, unsigned int &end, bool set) {
+		bool getMoreReads(unsigned int &begin, unsigned int &end, bool set)
+        {
 			// Ensure there's only one thread in here
 
 #ifdef DEBUG_TIME
@@ -215,23 +233,29 @@ class SeqManager {
 			bool ret_val = true;
 			
 			if(set)
+            {
 				begin = readCount;
+            }
 
 			//fprintf(stderr,"[-/%d] Starting with begin=%u,end=%u and fileProgress=%d/%d\n",iproc,begin,end,fileReadCount,readPerFile);
 			
 			//for(i=0; i< (set ? readsPerProc : end-begin) && fileReadCount+i<readPerFile; i++) {
-			for(i=0; i< num_to_read && begin+i<g_nReads; i++) {
+			for(i=0; i< num_to_read && begin+i<g_nReads; i++)
+            {
 				// If we've read too many sequences from this file, 
 				// if there's no more reads, get the next sequence from the next file
-				if(fileReadCount+i >= readPerFile || ((temp = sr->GetNextSequence()) == NULL)) {
+				if(fileReadCount+i >= readPerFile || ((temp = sr->GetNextSequence()) == NULL))
+                {
 					//fprintf(stderr,"No more reads.  Trying next file\n");
 					// get the next file, then return
 					totalSeqs += num_reads;
-					if(!getNextFile()) {
+					if(!getNextFile())
+                    {
 						ret_val = false;
 					}
 
-					if(set) {
+					if(set)
+                    {
 						end = begin+num_reads;
 						readCount = end;
 					}
@@ -254,14 +278,17 @@ class SeqManager {
 				//fprintf(stderr,"[-/%d] temp is NOT NULL!!!\n");
 
 				if(!temp->name || !temp->pwm)
+                {
 					fprintf(stderr,"ERROR:  NO NAME!!!\n");
+                }
 
 				// Set it at the global pointer
 				g_readPtr[begin+i] = temp;
 				num_reads++;
 			}
 			
-			if(set) {
+			if(set)
+            {
 				end = begin+num_reads;
 				readCount = end;
 			}
@@ -276,17 +303,20 @@ class SeqManager {
 			return ret_val;
 		}
 		
-		bool isFinished() {
+		bool isFinished()
+        {
 			return finished;
 		}
 		
 	private:
 	
-		bool getNextFile() {
-			
+		bool getNextFile()
+        {
 			bool invalid = true;
-			while(invalid) {
-				if(rit == readFiles.end()) {
+			while( invalid )
+            {
+				if( rit == readFiles.end() )
+                {
 					//if(rit == readFiles.begin())
 					//fprintf(stderr,"*********Read from %u files (out of %u expected)\n",num_files,readFiles.size());
 					//fprintf(stderr,"Found %u sequences\n",totalSeqs);
@@ -294,20 +324,23 @@ class SeqManager {
 					return false;
 				}
 
-				try{
+				try
+                {
 					unsigned int nBurn = 0;
 					unsigned int total_reads = sr->GetNumSeqs(*rit);
 				
 					// Need to burn sequences to be at the right pointer for each node
-					if(nproc > 1 && !gMPI_LARGEMEM) {
+					if( nproc > 1 && !gMPI_LARGEMEM )
+                    {
 						// use +1 because we want to get all of them
-						unsigned int each = total_reads/nproc+1;
+						unsigned int each = total_reads / nproc + 1;
 						unsigned int begin = each * iproc;
 						
 						nBurn = begin;
 						readPerFile = each;
 					}					
-					else {
+					else
+                    {
 						readPerFile = total_reads;
 					}
 
@@ -315,7 +348,7 @@ class SeqManager {
 					//		iproc,nBurn,readPerFile,total_reads,totalSeqs);
 
 					// instruct the SeqReader to use this file
-					sr->use(*rit,nBurn);
+					sr->use( *rit, nBurn );
 					
 					// increment the vector iterator
 					rit++;
@@ -324,20 +357,23 @@ class SeqManager {
 					invalid = false;
 					fileReadCount = 0;
 				}
-				catch(const char* err) {
+				catch( const char* err )
+                {
 					fprintf(stderr,"ERROR(%s:%u): \n\t%s\n",__FILE__,__LINE__,err);
 					fprintf(stderr,"\tIn file: %s\n",(*rit).c_str());
 					rit++;
 					continue;
 				}
-				catch(Exception *e) {
+				catch( Exception *e )
+                {
 					fprintf(stderr,"ERROR(%s:%u): \n\t%s\n",__FILE__,__LINE__,e->GetMessage());
 					fprintf(stderr,"\tIn file %s\n",(*rit).c_str());
 					delete e;
 					rit++;
 					continue;
 				}
-				catch(...) {
+				catch(...)
+                {
 					fprintf(stderr,"ERROR(%s:%u): \n\tImproper sequence length or file.\n",__FILE__,__LINE__);
 					fprintf(stderr,"\tIn file %s\n",(*rit).c_str());
 					rit++;
@@ -345,9 +381,10 @@ class SeqManager {
 				}
 			}
 			
-			
 			if(gVERBOSE)
+            {
 				fprintf(stderr,"\n[-/%d] Matching %u sequences of: %s\n",iproc, readPerFile,sr->GetFilename().c_str());
+            }
 						
 			return true;
 		}
