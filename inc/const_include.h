@@ -95,7 +95,7 @@ extern int gMER_SIZE;
 extern unsigned int gBUFFER_SIZE;
 extern const unsigned int gREAD_BUFFER;
 extern unsigned int gHASH_SIZE;
-extern unsigned int gMAX_HASH_SIZE;
+extern unsigned int gMAX_KMER_SIZE;
 extern bool gUNIQUE;
 
 extern bool gMATCH_POS_STRAND;

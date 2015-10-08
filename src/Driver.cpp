@@ -205,10 +205,11 @@ void usage(int has_error, const char * errmessage) {
 		 << "  --illumina                   Defines the fastq file as Illumina file (otherwise\n"
 		 << "                               does nothing)\n"
 		 << "\n"
-		 << "Options for Creating Hash and Genome\n"
+		 << "Options for creating index and genome\n"
 		 << "  -m, --mer_size=INT           Mer size (default="<<DEF_MER_SIZE<<")\n"
 		 << "  -s, --gen_skip=INT           Number of bases to skip when the genome is aligned\n"
 		 << "  --bin_size=INT               The resolution for GNUMAP (default: 8)\n"
+         << "  -h, --max_kmer=INT           Kmers that occur above this threshold are not used.\n"
 		 << "\n"
 		 << "Options for Printing:\n"
 		 << "  -0, --print_full             Print locations for the entire sequence, not\n"
@@ -1076,7 +1077,7 @@ int main(const int argc, const char* argv[]) {
 	params << "\tVerbose: " << gVERBOSE << endl;
 	params << "\tGenome file(s): " << genome_file << endl;
 	params << "\tOutput file: " << output_file << endl;
-	
+	params << "\tMax matches: " << gMAX_MATCHES << endl;
     if(gPRINT_ALL_SAM)
     {
 		params << "\t\tPrinting all SAM records\n";
@@ -1136,10 +1137,10 @@ int main(const int argc, const char* argv[]) {
 	}
 	
     gGEN_SKIP++;	// We're mod'ing in the function, so we want to mod by GEN_SKIP+1
-	
-    if(gMAX_HASH_SIZE > 0)
+    
+    if(gMAX_KMER_SIZE > 0)
     {
-		params << "\tLargest Hash Size: " << gMAX_HASH_SIZE << endl;
+		params << "\tLargest Kmer Size: " << gMAX_KMER_SIZE << endl;
     }
 	
     if(!gMER_SIZE)	//if the user didn't specify one
@@ -1311,7 +1312,7 @@ int main(const int argc, const char* argv[]) {
     }
 #endif
 
-	if(gVERBOSE)
+	//if(gVERBOSE)
     {
 		cerr << params.str() << endl;
 	}
@@ -1428,9 +1429,7 @@ int main(const int argc, const char* argv[]) {
 		// Output SAM by default
 		//of << "# <QNAME>\t<FLAG>\t<RNAME>\t<POS>\t<MAPQ>\t<CIGAR>\t<MRNM>\t<MPOS>\t<ISIZE>\t<SEQ>\t<QUAL>\t<OPT>\n";
 
-    cerr << "gsm" << endl;    
 	gSM = new SeqManager(gReadArray, seq_file, nReads, gNUM_THREADS);
-    cerr << "gsm done!" << endl;
 
 	/*
 	if(!iproc)
@@ -1501,17 +1500,17 @@ int main(const int argc, const char* argv[]) {
 #ifdef MPI_RUN
 		if(gMPI_LARGEMEM) 
         {
-            cerr << "mpi large mem" << endl;
+            //cerr << "mpi large mem" << endl;
 			pthread_create(&pthread_hand[i], NULL, mpi_thread_run, (void*)t_o);
         }
 		else
         {
-            cerr << "parallel thread" << endl;
+            //cerr << "parallel thread" << endl;
 			pthread_create(&pthread_hand[i], NULL, parallel_thread_run, (void*)t_o);
         }
 
 #else //MPI_RUN not defined
-        cerr << "parallel thread 2" << endl;
+        //cerr << "parallel thread 2" << endl;
 		pthread_create(&pthread_hand[i], NULL, parallel_thread_run, (void*)t_o);
 #endif //end MPI_RUN
 	}
@@ -2254,9 +2253,11 @@ void single_clean_cond_wait(bool my_finished, int thread_no, bool verbose) {
  */
 void* parallel_thread_run(void* t_opts) {
 	//cout << "New Thread\n";
-	fprintf(stderr,"CALLING PARALLEL_THREAD_RUN\n");
+	//fprintf(stderr,"CALLING PARALLEL_THREAD_RUN\n");
     
 	unsigned int thread_id = ((thread_opts*)t_opts)->thread_id;
+
+    //cout << "Calling thread no: " << thread_id << endl;
 
 	unsigned int numRPT = READS_PER_PROC;
 
@@ -2283,64 +2284,58 @@ void* parallel_thread_run(void* t_opts) {
         of << "@PG\tID:gnumap\tPN:gnumap\tVN:" << gVERSION << "\tCL:" << cl_args << endl;
     }
 
-
-
 	// Fill the read buffer
-	while(!my_finished) {
+	while( !my_finished )
+    {
 
 		//fprintf(stdout,"[%d/%d at %d] Thread continuing, finshed=%d, mine=%d\n",
 		//		iproc,thread_id,iter_num,finished,my_finished);
 
 		//fprintf(stderr,"[%d/%d] Getting more reads from %u to %u\n",thread_id,iproc,read_begin,read_end);
-		my_finished = !gSM->getMoreReads(read_begin,read_end,false);
+		my_finished = !gSM->getMoreReads( read_begin, read_end, false );
 		//fprintf(stderr,"[%d/%d] Got more reads successfully? %s from %d to %d\n",
 		//		thread_id,iproc,!my_finished ? "Y" : "**N**",read_begin,read_end);
 
 
-		for(unsigned int k=read_begin; k<read_end; k++)
+		for( unsigned int k = read_begin; k < read_end; k++ )
         {
 			//vector<vector<double> > temp_vect = ((thread_opts*)t_opts)->seqs[k];
 			Read* temp_read = gReadArray[k];
-			if(!temp_read)
+			if( !temp_read )
             {
 				break;
             }
 			
-			string consensus = GetConsensus(*temp_read);
-			set_top_matches(((thread_opts*)t_opts)->gen, k, consensus, bad_seqs, good_seqs, thread_id);
+            //cerr << thread_id << ":\t" << temp_read->name << endl;
+			string consensus = GetConsensus( *temp_read );
+			set_top_matches( ( ( thread_opts* ) t_opts )->gen, k, consensus, bad_seqs, good_seqs, thread_id );
 			seqs_processed++;
 			
 		}  //end for loop
 		
 		// We'll break these two loops up so they can be doing different work instead of
 		// getting caught up on all the mutex locks.
-		for(unsigned int k=read_begin; k<read_end; k++)
+		for( unsigned int k = read_begin; k < read_end; k++ )
         {
-			if(!gReadArray[k])
+			if( !gReadArray[ k ] )
             {
 				break;
             }
 			
-			string consensus = GetConsensus(*(gReadArray[k]));
-			create_match_output(((thread_opts*)t_opts)->gen, k, consensus);
+			string consensus = GetConsensus( *( gReadArray[ k ] ) );
+			create_match_output( ( ( thread_opts* )t_opts )->gen, k, consensus );
 
-			delete_read(gReadArray[k]);
-			gReadArray[k] = 0;
+			delete_read( gReadArray[ k ] );
+			gReadArray[ k ] = 0;
 		}
 		
 		// This just sends one processor to print everything out
 		if(thread_id == 0)
+        {
 			single_write_cond_wait(thread_id);
+        }
 			
-		//fprintf(stdout,"[%d/%d] Before Clean cond wait and cond_thread_num=%d\n",iproc,thread_id,cond_thread_num);
-		//double s_time = When();
 		single_clean_cond_wait(my_finished, thread_id, true);
-		//double e_time = When();
-		//fprintf(stderr,"[%d/%d] Total wait time for clean_cond is %f\n",
-		//		iproc,thread_id,e_time-s_time);
-		//fprintf(stderr,"[%d/%d at %d] After Clean cond wait and cond_thread_num=%d and my_finished=%d, finished=%d\n",
-		//			iproc,thread_id,iter_num,cond_thread_num,my_finished,finished);
-		
 	} // end while(!my_finished)
 		
 	// Make sure we wait for everyone to finish here
@@ -2360,7 +2355,6 @@ void* parallel_thread_run(void* t_opts) {
     }
 
 	//fprintf(stderr,"[%d/%d] Finished after processing %d/%u reads with %u good and %u bad\n",iproc,thread_id,seqs_processed,gSM->getTotalSeqCount(),good_seqs,bad_seqs);
-
 
 	struct thread_rets* ret = new thread_rets;
 	ret->good_seqs = good_seqs;
@@ -2736,7 +2730,7 @@ int set_arg(const char* param, const char* assign, int &count) {
 				return PARSE_ERROR;
 			break;
 		case 'h':
-			if(sscanf(assign,"%d",&gMAX_HASH_SIZE) < 1)
+			if(sscanf(assign,"%d",&gMAX_KMER_SIZE) < 1)
 				return PARSE_ERROR;
 			break;
 		case 'S':
@@ -2814,7 +2808,7 @@ enum {
 	PAR_BUFFER,
 	PAR_MAX_MATCH,
 	PAR_UNIQUE,
-	PAR_MAX_HASH,
+	PAR_MAX_KMER,
 	PAR_SUBST_FILE,
 	PAR_GAP_PENALTY,
 	PAR_MAX_GAP,
@@ -2898,6 +2892,7 @@ int set_arg_ext(const char* param, const char* assign, int &count) {
 		adjust = 10;
 	}
 	else if(strncmp(param+2,"buffer=",7) == 0) {
+    cerr << "gsm done!" << endl;
 		//which = 'B';
 		which = PAR_BUFFER;
 		adjust = 8;
@@ -3086,8 +3081,8 @@ int set_arg_ext(const char* param, const char* assign, int &count) {
 				return PARSE_ERROR;
 			break;
 		//case 'h':
-		case PAR_MAX_HASH:
-			if(sscanf(param,"%d",&gMAX_HASH_SIZE) < 1)
+		case PAR_MAX_KMER:
+			if(sscanf(param,"%d",&gMAX_KMER_SIZE) < 1)
 				return PARSE_ERROR;
 			break;
 		//case 'S':

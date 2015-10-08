@@ -48,11 +48,18 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
             gen.get_sa_int( consensus_piece, &start, &end );
             if( end == 0 && start == 0 )
             {
+                //cerr << i + j << " bad " << endl;
+                continue;
+            }
+            else if( gMAX_KMER_SIZE > 0 && end - start + 1 > gMAX_KMER_SIZE )
+            {
+                //cerr << i + j << " bad2 " << endl;
                 continue;
             }
             else
             {
                 sa_num_hits = end - start + 1;
+                //cerr << i + j << " done searching!\t" << sa_num_hits << endl;
                 //cerr << "At location " << j + i << ", " << sa_num_hits << " hits found." << endl;
                 break;
             }
@@ -69,6 +76,11 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
         {
             break;
         }
+        
+        if( gMAX_KMER_SIZE > 0 && end - start + 1 > gMAX_KMER_SIZE )
+        {
+            break;
+        }
 
 #ifdef DEBUG
         if( end != 0 && start != 0 )
@@ -80,20 +92,27 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
             cerr << "At location " << i << ", found " << 0 << " hits for this string." << endl;
         }
 #endif
-		
-        for( unsigned int vit = start; vit <= end; vit++ )
+        
+        if( gMAX_KMER_SIZE > 0 && end - start + 1 > gMAX_KMER_SIZE )
         {
-			//Match the sequence to a sequence that has two characters before and after.
-			//string to_match = gen.GetString((*vit)-i-2, search.size()+4);
-			
-            unsigned long beginning = ( gen.get_sa_coord( vit ) <= i ) ? 0 : ( gen.get_sa_coord( vit ) - i );
-			
-			// Increment the number of times this occurs
-            if( possible_locs[ beginning ] != -1 )
+            cerr << "ERROR: num of kmer hits: " << end - start + 1 << endl;
+        }
+
+        {
+            for( unsigned int vit = start; vit <= end; vit++ )
             {
-			    possible_locs[ beginning ]++;
+                //Match the sequence to a sequence that has two characters before and after.
+                //string to_match = gen.GetString((*vit)-i-2, search.size()+4);
+                
+                unsigned long beginning = ( gen.get_sa_coord( vit ) <= i ) ? 0 : ( gen.get_sa_coord( vit ) - i );
+                
+                // Increment the number of times this occurs
+                if( possible_locs[ beginning ] != -1 )
+                {
+                    possible_locs[ beginning ]++;
+                }
             }
-		}
+        }
 
 		map< unsigned long, int >::iterator loc_it;
 		for( loc_it = possible_locs.begin(); loc_it != possible_locs.end(); ++loc_it )
@@ -229,9 +248,10 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 		
 		if( unique.size() > gMAX_MATCHES )
         {
-#ifdef DEBUG
-            cerr << "too many matches! returning no mapping!" << endl;
-#endif
+
+//#ifdef DEBUG
+            //cerr << "too many matches! returning no mapping! " << search.name << "\t" << unique.size() << endl;
+//#endif
 			return false;
         }
 		

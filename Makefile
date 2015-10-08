@@ -146,6 +146,9 @@ profile : $(BUILDTARGET) example-threaded
 $(PLAIN_EXE_NAME) : $(EXE_OBJ_FILES) $(INC_FILES) inc/ScoredSeq.h inc/SeqManager.h
 	$(GXX) $(FLAGS) -o $(PLAIN_EXE_NAME) $(EXE_OBJ_FILES) $(INC) $(LIB) $(EXTRA_FLAGS)
 
+bin/gnumap-plain-debug : $(EXE_OBJ_FILES) $(INC_FILES) inc/ScoredSeq.h inc/SeqManager.h
+	$(GXX) $(FLAGS) -o bin/gnumap-plain-debug $(EXE_OBJ_FILES) $(INC) $(LIB) $(EXTRA_FLAGS)
+
 $(MPI_EXE_NAME) : $(EXE_OBJ_FILES) $(INC_FILES) inc/ScoredSeq.h inc/SeqManager.h
 	$(MPIXX) $(FLAGS) -o $(MPI_EXE_NAME) $(EXE_OBJ_FILES) $(INC) $(LIB) $(EXTRA_FLAGS)
 	
