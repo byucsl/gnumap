@@ -1,0 +1,391 @@
+Starting align...
+Setting strings...Done!
+Just beginning to align sequences...Setting sequences starting at 0, going for 175002240
+Calling copyScores for the last time.  First is 35.000000
+Finished.  
+Getting scores...All done!
+Time=1.8460 seconds
+Score of 35.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tggtgagcaatgggcgcagagtactttcgtgagtt
+Score of -10.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ctagtaaaggcctctttctggtataagagatttta
+Score of -9.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ctacagacacgacattgcagcaccgcgagagttgg
+Score of -7.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ttggttttgttgagggagtccgaccatgagctatg
+Score of -9.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ttatatcgttcgttacgccaactccaacaatattt
+Score of 1.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tcgggatcattcagaagcatgaatgacgtgactgt
+Score of -12.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+agttgcctctttactattacaaagtgggacgaaat
+Score of -10.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gcggaaatgccggcgtcgtaaaggaacgacagacc
+Score of -8.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gctatgtatggctcctccgatgcaggacgcgcgat
+Score of -14.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+agcgatctcggcttttcaccgtttagatcactcaa
+Score of -13.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ctcggtcttcccacatttctatttcaggcggaatc
+Score of -8.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gtagcctatcgcgaaaatatgaaccgtcgtatcga
+Score of -10.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+attacggatcatcatcgtcagatagcaaagaagag
+Score of -5.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tgcaaaaatatgcttcatgagaggaccgtccttat
+Score of -11.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+agtaaatgccaatagtggacctatccggcgaccac
+Score of -7.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+cagtcaactatcggtttcacactcaacctcagccg
+Score of -6.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+acgcggctctcgcagagattatgtcatacggttcg
+Score of -15.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+attagcccataaaattatatgatgtaccaatatta
+Score of -7.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+agttcctcctcgtggtcccagcctctctcgtttcc
+Score of -12.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gagtcagttcgcgtagatttgcgagtaaccctttc
+Score of -8.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gtagcccgtggagaaaccgctactcgggaaagtac
+Score of -14.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ccatcgaccgcctgagaaaatggagcacgagttgc
+Score of -12.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gtttgacattaataattggactagagcaatcgcga
+Score of -6.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+agcaagaggagaatgagaacggaggatccgtccgc
+Score of -12.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ttcaatgatactcctatggacgagtgactgacatc
+Score of -8.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+acaggatacgttgaagtggaacaccgtacctcatt
+Score of -6.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gtcgcaaggggcacaaccagagagtcacctgtcaa
+Score of -8.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+aaagggctgatgtcgactatcctaacctgctgctt
+Score of 2.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tggccccagaggcagcttgttagcgtgcgagagtt
+Score of -8.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+aggacggttcaggttactcaaggctgatttctatt
+Score of -17.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+caagacggtaaactcctttccacctgacgagtaca
+Score of -9.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+aagcagcatccgggataagcaccctcactcctctg
+Score of -12.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+caactcaatcatcgaagtctcgtgagttatgctgg
+Score of -5.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ttgtctagggcgcgagtggagcaactggcccggtg
+Score of -7.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+atggactcaacgatcaagaattcacactccacggt
+Score of -12.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gtttttggtataaaagaatacttgggctcttttct
+Score of -8.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+cgatggtggtgctggatgtgcatcccgggtaaagt
+Score of -11.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gccctcacggtggaactaggctcaggagggatttg
+Score of -11.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tgggctaaagacagtgtctttaaagggagacagtg
+Score of 0.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tcgtccaacgttaccagcacagtactccacttagt
+Score of -11.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ttttcatgagaaccaaccttacgtctccatgttac
+Score of -8.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gagcaccgggggttgcatatctgatggcaggggct
+Score of -6.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ggccctatctagtagccaacagtcgatcgcgcttg
+Score of -8.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gcgagagcagtcttcgttacaagcgtatctatcga
+Score of -13.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tcggccaagttctccgtccgtcgcagtataaccgt
+Score of -4.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+attgacacgcacgcgtgtattgctattcgagctat
+Score of -5.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tttgaggtttacatcacaccaggttcagggagatc
+Score of -14.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+aaattttgacaagactaaattcaaagaggttgttg
+Score of -7.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ttaattataagtggtaacaacgatctcatcgcggc
+Score of -14.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+aattatatactgcggttttcgtagcccatactagc
+Score of -9.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ggtaggtctaacttcgagcctaataagtgtccagc
+Score of -12.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gccagcaactctttggcccgcccgtgtggaatcct
+Score of -17.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+aataccccggtttggattcgtaaaggaatctttct
+Score of -10.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gagtcctggacgagagaagggcgccaggtagaaca
+Score of -9.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+cgttctgattaatacagactccgagggggtgaaat
+Score of -6.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tagttatattcaaccagagggccctgatcatgaaa
+Score of -12.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+aatatcctcagcggtccgaggcgaagtgctgctac
+Score of -9.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tcacaaatcgcaaagggtcgttgagagtaggttgg
+Score of -7.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tcgcatgatggacacttgattgacggaaaggattc
+Score of -4.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tctagaggcctcgacgttgcatcattcttgcctgc
+Score of -9.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+acagacactagaaaccggagattacacgttttgta
+Score of -11.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+cgaagggggctttatagcaggatcacgtagaccac
+Score of -9.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tgagccagggagctgtaccccatgaagctcgctgt
+Score of -11.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ctatagagtttctgagtaaaggctaaactgcgacg
+Score of -8.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+atgccagatcaagaagggtggtgattcatagatcc
+Score of -8.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gctgggggcgcttttagcgggatcattaccctaga
+Score of -10.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ccgtacgtggcgcgttctcatgattcgccccaata
+Score of -5.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+aggatccaatttctgcccccgatttcgtcattcgt
+Score of -5.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gtggaggttaggctaagaaatcctacctatcgtat
+Score of -5.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tgacaatgctgtactaggcaggtggcttgtcaact
+Score of -19.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+acccagttggccttatggcctggccgatgcccaaa
+Score of -9.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+actatgcgacctttcgctcagtaagcctctttgct
+Score of -7.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+atgcttatctgtcaccggtccgagatatatcgctt
+Score of -13.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+cttggccgactttacgttcatggccaatcacatgg
+Score of -8.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+attgagatgggcaaaaacgcagttatgaccccgga
+Score of -7.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gtaaaggcgctccgtaggtagcggatttagtcatc
+Score of -9.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+agacccgaacaatgatccattttcaagcaaaagac
+Score of -12.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+acaaccatcgtgtgctagccgcttcaacgaagtac
+Score of -6.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gtcagatctgacgcaatcttattcgttcctaacta
+Score of -11.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ttaccgcgcagcaactagctcgcgaggaaaattag
+Score of -2.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+cgataaacaaatgcgaatcgtttttttttaaggaa
+Score of -12.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ggaaggagcccctgaaattttttcctctattcatc
+Score of -9.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gacccggaacaataacttgggatagcttccgattc
+Score of -7.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gatcaccggcgtgagcggcgcaagtcctgcgtcgg
+Score of -10.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tttaacgttgacccataatctgactcacggtaaca
+Score of -10.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+aagtacacacctcccactgactaaagtagcagcgg
+Score of -12.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ctgattccggactattccattgcttaaatggggcc
+Score of -6.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+agattgtgataaccagggtgaaggtccatgcactt
+Score of -11.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gaccgccgagggccattaaattcactcccggtcac
+Score of -13.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tcaacggtatttcaacttgtgacactgcggaataa
+Score of -14.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gcgacgagtagctattctgccatacgacaatccac
+Score of -10.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+agccgcttcacgcgcatcttaattgactccgtaag
+Score of -11.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gcaaaacgcttctccccccgtctcacatcaatcgt
+Score of -7.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tggaaaactcacatacccggctgcggcatttcgat
+Score of -7.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ggttagacgtctgagctatgcatcatccacggtaa
+Score of -6.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+agacttgcggttaatgctgataccagtgaagagct
+Score of -16.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+agatcgccccgtaaagaatcaaggggtgtgatcac
+Score of -13.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gcgtatataaagaaacggaccggtacaagaccctg
+Score of -5.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ctgctgcaccaatgactcttcctcttggcacattc
+Score of -16.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+caacctttcataagatacccggtctaaattcctta
+Score of -8.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+cctgaaagacgtctgaacaccacctgagatccggt
+Score of -10.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+cgatgcaaatgataagcataaaagaattggctccc
+Score of -6.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+aacaagcgacggacaacaatgatacacgcgacgct
+Score of -11.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+cagtatactcctattaaatactctgttagcttcac
+Score of -12.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ctcacgtggcagcaacctacgagggtaagacataa
+Score of -2.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ggtctgcattgggactgcgctactccgcggcctca
+Score of -14.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+cttctctatactgaaatacccgtacgtgaggcaaa
+Score of -7.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tcaacacggtggcgagagaatgtagactgcaagaa
+Score of -9.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tatagcgtactgcactttcagtcaaaaagagaaaa
+Score of -12.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ccggcaaacacgtgatctgttctttaaaaaaccct
+Score of -11.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gctgattctacctgacacgtggagcacataaactg
+Score of -6.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ctaacacattagtcttaatgctttcttcgctagta
+Score of -11.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tatatcagctagtaaattacctgagtaggtgataa
+Score of -6.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+ttgagaactacttgtgttcaacagttctttaccgc
+Score of -13.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tgcgacttcattaccacaatttgccacactcgaac
+Score of -10.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+atgagctacgcctcccggtaaacacctactctcat
+Score of -17.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tccaatcccgaacgtcgtgcctgcgaaatatccgc
+Score of -16.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+cagaccacaccttgagttcgatcgccaagcttcaa
+Score of -5.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gcatccggctgtcacaggcctactgacgtcgaagt
+Score of -11.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+tagacacgcctctaagtgatcagttaatacttcaa
+Score of -8.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+aacgcaggaggggcgagcgaggggctaggaggatc
+Score of -5.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+cattagggcttcagtgcgcttgtactcttggcggg
+Score of -6.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gcctacccctgtgcgggcacaaattgggtctaagt
+Score of -9.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+atgccatgcctttgtgctggttcacatcagcaatc
+Score of -14.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+cacacatgtaagcacatgcttttctaaaatcttat
+Score of -12.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gaccactggttgcgtgacaccaccgcaaggttggg
+Score of -13.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gtacatcggtgttttcgaatgcagagatcgaaagc
+Score of -11.000000 and sequence
+tggtgagcaatgggcgcagagtactttcgtgagtt
+gaaccttgttagaagagaacagctttttaacggct
