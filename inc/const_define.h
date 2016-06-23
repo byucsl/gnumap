@@ -37,6 +37,11 @@ unsigned char gINT2BASE[16];
 unsigned char g_bs_CONVERSION[256];
 unsigned char g_gen_CONVERSION[256];
 
+// this flag is set to tell gnumap if it should use needleman-wunsch alignments
+// or if it should go solely based on hit counts. Default is set to true so that
+// it does use NW alignments, but we can turn it off.
+bool gNW = true;
+
 int gVERBOSE=1;
 #define DEF_MER_SIZE	10
 int gMER_SIZE=0;
