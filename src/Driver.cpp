@@ -437,19 +437,6 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 	Read* search = gReadArray[ rIndex ];
 	seq_map* unique = &gReadLocs[ rIndex ];
 
-    std::cout << "name:\t" << search->name << std::endl;
-    std::cout << "\tread:\t" << search->seq << std::endl;
-    std::cout << "\tcons:\t" << consensus << std::endl;
-
-    if( consensus.compare( search->seq ) == 0 )
-    {
-        std::cout << "\t\tsame!" << std::endl;
-    }
-    else
-    {
-        std::cout << "\t\tDIFFERENT*************" << std::endl;
-    }
-
 	// Too short to align
 	if( search->length < ( unsigned int ) gMER_SIZE )
     {
@@ -465,7 +452,6 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 
 
 	// We need to do the length-1 because it will go to the base at that position.
-    // TODO: figure out exactly what this is for
     // @masakistan: it sets the maximum alignment score by doing a needleman-wunsch
     // with an exact match which can then be used to calculate the minimum alinment score needed
     // we don't need this if we're not doing needleman-wunsch
@@ -473,8 +459,6 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
     {
         double max_align_score = bs.get_align_score( *search, consensus, 0, search->length - 1 );
 
-        std::cout << "\tmax align score:\t" << max_align_score << std::endl;
-        
         // Too low of quality to align
         if( max_align_score < gCUTOFF_SCORE )
         { 
@@ -512,8 +496,6 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
         min_align_score = gMIN_JUMP_MATCHES;
     }
 
-    std::cout << "min align score:\t" << min_align_score << std::endl;
-		
 	// Match the positive strand
 	if( gMATCH_POS_STRAND )
     {

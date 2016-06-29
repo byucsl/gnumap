@@ -119,6 +119,8 @@ void SNPScoredSeq::score(double denom, Genome &gen, unsigned int len, Read &read
 	string read_consensus = GetConsensus(read);
 
 	string gen_string = gen.GetString((*positions.begin()).first, seq_size);
+    // TODO: i think that this is broken...
+    // It looks like this is not using an outdated bs.get_align_score_w_traceback method 
 	string aligned = bs.get_align_score_w_traceback(read, read_consensus, gen_string).first;
 
 	set<pair<unsigned long,int> >::iterator sit;

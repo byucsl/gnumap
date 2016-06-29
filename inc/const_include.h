@@ -113,6 +113,7 @@ extern float gTRANSITION;
 extern float gTRANSVERSION;
 extern float gGAP;
 
+extern bool gNW;
 
 extern int gGEN_SKIP;
 extern unsigned int gBISULFITE;

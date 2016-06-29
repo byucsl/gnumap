@@ -47,6 +47,8 @@ void BSScoredSeq::score(double denom, Genome &gen, unsigned int len, Read &read,
 		rc.name = read.name;
 		read_consensus = GetConsensus(rc);
 		
+        // TODO: I think that this is broken too, it is using the outdated 
+        // bs.get_align_score_w_traceback method, does this need to be fixed?
 		aligned = bs.get_align_score_w_traceback(rc, read_consensus, gen_string).first;
 		
 		

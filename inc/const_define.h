@@ -100,7 +100,11 @@ unsigned int gMIN_CHOPPED_BASES = 4;	//if there's less than 4 bases that match t
 int gGEN_SKIP = 0;	// The number of bases we skip as we hash the genome
 unsigned int gGEN_SIZE = 8;	// The number of bases each GEN segment contains (per each unsigned int)
 unsigned int gJUMP_SIZE = 0;	// The number of bases we jump in a read (per hash)
-unsigned int gMIN_JUMP_MATCHES = 2;
+
+// This is being set to be a signed int because we shouldn't ever have a count that overflows and 
+// with it being signed we can use -1 as a flag that something has already been processed when doing
+// NW alignments
+int gMIN_JUMP_MATCHES = 2;
 
 int gSGREX = false;
 

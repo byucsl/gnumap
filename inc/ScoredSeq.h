@@ -321,7 +321,16 @@ class ScoredSeq {
 				rc.name = read.name;
 				string read_consensus = GetConsensus(rc);
 				
-				aligned = bs.get_align_score_w_traceback(rc,read_consensus,gen_string);
+                if( gNW )
+                {
+				    aligned = bs.get_align_score_w_traceback(rc,read_consensus,gen_string);
+                }
+                else
+                {
+                    aligned.first = read_consensus;
+                    aligned.second = string();
+                }
+
 				//fprintf(stderr,"[%d] Aligning %s with %s, result %s\n",firstStrand,gen_string.c_str(),read_consensus.c_str(),aligned.first.c_str());
 		
 				// Clean up the copy
@@ -331,15 +340,34 @@ class ScoredSeq {
 				delete[] rev_pwm;
 			}
 			else {
-				aligned = bs.get_align_score_w_traceback(read,consensus,gen_string);
+                if( gNW )
+                {
+                    aligned = bs.get_align_score_w_traceback(read,consensus,gen_string);
+                }
+                else
+                {
+                    aligned.first = consensus;
+                    aligned.second = string();
+                }
+
 				//fprintf(stderr,"[%d] Aligning %s with %s, result %s\n",firstStrand,gen_string.c_str(),consensus.c_str(),aligned.first.c_str());
 			}
 
 
 			string CIGAR = aligned.second;
 			if(CIGAR.length() == 0)
-				CIGAR = "*";
-			else {
+            {
+                if( gNW )
+                {
+				    CIGAR = "*";
+                }
+                else
+                {
+                    CIGAR = std::to_string( consensus.size() ) + "M";
+                }
+            }
+			else
+            {
 				fix_CIGAR_for_deletions(CIGAR);
 			}
 
