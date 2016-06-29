@@ -197,6 +197,9 @@ void usage(int has_error, const char * errmessage) {
 		 << "                               compliment match to the genome.\n"
 		 << "  --down_strand                Will only search the negaitve strand (opposite of\n"
 		 << "                               --up_strand command)\n"
+         << "  --no_nw                      This will disable the Needleman-Wunsch alignments and\n"
+         << "                               only use hit count as the basis for alignment. Score is\n"
+         << "                               calculated by summing the number of hits for a position.\n"
 		 << "\n"
 		 << "Options for Read Quality\n"
 		 << "  -q, --read_quality=DOUBLE    Read quality cutoff:  won't align reads if they are\n"
@@ -205,10 +208,11 @@ void usage(int has_error, const char * errmessage) {
 		 << "  --illumina                   Defines the fastq file as Illumina file (otherwise\n"
 		 << "                               does nothing)\n"
 		 << "\n"
-		 << "Options for Creating Hash and Genome\n"
+		 << "Options for creating index and genome\n"
 		 << "  -m, --mer_size=INT           Mer size (default="<<DEF_MER_SIZE<<")\n"
 		 << "  -s, --gen_skip=INT           Number of bases to skip when the genome is aligned\n"
 		 << "  --bin_size=INT               The resolution for GNUMAP (default: 8)\n"
+         << "  -h, --max_kmer=INT           Kmers that occur above this threshold are not used.\n"
 		 << "\n"
 		 << "Options for Printing:\n"
 		 << "  -0, --print_full             Print locations for the entire sequence, not\n"
@@ -448,45 +452,55 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 
 
 	// We need to do the length-1 because it will go to the base at that position.
-	double max_align_score = bs.get_align_score( *search, consensus, 0, search->length - 1 );
+    // @masakistan: it sets the maximum alignment score by doing a needleman-wunsch
+    // with an exact match which can then be used to calculate the minimum alinment score needed
+    // we don't need this if we're not doing needleman-wunsch
+    if( gNW )
+    {
+        double max_align_score = bs.get_align_score( *search, consensus, 0, search->length - 1 );
 
-	
-	// Too low of quality to align
-	if( max_align_score < gCUTOFF_SCORE )
-    { 
+        // Too low of quality to align
+        if( max_align_score < gCUTOFF_SCORE )
+        { 
 #ifdef DEBUG
-		fprintf( stderr, "%s:%s didn't meet cutoff: %f vs %f\n", consensus.c_str(), search->fq.c_str(),
-							max_align_score, gCUTOFF_SCORE );
+            fprintf( stderr, "%s:%s didn't meet cutoff: %f vs %f\n", consensus.c_str(), search->fq.c_str(),
+                                max_align_score, gCUTOFF_SCORE );
 #endif
-		num_not_matched++;
-		gReadDenominator[ rIndex ] = 0;
-		gTopReadScore[ rIndex ] = READ_TOO_POOR;
-		clearMapAt( rIndex );
-		return;
-	}
+            num_not_matched++;
+            gReadDenominator[ rIndex ] = 0;
+            gTopReadScore[ rIndex ] = READ_TOO_POOR;
+            clearMapAt( rIndex );
+            return;
+        }
 
 #ifdef DEBUG
-	if(gVERBOSE > 2)
-    {
-		cerr << "\nNext Read ("<< search->name << ") aligned with " << max_align_score << ", less than " << gCUTOFF_SCORE << "?\n";
-		cerr << consensus << "\n";
-	}
+        if(gVERBOSE > 2)
+        {
+            cerr << "\nNext Read ("<< search->name << ") aligned with " << max_align_score << ", less than " << gCUTOFF_SCORE << "?\n";
+            cerr << consensus << "\n";
+        }
 #endif
 
-	if( perc )
-    {
-		min_align_score = gALIGN_SCORE * max_align_score;
+        if( perc )
+        {
+            min_align_score = gALIGN_SCORE * max_align_score;
+        }
+        else
+        {
+            min_align_score = gALIGN_SCORE;
+        }
     }
-	else
+    else
     {
-		min_align_score = gALIGN_SCORE;
+        // TODO: figure out what this value should actually be set to
+        min_align_score = gMIN_JUMP_MATCHES;
     }
-		
+
 	// Match the positive strand
 	if( gMATCH_POS_STRAND )
     {
         //cerr << "checking positive strand" << endl;
-		//fprintf(stderr,"Aligning to UP_Strand\n");
+		//fprintf(stderr, "Aligning to UP_Strand\n" );
 		bool aligned = align_sequence( gen, *unique, *search, consensus, 
 									min_align_score, denominator, top_align_score,
 									POS_STRAND, thread_id );
@@ -513,7 +527,7 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 	if( gMATCH_NEG_STRAND )
     {
         //cerr << "checking negative strand" << endl;
-		//fprintf(stderr,"Aligning to DOWN_Strand\n");
+		//fprintf(stderr, "Aligning to DOWN_Strand\n" );
 		//TODO: trim consensus before flipping and then send a query!
 		//consensus = trim_end_string(consensus,search->length);
 		string rev_consensus = reverse_comp(consensus);
@@ -598,7 +612,7 @@ void create_match_output(GENOME_t &gen, unsigned int rIndex, string &consensus) 
 	fprintf( stderr,"[%d/%d] [%s] has %lu matches\n", iproc, nproc, gReadArray[rIndex]->name, gReadLocs[rIndex].size() );
 #endif
 
-	if(gReadLocs[rIndex].size() == 0)
+	if(gReadLocs[rIndex].size() == 0 )
     {
 #ifdef DEBUG
 		if(gTopReadScore[rIndex] != READ_TOO_POOR)
@@ -624,8 +638,8 @@ void create_match_output(GENOME_t &gen, unsigned int rIndex, string &consensus) 
 /*
 		vector<TopReadOutput> tro = (*sit).second->get_SAM(gReadDenominator[rIndex],*gReadArray[rIndex],consensus,gen,rIndex);
 		for(unsigned int i=0; i<tro.size(); i++) {
-			if(strcmp(tro[i].CHR_NAME,"chr2") == 0)
-				fprintf(stderr,"Found one here\n");
+			if(strcmp(tro[i].CHR_NAME, "chr2" ) == 0 )
+				fprintf(stderr, "Found one here\n" );
 		}
 */		
 		// Here's the flag for printing a SAM record at every position
@@ -691,14 +705,14 @@ void create_match_output(GENOME_t &gen, unsigned int rIndex, string &consensus) 
 			
 			vector<TopReadOutput>::iterator vit = out_vec.begin();
 			for(; vit != out_vec.end(); vit++) {
-				//fprintf(stderr,"Pushing back...\n");
+				//fprintf(stderr, "Pushing back...\n" );
 				gTopReadOutput.push_back(*vit);
 			}
 			MUTEX_UNLOCK(&write_lock);
 		}
 		// We want to add this to the vector if this isn't the largemem option.  If it is, we'll
 		// only add if this is the writer node
-		else if(!gMPI_LARGEMEM || (iproc == 0) ) {
+		else if(!gMPI_LARGEMEM || (iproc == 0 ) ) {
 			TopReadOutput tro;
 			tro.consensus = consensus;
 			tro.qual = str2qual(*gReadArray[rIndex]);
@@ -707,7 +721,7 @@ void create_match_output(GENOME_t &gen, unsigned int rIndex, string &consensus) 
 			// Do we need to have the specific failure process?
 			tro.MAPQ = READ_FAILED;
 
-			//fprintf(stderr,"Setting it to READ_FAILED here\n");
+			//fprintf(stderr, "Setting it to READ_FAILED here\n" );
 
 #ifdef DEBUG_TIME			
 			double wait_begin = When();
@@ -786,7 +800,7 @@ void readPWM(const char* fn) {
         {
 			if(sscanf(temp_chr,"%s %f %f %f %f",label,&a,&c,&g,&t) != 5) {
 				char* error = new char[THIS_BUFFER];
-				strcat(error,"Error in Score File: ");
+				strcat(error, "Error in Score File: " );
 				strcat(error,temp_chr);
 				throw(error);
 			}
@@ -794,7 +808,7 @@ void readPWM(const char* fn) {
 		else {
 			if(sscanf(temp_chr,"%f %f %f %f",&a,&c,&g,&t) != 4) {
 				char* error = new char[THIS_BUFFER];
-				strcat(error,"Error in Score File: ");
+				strcat(error, "Error in Score File: " );
 				strcat(error,temp_chr);
 				throw(error);
 			}
@@ -881,7 +895,7 @@ void sig_handler(int signum) {
 
 	// Print the backtrace
 	void* bt[10];
-	size_t size = backtrace(bt,10);
+	size_t size = backtrace(bt, 10 );
 	backtrace_symbols_fd(bt, size, 2);
 
 	exit(0);
@@ -891,7 +905,7 @@ void sig_handler(int signum) {
  * We'll pull out this code from the main body into a separate function
  */
 void setup_matrices() {
-	memset(g_gen_CONVERSION,4,256);
+	memset(g_gen_CONVERSION,4, 256 );
 	g_gen_CONVERSION[(int)'a'] = g_gen_CONVERSION[(int)'A'] = 0;
 	g_gen_CONVERSION[(int)'c'] = g_gen_CONVERSION[(int)'C'] = 1;
 	g_gen_CONVERSION[(int)'g'] = g_gen_CONVERSION[(int)'G'] = 2;
@@ -903,7 +917,7 @@ void setup_matrices() {
 	g_gen_CONVERSION[(int)'\0'] = 6;
 	g_gen_CONVERSION[(int)'>'] = 7;
 
-	memset(g_bs_CONVERSION,4,256);
+	memset(g_bs_CONVERSION,4, 256 );
 	g_bs_CONVERSION[(unsigned int)'a'] = g_bs_CONVERSION[(unsigned int)'A'] = 0;
 	g_bs_CONVERSION[(unsigned int)'c'] = g_bs_CONVERSION[(unsigned int)'C'] = 1;
 	g_bs_CONVERSION[(unsigned int)'g'] = g_bs_CONVERSION[(unsigned int)'G'] = 2;
@@ -915,7 +929,7 @@ void setup_matrices() {
 	g_bs_CONVERSION[(unsigned int)'\0'] = 6;
 	g_bs_CONVERSION[(unsigned int)'>'] = 7;
 
-	memset(gINT2BASE,'?',16);
+	memset(gINT2BASE,'?', 16 );
 	gINT2BASE[0] = 'a';
 	gINT2BASE[1] = 'c';
 	gINT2BASE[2] = 'g';
@@ -1024,7 +1038,7 @@ int main(const int argc, const char* argv[]) {
 
 	if(argc == 1) //means only the bin/gnumap parameter
     {
-		usage(0,"");
+		usage(0, "" );
     }
 
 	if(argc < 2)
@@ -1076,7 +1090,7 @@ int main(const int argc, const char* argv[]) {
 	params << "\tVerbose: " << gVERBOSE << endl;
 	params << "\tGenome file(s): " << genome_file << endl;
 	params << "\tOutput file: " << output_file << endl;
-	
+	params << "\tMax matches: " << gMAX_MATCHES << endl;
     if(gPRINT_ALL_SAM)
     {
 		params << "\t\tPrinting all SAM records\n";
@@ -1102,6 +1116,15 @@ int main(const int argc, const char* argv[]) {
 
 		params << "\tUsing cutoff score of " << gCUTOFF_SCORE << endl;
 	}
+
+    if( gNW )
+    {
+        params << "\tUsing Needleman-Wunsch alignments" << endl;
+    }
+    else
+    {
+        params << "\tUsing kmer hit counts as proxy for full sequence alignment" << endl;
+    }
 
 #ifdef MPI_RUN
 	// You must compile the MPI library to work with multiple threads otherwise
@@ -1136,10 +1159,10 @@ int main(const int argc, const char* argv[]) {
 	}
 	
     gGEN_SKIP++;	// We're mod'ing in the function, so we want to mod by GEN_SKIP+1
-	
-    if(gMAX_HASH_SIZE > 0)
+    
+    if(gMAX_KMER_SIZE > 0)
     {
-		params << "\tLargest Hash Size: " << gMAX_HASH_SIZE << endl;
+		params << "\tLargest Kmer Size: " << gMAX_KMER_SIZE << endl;
     }
 	
     if(!gMER_SIZE)	//if the user didn't specify one
@@ -1274,11 +1297,11 @@ int main(const int argc, const char* argv[]) {
     {
 		if(gGEN_SIZE < 1)
         {
-			usage(1,"Invalid bin size (must be more than 0)\n");
+			usage(1, "Invalid bin size (must be more than 0)\n" );
         }
 		if(gGEN_SIZE > 8)
         {
-			usage(1,"Invalid bin size (must be 8 or less)\n");
+			usage(1, "Invalid bin size (must be 8 or less)\n" );
         }
 		params << "\tUsing irregular bin size of " << gGEN_SIZE << endl;
 	}
@@ -1311,7 +1334,7 @@ int main(const int argc, const char* argv[]) {
     }
 #endif
 
-	if(gVERBOSE)
+	//if(gVERBOSE)
     {
 		cerr << params.str() << endl;
 	}
@@ -1342,7 +1365,7 @@ int main(const int argc, const char* argv[]) {
 	// Don't write anything to the output file
 	/*
 	// only write the params if you're the first node		
-	if(iproc == 0) {
+	if(iproc == 0 ) {
 		of << "<<HEADER\n";
 		of << params.str();
 		of << "\nHEADER\n";
@@ -1365,7 +1388,7 @@ int main(const int argc, const char* argv[]) {
 #ifdef MPI_RUN
 		// don't need to do this if we're only reading in a file
 		if(!gREAD) {
-			if(gMPI_LARGEMEM && iproc == 0) {
+			if(gMPI_LARGEMEM && iproc == 0 ) {
 				GENOME_t notherGen;
 				// we don't care about these parameters.  Just read the whole thing
 				notherGen.use(genome_file);
@@ -1424,13 +1447,11 @@ int main(const int argc, const char* argv[]) {
     }
 	
 	// Don't want to print any header information in this file
-	//if(iproc == 0)
+	//if(iproc == 0 )
 		// Output SAM by default
 		//of << "# <QNAME>\t<FLAG>\t<RNAME>\t<POS>\t<MAPQ>\t<CIGAR>\t<MRNM>\t<MPOS>\t<ISIZE>\t<SEQ>\t<QUAL>\t<OPT>\n";
 
-    cerr << "gsm" << endl;    
 	gSM = new SeqManager(gReadArray, seq_file, nReads, gNUM_THREADS);
-    cerr << "gsm done!" << endl;
 
 	/*
 	if(!iproc)
@@ -1484,7 +1505,7 @@ int main(const int argc, const char* argv[]) {
     cerr << "open mp" << endl;
 	cond_thread_num = 1;
 	omp_set_num_threads(gNUM_THREADS);
-	thread_opts* t_o = new thread_opts(gGen,*gSM,0);
+	thread_opts* t_o = new thread_opts(gGen,*gSM, 0 );
 	thread_rets* ret = omp_thread_run(t_o);
 
 	unsigned int seqs_matched = 0, seqs_not_matched = 0;
@@ -1501,17 +1522,17 @@ int main(const int argc, const char* argv[]) {
 #ifdef MPI_RUN
 		if(gMPI_LARGEMEM) 
         {
-            cerr << "mpi large mem" << endl;
+            //cerr << "mpi large mem" << endl;
 			pthread_create(&pthread_hand[i], NULL, mpi_thread_run, (void*)t_o);
         }
 		else
         {
-            cerr << "parallel thread" << endl;
+            //cerr << "parallel thread" << endl;
 			pthread_create(&pthread_hand[i], NULL, parallel_thread_run, (void*)t_o);
         }
 
 #else //MPI_RUN not defined
-        cerr << "parallel thread 2" << endl;
+        //cerr << "parallel thread 2" << endl;
 		pthread_create(&pthread_hand[i], NULL, parallel_thread_run, (void*)t_o);
 #endif //end MPI_RUN
 	}
@@ -1646,7 +1667,7 @@ int main(const int argc, const char* argv[]) {
 #ifdef DISCRETIZE
 				if(gVERBOSE > 0)
                 {
-					fprintf(stderr,"Getting character allocations...\n");
+					fprintf(stderr, "Getting character allocations...\n" );
                 }
 				center_d* read_ptr = gGen.GetGenomeAllotPtr();
 				
@@ -1682,7 +1703,7 @@ int main(const int argc, const char* argv[]) {
 #else  //not defined INTDISC or DISCRETIZED
 				if(gVERBOSE > 0)
                 {
-					fprintf(stderr,"A...");
+					fprintf(stderr, "A..." );
                 }
 				// Do the read A's now
 				gen_ptr = gGen.GetGenomeAPtr();
@@ -1693,7 +1714,7 @@ int main(const int argc, const char* argv[]) {
 				}
 				if(gVERBOSE > 0)
                 {
-					fprintf(stderr,"C...");
+					fprintf(stderr, "C..." );
                 }
 				// C's
 				gen_ptr = gGen.GetGenomeCPtr();
@@ -1704,7 +1725,7 @@ int main(const int argc, const char* argv[]) {
 				}
 				if(gVERBOSE > 0)
                 {
-					fprintf(stderr,"G...");
+					fprintf(stderr, "G..." );
                 }
 				// G's
 				gen_ptr = gGen.GetGenomeGPtr();
@@ -1715,7 +1736,7 @@ int main(const int argc, const char* argv[]) {
 				}
 				if(gVERBOSE > 0)
                 {
-					fprintf(stderr,"T...");
+					fprintf(stderr, "T..." );
                 }
 				// T's
 				gen_ptr = gGen.GetGenomeTPtr();
@@ -1726,7 +1747,7 @@ int main(const int argc, const char* argv[]) {
 				}
 				if(gVERBOSE > 0)
                 {
-					fprintf(stderr,"N...");
+					fprintf(stderr, "N..." );
                 }
 				// N's
 				gen_ptr = gGen.GetGenomeNPtr();
@@ -1738,7 +1759,7 @@ int main(const int argc, const char* argv[]) {
 #ifdef _INDEL
 				if(gVERBOSE > 0)
                 {
-					fprintf(stderr,"Insertion...");
+					fprintf(stderr, "Insertion..." );
                 }
 				// Insertions's
 				gen_ptr = gGen.GetGenomeIPtr();
@@ -1749,7 +1770,7 @@ int main(const int argc, const char* argv[]) {
 				}
 				if(gVERBOSE > 0)
                 {
-					fprintf(stderr,"Deletion...");
+					fprintf(stderr, "Deletion..." );
                 }
 				// Deletions's
 				gen_ptr = gGen.GetGenomeDPtr();
@@ -1766,7 +1787,7 @@ int main(const int argc, const char* argv[]) {
 		
 		fprintf(stderr,"\n[-/%d] Finished!  Printing final .sgr/.gmp file\n",iproc);
 		// Then print out our new genome
-		if ((gSAM2GMP) && (iproc == 0)) //added by CJ to select an option of creating gmp file, 04/23/2012
+		if ((gSAM2GMP) && (iproc == 0 )) //added by CJ to select an option of creating gmp file, 04/23/2012
         {
 			gGen.PrintFinal(output_file);
         }
@@ -1812,7 +1833,7 @@ int main(const int argc, const char* argv[]) {
 	
 #endif //MPI_RUN
 
-	if(iproc == 0)
+	if(iproc == 0 )
     {
 		double time_prog_end = When();
 		
@@ -2198,7 +2219,7 @@ void clean_cond_wait(bool my_finished) {
 		
 	}
 	else {
-		//fprintf(stderr,"Exiting the output thingy\n");
+		//fprintf(stderr, "Exiting the output thingy\n" );
 		// Now that we're done, reset the global SeqManager's edit point
 		gSM->resetCounter();
 		gReadsDone = 0;
@@ -2227,7 +2248,7 @@ void single_clean_cond_wait(bool my_finished, int thread_no, bool verbose) {
 	finished_arr[thread_no] = my_finished;
 
 	// Only have one thread check
-	if(thread_no == 0) {
+	if(thread_no == 0 ) {
 		unsigned int total = 0;
 		// We want to make sure every thread has checked in here to verify that they're done.
 		for(unsigned int i=0; i<gNUM_THREADS; i++) {
@@ -2254,9 +2275,11 @@ void single_clean_cond_wait(bool my_finished, int thread_no, bool verbose) {
  */
 void* parallel_thread_run(void* t_opts) {
 	//cout << "New Thread\n";
-	fprintf(stderr,"CALLING PARALLEL_THREAD_RUN\n");
+	//fprintf(stderr, "CALLING PARALLEL_THREAD_RUN\n" );
     
 	unsigned int thread_id = ((thread_opts*)t_opts)->thread_id;
+
+    //cout << "Calling thread no: " << thread_id << endl;
 
 	unsigned int numRPT = READS_PER_PROC;
 
@@ -2283,68 +2306,62 @@ void* parallel_thread_run(void* t_opts) {
         of << "@PG\tID:gnumap\tPN:gnumap\tVN:" << gVERSION << "\tCL:" << cl_args << endl;
     }
 
-
-
 	// Fill the read buffer
-	while(!my_finished) {
+	while( !my_finished )
+    {
 
 		//fprintf(stdout,"[%d/%d at %d] Thread continuing, finshed=%d, mine=%d\n",
 		//		iproc,thread_id,iter_num,finished,my_finished);
 
 		//fprintf(stderr,"[%d/%d] Getting more reads from %u to %u\n",thread_id,iproc,read_begin,read_end);
-		my_finished = !gSM->getMoreReads(read_begin,read_end,false);
+		my_finished = !gSM->getMoreReads( read_begin, read_end, false );
 		//fprintf(stderr,"[%d/%d] Got more reads successfully? %s from %d to %d\n",
 		//		thread_id,iproc,!my_finished ? "Y" : "**N**",read_begin,read_end);
 
 
-		for(unsigned int k=read_begin; k<read_end; k++)
+		for( unsigned int k = read_begin; k < read_end; k++ )
         {
 			//vector<vector<double> > temp_vect = ((thread_opts*)t_opts)->seqs[k];
 			Read* temp_read = gReadArray[k];
-			if(!temp_read)
+			if( !temp_read )
             {
 				break;
             }
 			
-			string consensus = GetConsensus(*temp_read);
-			set_top_matches(((thread_opts*)t_opts)->gen, k, consensus, bad_seqs, good_seqs, thread_id);
+            //cerr << thread_id << ":\t" << temp_read->name << endl;
+			string consensus = GetConsensus( *temp_read );
+			set_top_matches( ( ( thread_opts* ) t_opts )->gen, k, consensus, bad_seqs, good_seqs, thread_id );
 			seqs_processed++;
 			
 		}  //end for loop
 		
 		// We'll break these two loops up so they can be doing different work instead of
 		// getting caught up on all the mutex locks.
-		for(unsigned int k=read_begin; k<read_end; k++)
+		for( unsigned int k = read_begin; k < read_end; k++ )
         {
-			if(!gReadArray[k])
+			if( !gReadArray[ k ] )
             {
 				break;
             }
 			
-			string consensus = GetConsensus(*(gReadArray[k]));
-			create_match_output(((thread_opts*)t_opts)->gen, k, consensus);
+			string consensus = GetConsensus( *( gReadArray[ k ] ) );
+			create_match_output( ( ( thread_opts* )t_opts )->gen, k, consensus );
 
-			delete_read(gReadArray[k]);
-			gReadArray[k] = 0;
+			delete_read( gReadArray[ k ] );
+			gReadArray[ k ] = 0;
 		}
 		
 		// This just sends one processor to print everything out
-		if(thread_id == 0)
+		if(thread_id == 0 )
+        {
 			single_write_cond_wait(thread_id);
+        }
 			
-		//fprintf(stdout,"[%d/%d] Before Clean cond wait and cond_thread_num=%d\n",iproc,thread_id,cond_thread_num);
-		//double s_time = When();
 		single_clean_cond_wait(my_finished, thread_id, true);
-		//double e_time = When();
-		//fprintf(stderr,"[%d/%d] Total wait time for clean_cond is %f\n",
-		//		iproc,thread_id,e_time-s_time);
-		//fprintf(stderr,"[%d/%d at %d] After Clean cond wait and cond_thread_num=%d and my_finished=%d, finished=%d\n",
-		//			iproc,thread_id,iter_num,cond_thread_num,my_finished,finished);
-		
 	} // end while(!my_finished)
 		
 	// Make sure we wait for everyone to finish here
-	if(thread_id == 0)
+	if(thread_id == 0 )
     {
 		while(!finished)
         {
@@ -2354,13 +2371,12 @@ void* parallel_thread_run(void* t_opts) {
 
 	//fprintf(stderr,"[%d/%d] getting ready to enter single_write_cond_wait...\n",iproc,thread_id);
 	// Print them out here, just to make sure
-	if(thread_id == 0)
+	if(thread_id == 0 )
     {
 		single_write_cond_wait(thread_id);
     }
 
 	//fprintf(stderr,"[%d/%d] Finished after processing %d/%u reads with %u good and %u bad\n",iproc,thread_id,seqs_processed,gSM->getTotalSeqCount(),good_seqs,bad_seqs);
-
 
 	struct thread_rets* ret = new thread_rets;
 	ret->good_seqs = good_seqs;
@@ -2377,7 +2393,7 @@ void* parallel_thread_run(void* t_opts) {
  */
 #ifdef OMP_RUN
 thread_rets* omp_thread_run(thread_opts* t_opts) {
-	fprintf(stderr,"CALLING OMP_THREAD_RUN\n");
+	fprintf(stderr, "CALLING OMP_THREAD_RUN\n" );
 
 	unsigned int i,j, nReadsRead, good_seqs=0, bad_seqs=0;
 #ifdef DEBUG_TIME
@@ -2401,7 +2417,7 @@ thread_rets* omp_thread_run(thread_opts* t_opts) {
 }
 
 		// Use omp to parallelize this code
-#pragma omp for private(i) schedule(dynamic,128) reduction(+:good_seqs) reduction(+:bad_seqs)
+#pragma omp for private(i) schedule(dynamic, 128 ) reduction(+:good_seqs) reduction(+:bad_seqs)
 		for(i=0; i<nReadsRead; i++) {
 			//fprintf(stderr,"[%d:%d] Setting match output for %d\n",iproc,omp_get_thread_num(),i);
 			string consensus = GetConsensus(*(gReadArray[i]));
@@ -2422,7 +2438,7 @@ thread_rets* omp_thread_run(thread_opts* t_opts) {
 #endif
 }
 
-#pragma omp for private(i) schedule(dynamic,128)
+#pragma omp for private(i) schedule(dynamic, 128 )
 		for(i=0; i<nReadsRead; i++) {
 			//fprintf(stderr,"[%d:%d] Creating match output for %d\n",iproc,omp_get_thread_num(),i);
 			string consensus = GetConsensus(*(gReadArray[i]));
@@ -2488,7 +2504,7 @@ thread_rets* omp_thread_run(thread_opts* t_opts) {
  * This function will be used by each thread when the MPI_largmem flag is used.
  */
 void* mpi_thread_run(void* t_opts) {
-	fprintf(stderr,"CALLING MPI_THREAD_RUN\n");
+	fprintf(stderr, "CALLING MPI_THREAD_RUN\n" );
 
 	while(!setup_complete);	// Busy-Wait for the setup to complete
 	
@@ -2736,7 +2752,7 @@ int set_arg(const char* param, const char* assign, int &count) {
 				return PARSE_ERROR;
 			break;
 		case 'h':
-			if(sscanf(assign,"%d",&gMAX_HASH_SIZE) < 1)
+			if(sscanf(assign,"%d",&gMAX_KMER_SIZE) < 1)
 				return PARSE_ERROR;
 			break;
 		case 'S':
@@ -2790,7 +2806,7 @@ int set_arg(const char* param, const char* assign, int &count) {
 				return PARSE_ERROR;
 			break;
 		case '?':
-			usage(0,"");
+			usage(0, "" );
 		default:
 			return PARSE_ERROR;
 	}
@@ -2814,7 +2830,7 @@ enum {
 	PAR_BUFFER,
 	PAR_MAX_MATCH,
 	PAR_UNIQUE,
-	PAR_MAX_HASH,
+	PAR_MAX_KMER,
 	PAR_SUBST_FILE,
 	PAR_GAP_PENALTY,
 	PAR_MAX_GAP,
@@ -2839,7 +2855,8 @@ enum {
 	PAR_SNP_PVAL,
 	PAR_SNP_MONOP,
 	PAR_NO_GMP,
-	PAR_ASSEMBLER
+	PAR_ASSEMBLER,
+    PAR_NO_NW
 };
 
 int set_arg_ext(const char* param, const char* assign, int &count) {
@@ -2847,175 +2864,182 @@ int set_arg_ext(const char* param, const char* assign, int &count) {
 	int which = 0;
 	int adjust=0;
 
-	if(strncmp(param+2,"genome=",7) == 0) {	//check to see if it's the genome
+    // TODO: fix the 'adjust' parameter as it appears to be inconsistent
+	if( strncmp(param+2, "genome=", 7 ) == 0 ) {	//check to see if it's the genome
 		//which = 'g';
 		which = PAR_GENOME;
 		adjust = 8;	//the size of "genome" plus 2
 	}
-	else if(strncmp(param+2,"length=",7) == 0) {
+	else if( strncmp(param+2, "length=", 7 ) == 0 ) {
 		//which = 'l';
 		which = PAR_LENGTH;
 		adjust = 8;
 	}
-	else if(strncmp(param+2,"output=",7) == 0) {
+	else if( strncmp(param+2, "output=", 7 ) == 0 ) {
 		//which = 'o';
 		which = PAR_OUTPUT;
 		adjust = 8;
 	}
-	else if(strncmp(param+2,"align_score=",12) == 0) {
+	else if( strncmp( param + 2, "align_score=", 12 ) == 0 ) {
 		//which = 'a';
 		which = PAR_ALIGN_SCORE;
 		adjust = 13;
 	}
 	// only use strcmp when there won't be a second argument
-	else if(strcmp(param+2,"percent") == 0) {
+	else if( strcmp( param + 2, "percent") == 0 ) {
 		//which = 'p';
 		which = PAR_PERCENT;
 		adjust = 9;
 	}
-	else if(strcmp(param+2,"raw") == 0) {
+    else if( strcmp( param + 2, "no_nw" ) == 0 )
+    {
+        which = PAR_NO_NW;
+        adjust = 7;
+    }
+	else if( strcmp( param + 2, "raw") == 0 ) {
 		//which = 'p';
 		which = PAR_RAW;
 		adjust = 9;
 	}
-	else if(strncmp(param+2,"read_quality=",13) == 0) {
+	else if( strncmp( param + 2, "read_quality=", 13 ) == 0 ) {
 		which = PAR_CUTOFF_SCORE;
 		adjust = 15;
 	}
-	else if(strncmp(param+2,"verbose=",8) == 0) {
+	else if( strncmp( param + 2, "verbose=", 8 ) == 0 ) {
 		//which = 'v';
 		which = PAR_VERBOSE;
 		adjust = 9;
 	}
-	else if(strncmp(param+2,"num_proc=",9) == 0) {
+	else if( strncmp( param + 2, "num_proc=", 9 ) == 0 ) {
 		//which = 'c';
 		which = PAR_NUM_PROC;
 		adjust = 10;
 	}
-	else if(strncmp(param+2,"mer_size=",9) == 0) {
+	else if( strncmp( param + 2, "mer_size=", 9 ) == 0 ) {
 		//which = 'm';
 		which = PAR_MER_SIZE;
 		adjust = 10;
 	}
-	else if(strncmp(param+2,"buffer=",7) == 0) {
+	else if( strncmp( param + 2, "buffer=", 7 ) == 0 ) {
+    cerr << "gsm done!" << endl;
 		//which = 'B';
 		which = PAR_BUFFER;
 		adjust = 8;
 	}
-	else if(strncmp(param+2,"max_match=",9) == 0) {
+	else if( strncmp( param + 2, "max_match=", 9 ) == 0 ) {
 		//which = 'T';
 		which = PAR_MAX_MATCH;
 		adjust = 10;
 	}
-	else if(strncmp(param+2,"subst_file=",9) == 0) {
+	else if( strncmp( param + 2, "subst_file=", 9 ) == 0 ) {
 		//which = 'S';
 		which = PAR_SUBST_FILE;
 		adjust = 10;
 	}
-	else if(strncmp(param+2,"gap_penalty=",12) == 0) {
+	else if( strncmp( param + 2, "gap_penalty=", 12 ) == 0 ) {
 		//which = 'G';
 		which = PAR_GAP_PENALTY;
 		adjust = 13;
 	}
-	else if(strncmp(param+2,"max_gap=",8) == 0) {
+	else if( strncmp( param + 2, "max_gap=", 8 ) == 0 ) {
 		//which = 'M';
 		which = PAR_MAX_GAP;
 		adjust = 9;
 	}
-	else if(strncmp(param+2,"adaptor=",8) == 0) {
+	else if( strncmp( param + 2, "adaptor=", 8 ) == 0 ) {
 		//which = 'A';
 		which = PAR_ADAPTOR;
 		adjust = 9;
 	}
-	else if(strcmp(param+2,"print_full") == 0) {
+	else if( strcmp( param + 2, "print_full" ) == 0 ) {
 		//which = '0';
 		which = PAR_PRINT_FULL;
 		adjust = 12;
 	}
-	else if(strcmp(param+2,"print_all_sam") == 0) {
+	else if( strcmp( param + 2, "print_all_sam" ) == 0 ) {
 		which = PAR_PRINT_ALL_SAM;
 		adjust = 13;
 	}
-	else if(strcmp(param+2,"vcf") == 0) {
+	else if( strcmp( param + 2, "vcf" ) == 0 ) {
 		which = PAR_VCF;
 		adjust = 3;
 	}
-	else if(strcmp(param+2,"bs_seq") == 0) {
+	else if( strcmp( param + 2, "bs_seq" ) == 0 ) {
 		//which = 'b';
 		which = PAR_BS_SEQ;
 		adjust = 8;
 	}
-	else if(strcmp(param+2,"b2") == 0) {
+	else if( strcmp( param + 2, "b2" ) == 0 ) {
 		gBISULFITE2 = 1;
 		which = PAR_BS_SEQ;
 		adjust = 4;
 	}
-	else if(strcmp(param+2,"a_to_g") == 0) {
+	else if( strcmp( param + 2, "a_to_g") == 0 ) {
 		//which = 'd';
 		which = PAR_A_TO_G;
 		adjust = 8;
 	}
-	else if(strcmp(param+2,"fast") == 0) {
+	else if( strcmp( param + 2, "fast") == 0 ) {
 		//which = 'f';
 		which = PAR_FAST;
 		adjust = 6;
 	}
-	else if(strncmp(param+2,"gen_skip=",9) == 0) {
+	else if( strncmp( param + 2,"gen_skip=", 9 ) == 0 ) {
 		//which = 's';
 		which = PAR_GEN_SKIP;
 		adjust = 10;
 	}
-	else if(strncmp(param+2,"bin_size=",9) == 0) {
+	else if( strncmp( param + 2,"bin_size=", 9 ) == 0 ) {
 		//which = 3;
 		which = PAR_GEN_SIZE;
 		adjust = 10;
 	}
-	else if(strncmp(param+2,"jump=",5) == 0) {
+	else if( strncmp( param + 2,"jump=", 5 ) == 0 ) {
 		which = PAR_JUMP;
 		adjust = 6;
 	}
-	else if(strncmp(param+2,"num_seed=", 10) == 0) {
+	else if( strncmp( param + 2,"num_seed=", 10 ) == 0 ) {
 		which = PAR_N_MATCH;
 		adjust = 11;
 	}
-	else if(strcmp(param+2,"snp") == 0) {
+	else if( strcmp( param + 2, "snp" ) == 0 ) {
 		which = PAR_SNP;
 		adjust = 5;
 	}
-	else if(strncmp(param+2,"snp_pval=",9) == 0) {
+	else if( strncmp( param + 2,"snp_pval=", 9 ) == 0 ) {
 		which = PAR_SNP_PVAL;
 		adjust = 11;
 	}
-	else if(strcmp(param+2,"snp_monop") == 0) {
+	else if( strcmp( param + 2, "snp_monop" ) == 0 ) {
 		which = PAR_SNP_MONOP;
 		adjust = 11;
 	}
-	else if(strcmp(param+2,"illumina") == 0) {
+	else if( strcmp( param + 2, "illumina" ) == 0 ) {
 		which = PAR_ILL;
 		adjust = 10;
 	}
-	else if(strcmp(param+2,"MPI_largemem") == 0) {
+	else if( strcmp( param + 2, "MPI_largemem" ) == 0 ) {
 		which = PAR_LARGEMEM;
 		adjust = 14;
 	}
-	else if(strcmp(param+2,"up_strand") == 0) {
+	else if( strcmp( param + 2, "up_strand" ) == 0 ) {
 		which = PAR_UPSTRAND;
 		adjust = 11;
 	}
-	else if(strcmp(param+2,"down_strand") == 0) {
+	else if( strcmp( param + 2, "down_strand" ) == 0 ) {
 		which = PAR_DOWNSTRAND;
 		adjust = 13;
 	}
-	else if(strcmp(param+2,"no_gmp") == 0) {
+	else if( strcmp( param + 2, "no_gmp" ) == 0 ) {
 		which = PAR_NO_GMP;
 		adjust = 8;
 	}
-	else if(strcmp(param+2,"assembler") == 0) {
+	else if( strcmp( param + 2, "assembler" ) == 0 ) {
 		which = PAR_ASSEMBLER;
 		adjust = 11;
 	}
-	else if(strcmp(param+2,"help") == 0) {
-		usage(0,""); //usage will exit immediately
+	else if( strcmp( param + 2, "help" ) == 0 ) {
+		usage(0, "" ); //usage will exit immediately
 	}
 	else 
 		return NO_MATCHING_ARG;
@@ -3055,6 +3079,9 @@ int set_arg_ext(const char* param, const char* assign, int &count) {
 			perc = false;
 			break;
 		// case 'q':
+        case PAR_NO_NW:
+            gNW = false;
+            break;
 		case PAR_CUTOFF_SCORE:
 			if(sscanf(param,"%lf",&temp_dbl) < 1)
 				return PARSE_ERROR;
@@ -3086,8 +3113,8 @@ int set_arg_ext(const char* param, const char* assign, int &count) {
 				return PARSE_ERROR;
 			break;
 		//case 'h':
-		case PAR_MAX_HASH:
-			if(sscanf(param,"%d",&gMAX_HASH_SIZE) < 1)
+		case PAR_MAX_KMER:
+			if(sscanf(param,"%d",&gMAX_KMER_SIZE) < 1)
 				return PARSE_ERROR;
 			break;
 		//case 'S':

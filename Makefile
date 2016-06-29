@@ -56,8 +56,8 @@ EXTRA_FLAGS =
 OPT_FLAGS = -m64 -O3
 ERR_FLAGS = -Wall
 
-FLAGS = $(OPT_FLAGS) -DGENOME_BWT
-FLAGS = -DDEBUG_NW -DDEBUG_TIME $(DEBUG_FLAGS)
+FLAGS = $(OPT_FLAGS) -DGENOME_BWT -std=c++0x
+FLAGS = -DDEBUG_NW -DDEBUG_TIME $(DEBUG_FLAGS) -std=c++0x
 #FLAGS = $(PROFILE_FLAGS)
 #FLAGS = $(DEBUG_FLAGS) -DDEBUG
 #FLAGS = $(DEBUG_FLAGS) -DSET_POS
@@ -145,6 +145,9 @@ profile : $(BUILDTARGET) example-threaded
 
 $(PLAIN_EXE_NAME) : $(EXE_OBJ_FILES) $(INC_FILES) inc/ScoredSeq.h inc/SeqManager.h
 	$(GXX) $(FLAGS) -o $(PLAIN_EXE_NAME) $(EXE_OBJ_FILES) $(INC) $(LIB) $(EXTRA_FLAGS)
+
+bin/gnumap-plain-debug : $(EXE_OBJ_FILES) $(INC_FILES) inc/ScoredSeq.h inc/SeqManager.h
+	$(GXX) $(FLAGS) -o bin/gnumap-plain-debug $(EXE_OBJ_FILES) $(INC) $(LIB) $(EXTRA_FLAGS)
 
 $(MPI_EXE_NAME) : $(EXE_OBJ_FILES) $(INC_FILES) inc/ScoredSeq.h inc/SeqManager.h
 	$(MPIXX) $(FLAGS) -o $(MPI_EXE_NAME) $(EXE_OBJ_FILES) $(INC) $(LIB) $(EXTRA_FLAGS)

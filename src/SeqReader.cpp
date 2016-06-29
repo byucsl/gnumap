@@ -1022,7 +1022,7 @@ bool SeqReader::get_more_fasta() {
 /************************************/
 bool SeqReader::get_more_fastq() {
 	unsigned int J;
-	//if(gVERBOSE > 1)
+	if(gVERBOSE > 1)
     {
 		fprintf(stderr,"[%d/-] Reading more reads FASTQ style",iproc);
     }

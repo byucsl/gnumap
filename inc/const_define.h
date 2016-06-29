@@ -37,6 +37,11 @@ unsigned char gINT2BASE[16];
 unsigned char g_bs_CONVERSION[256];
 unsigned char g_gen_CONVERSION[256];
 
+// this flag is set to tell gnumap if it should use needleman-wunsch alignments
+// or if it should go solely based on hit counts. Default is set to true so that
+// it does use NW alignments, but we can turn it off.
+bool gNW = true;
+
 int gVERBOSE=1;
 #define DEF_MER_SIZE	10
 int gMER_SIZE=0;
@@ -51,8 +56,8 @@ unsigned int gMEM_BUFFER_SIZE = 67108864; //1024*1024*64;
 //unsigned int gMEM_BUFFER_SIZE = 1024*1024*64; //1024*1024;
 //unsigned int gBUFFER_SIZE = 1024;
 unsigned int gHASH_SIZE = 1048576;	//gHASH_SIZE is set as 4^10
-//unsigned int gMAX_HASH_SIZE = 1000;
-unsigned int gMAX_HASH_SIZE = 0;
+//unsigned int gMAX_KMER_SIZE = 1000;
+unsigned int gMAX_KMER_SIZE = 0;
 float gALIGN_SCORE = 0.9;
 bool perc = true;
 float gCUTOFF_SCORE = 0.0;
@@ -95,7 +100,11 @@ unsigned int gMIN_CHOPPED_BASES = 4;	//if there's less than 4 bases that match t
 int gGEN_SKIP = 0;	// The number of bases we skip as we hash the genome
 unsigned int gGEN_SIZE = 8;	// The number of bases each GEN segment contains (per each unsigned int)
 unsigned int gJUMP_SIZE = 0;	// The number of bases we jump in a read (per hash)
-unsigned int gMIN_JUMP_MATCHES = 2;
+
+// This is being set to be a signed int because we shouldn't ever have a count that overflows and 
+// with it being signed we can use -1 as a flag that something has already been processed when doing
+// NW alignments
+int gMIN_JUMP_MATCHES = 2;
 
 int gSGREX = false;
 

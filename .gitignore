@@ -6,3 +6,6 @@ slurm*
 analysis.txt
 gmon.out
 y.*
+examples/Cel_gen.fa.*
+*.sam
+*.sgr
