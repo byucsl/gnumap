@@ -216,7 +216,7 @@ void GenomeMem::hash_and_store() {
 			}
 			else {
 				try {
-					fprintf(stderr, "Not keep trying\n");
+					fprintf(stderr, "Storing\n");
 					store(genome_vec,gen_piece,gBUFFER_SIZE,chars_stored);
 				}
 				catch(bad_alloc& e) {
