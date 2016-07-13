@@ -20,11 +20,11 @@
  */
 
 bool process_hits( Genome& gen, seq_map& unique, const Read& search,
-        map< unsigned long, int >& possible_locs, double& denominator,
+        map< pair< unsigned long, unsigned int >, int >& possible_locs, double& denominator,
         double min_align_score, double& top_align_score, bin_seq& bs,
         int strand, int thread_id )
 {
-    map< unsigned long, int >::iterator loc_it;
+    map< pair< unsigned long, unsigned int >, int >::iterator loc_it;
     for( loc_it = possible_locs.begin(); loc_it != possible_locs.end(); ++loc_it )
     {
         // Define the number of hits that have to be matching at each genomic position
@@ -33,14 +33,16 @@ bool process_hits( Genome& gen, seq_map& unique, const Read& search,
         {
             continue;
         }
+
         if( loc_it->second == -1 )
         {
             // we've already aligned this position
             continue;
         }
 
+        unsigned long sa_val = ( gen.get_sa_coord( loc_it->first.first ) <= loc_it->first.second ) ? 0 : ( gen.get_sa_coord( loc_it->first.first ) - loc_it->first.second );
         
-        string to_match = gen.GetString(loc_it->first, search.length);
+        string to_match = gen.GetString( sa_val, search.length );
         
         if( to_match.size() == 0 )
         {	//means it's on a chromosome boundary--not valid sequence
@@ -81,11 +83,11 @@ bool process_hits( Genome& gen, seq_map& unique, const Read& search,
 #ifdef DEBUG
         if(gVERBOSE > 0)
         {
-            cerr << "(" << loc_it->first << ",";
+            cerr << "(" << sa_val << ",";
             cerr << loc_it->second << ") ";
             cerr << "matching: " << to_match ;
             cerr << "  with  : " << consensus;
-            cerr << "\tat pos   " << loc_it->first;
+            cerr << "\tat pos   " << sa_val;
             cerr << "\tand step " << i;
             cerr << "\tand alignment " << align_score;
             cerr << "\tand min " << min_align_score << endl;
@@ -110,16 +112,16 @@ bool process_hits( Genome& gen, seq_map& unique, const Read& search,
             
             if( gSNP )
             {
-                temp = new SNPScoredSeq( to_match, align_score, loc_it->first, strand );
+                temp = new SNPScoredSeq( to_match, align_score, sa_val, strand );
             }
             else if( gBISULFITE || gATOG )
             {
-                temp = new BSScoredSeq(to_match,align_score, loc_it->first, strand );
+                temp = new BSScoredSeq(to_match,align_score, sa_val, strand );
                 //fprintf(stderr,"New BSScoredSeq\n");
             }
             else
             {
-                temp = new NormalScoredSeq( to_match, align_score, loc_it->first, strand );
+                temp = new NormalScoredSeq( to_match, align_score, sa_val, strand );
             }
 
             if( strand == NEG_STRAND )
@@ -155,13 +157,13 @@ bool process_hits( Genome& gen, seq_map& unique, const Read& search,
                 }
 
 
-                if( ( *it ).second->add_spot( loc_it->first, strand ) )
+                if( ( *it ).second->add_spot( sa_val, strand ) )
                 {
-                    //fprintf(stderr,"[%s] %lu:%d Not already here\n",search.name,loc_it->first,strand);
+                    //fprintf(stderr,"[%s] %lu:%d Not already here\n",search.name, sa_val, strand);
                     denominator += exp( align_score );
                 }
                 //else
-                    //fprintf(stderr,"[%s] %lu:%d Already in here, sorry\n",search.name,loc_it->first,strand);
+                    //fprintf(stderr,"[%s] %lu:%d Already in here, sorry\n",search.name, sa_val, strand );
 #ifdef DEBUG
                 fprintf( stderr,"[%10s%c]     Didn't add.  size of unique is now %lu\n", search.name, strand == NEG_STRAND ? '+' : '-', unique.size() );
 #endif
@@ -184,7 +186,7 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
     int sa_num_hits = 0;
 	
 	// A map of genome positions and the number of times they are referenced
-	map<unsigned long, int> possible_locs;
+	map< pair< unsigned long, unsigned int >, int> possible_locs;
 
 	for( i = 0; i < last_kmer_pos; i += gJUMP_SIZE)
     {
@@ -259,12 +261,12 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
             //Match the sequence to a sequence that has two characters before and after.
             //string to_match = gen.GetString((*vit)-i-2, search.size()+4);
             
-            unsigned long beginning = ( gen.get_sa_coord( vit ) <= i ) ? 0 : ( gen.get_sa_coord( vit ) - i );
+            //unsigned long beginning = ( gen.get_sa_coord( vit ) <= i ) ? 0 : ( gen.get_sa_coord( vit ) - i );
             
             // Increment the number of times this occurs
-            if( possible_locs[ beginning ] != -1 )
+            if( possible_locs[ pair< unsigned long, unsigned int >( vit, i ) ] != -1 )
             {
-                possible_locs[ beginning ]++;
+                possible_locs[ pair< unsigned long, unsigned int >( vit, i ) ]++;
             }
         }
 

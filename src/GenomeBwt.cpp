@@ -616,28 +616,40 @@ void GenomeBwt::AddSeqScore(unsigned long pos, const float amt, unsigned int whi
 
 }
 
-string GenomeBwt::GetPos(const pair<unsigned long,int> p_pos) {
-	return GetPos(p_pos.first,p_pos.second);
+string GenomeBwt::GetPos( const pair< unsigned long, int > p_pos )
+{
+	return GetPos( p_pos.first, p_pos.second );
 }
-string GenomeBwt::GetPos(const unsigned long &pos, const int strand) {
+
+string GenomeBwt::GetPos( const unsigned long &pos, const int strand )
+{
 	int chr_num = 0;
 
-	while(names[chr_num].second <= pos && ((unsigned int)chr_num < names.size()) )
+	while( names[ chr_num ].second <= pos && ( ( unsigned int ) chr_num < names.size() ) )
+    {
 		chr_num++;
+    }
 		
 	ostringstream to_return;
 	
 	chr_num--;
-	to_return << names[chr_num].first << ":";
+	to_return << names[ chr_num ].first << ":";
+
 	if(strand == POS_STRAND)
+    {
 		to_return << "+";
+    }
 	else
+    {
 		to_return << "-";
-	to_return << (pos - names[chr_num].second);
+    }
+
+	to_return << ( pos - names[ chr_num ].second );
 	
 	return to_return.str();
 }
 
+// convert a suffix-array value into a chromosome name, chromosome base position pair
 pair< string, unsigned long > GenomeBwt::GetPosPair( const unsigned long pos )
 {
     int chr_id = bns_pos2rid( index->bns, pos );
