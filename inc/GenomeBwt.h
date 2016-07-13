@@ -41,6 +41,7 @@
  */
 
 // There are 4 for each nucleotide, plus one for gaps and one for insertions
+// @masakistan: I don't know what this comment above me is referencing... do you?
 #define MAX_NAME_LEN	200
 #define MAX_FN_LEN		1024
 #define BWA_IDX_BWT     0x1

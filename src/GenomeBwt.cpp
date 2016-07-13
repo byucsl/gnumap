@@ -638,7 +638,7 @@ string GenomeBwt::GetPos(const unsigned long &pos, const int strand) {
 	return to_return.str();
 }
 
-pair<string,unsigned long> GenomeBwt::GetPosPair(const unsigned long pos)
+pair< string, unsigned long > GenomeBwt::GetPosPair( const unsigned long pos )
 {
     int chr_id = bns_pos2rid( index->bns, pos );
     int chr_base_pos = pos - index->bns->anns[ chr_id ].offset;
@@ -646,38 +646,46 @@ pair<string,unsigned long> GenomeBwt::GetPosPair(const unsigned long pos)
 	return pair< string, unsigned long >( index->bns->anns[ chr_id ].name, chr_base_pos );
 }
 
-unsigned long GenomeBwt::GetAbsolutePosition(const char* chr, const unsigned long &pos) {
+unsigned long GenomeBwt::GetAbsolutePosition( const char* chr, const unsigned long &pos )
+{
 	unsigned long absPos = 0;
 	bool found = false;
 	
 	//fprintf(stderr,"Size of names is %u\n",names.size());
-	for(unsigned int i=0; i<names.size(); i++) {
-		if(names[i].first.compare(chr) == 0) {
-			absPos = names[i].second+pos;
+	for( unsigned int i = 0; i < names.size(); i++ )
+    {
+		if(names[ i ].first.compare( chr ) == 0)
+        {
+			absPos = names[ i ].second + pos;
 			found = true;
 		}
 	}
 	
-	if(!found) {
-		fprintf(stderr,"Chromosome is >%s<\n",chr);
+	if( !found )
+    {
+		fprintf( stderr,"Chromosome is >%s<\n", chr );
 		string excp = "Could not find chromosome in Genome file: ";
 		excp += chr;
-		throw new Exception(excp);
+		throw new Exception( excp );
 	}
 
 	return absPos;
 }
 
-string GenomeBwt::GetStringRelative(const char* chr, const unsigned long &pos, const unsigned int length) {
-	unsigned long abs_pos = GetAbsolutePosition(chr,pos);
-	return GetString(abs_pos,length);
+string GenomeBwt::GetStringRelative( const char* chr, const unsigned long &pos, const unsigned int length )
+{
+	unsigned long abs_pos = GetAbsolutePosition( chr, pos );
+	return GetString( abs_pos, length );
 }
 
 
 #ifdef SET_POS
-bool GenomeBwt::getSetThreadID(long unsigned int pos, unsigned int tid) {
-	if(pos < my_start)
+bool GenomeBwt::getSetThreadID( long unsigned int pos, unsigned int tid )
+{
+	if( pos < my_start )
+    {
 		return false;
+    }
 
 	//fprintf(stderr,"pos=%lu, genome_size=%lu, my_start=%lu, final_pos=%lu\n",pos,genome_size,my_start,pos-my_start);
 	pos -= my_start;
@@ -690,14 +698,17 @@ bool GenomeBwt::getSetThreadID(long unsigned int pos, unsigned int tid) {
 		return true;
     }
 
-	unsigned int new_tid = 1<<(tid%8);
-	gs_positions[pos/GEN_PACK] |= new_tid;
+	unsigned int new_tid = 1 << ( tid % 8 );
+	gs_positions[ pos / GEN_PACK ] |= new_tid;
 	return false;
 }
 
-void GenomeBwt::unsetThreadID(long unsigned int pos, unsigned int tid) {
-	if(pos < my_start)
+void GenomeBwt::unsetThreadID( long unsigned int pos, unsigned int tid )
+{
+	if( pos < my_start )
+    {
 		return;
+    }
 
 	pos -= my_start;
 
@@ -705,7 +716,7 @@ void GenomeBwt::unsetThreadID(long unsigned int pos, unsigned int tid) {
 	//assert(pos < genome_size);
 	assert( pos < index->bns->l_pac );
 	// We'll clear all the threads at this position
-	gs_positions[pos/GEN_PACK] = 0;
+	gs_positions[ pos / GEN_PACK ] = 0;
 }
 #endif
 

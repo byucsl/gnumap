@@ -530,10 +530,10 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 		//fprintf(stderr, "Aligning to DOWN_Strand\n" );
 		//TODO: trim consensus before flipping and then send a query!
 		//consensus = trim_end_string(consensus,search->length);
-		string rev_consensus = reverse_comp(consensus);
+		string rev_consensus = reverse_comp( consensus );
 		// Copy it so we don't need to reverse it again
-		float** rev_pwm = reverse_comp_cpy(search->pwm,search->length);
-		Read rc(rev_pwm,search->length);
+		float** rev_pwm = reverse_comp_cpy( search->pwm, search->length );
+		Read rc( rev_pwm, search->length );
 		rc.name = search->name;
 
 		//printReadPWM(&search);
@@ -552,16 +552,16 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 								NEG_STRAND, thread_id);
 
 		// Clean up the copy
-		for( unsigned int i=0; i<rc.length; i++ )
+		for( unsigned int i = 0; i < rc.length; i++ )
         {
-			delete[] rev_pwm[i];
+			delete[] rev_pwm[ i ];
 		}
 		delete[] rev_pwm;
 
 #ifdef DEBUG
 		if(gVERBOSE > 2)
         {
-			cerr << "\tFound " << gReadLocs[rIndex].size() << " matches for this sequence\n";
+			cerr << "\tFound " << gReadLocs[ rIndex ].size() << " matches for this sequence\n";
 		}
 #endif
 		if( !aligned )
@@ -591,18 +591,18 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
         fprintf( stderr, "unmatched!\n" );
 #endif
 		num_not_matched++;
-		gReadDenominator[rIndex] = 0;
-		gTopReadScore[rIndex] = 0;
+		gReadDenominator[ rIndex ] = 0;
+		gTopReadScore[ rIndex ] = 0;
 		return;
 	}
 
 	//fprintf(stderr,"Index %d has %u elements\n",rIndex,gReadLocs[rIndex].size());
 	num_matched++;
-	gReadDenominator[rIndex] = denominator;
+	gReadDenominator[ rIndex ] = denominator;
 #ifdef DEBUG
 	fprintf( stderr, "Index %d has denominator of %f\n", rIndex, denominator );
 #endif
-	gTopReadScore[rIndex] = top_align_score;
+	gTopReadScore[ rIndex ] = top_align_score;
 	return;
 }
 

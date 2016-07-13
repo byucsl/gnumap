@@ -133,8 +133,8 @@ bool process_hits( Genome& gen, seq_map& unique, const Read& search,
 
             if( it == unique.end() )
             {	// It wasn't found in the set
-                unique.insert(pair<string,ScoredSeq*>(to_match,temp));
-                denominator += exp(align_score);
+                unique.insert(pair< string, ScoredSeq* >( to_match, temp ) );
+                denominator += exp( align_score );
 #ifdef DEBUG
                 //fprintf(stderr,"[%10s%c] just added %s at jump %u with size %lu\n",search.name,strand==POS_STRAND ? '+' : '-',gen.GetPos(loc_it->first,strand).c_str(),i,hashes->size);
                 //fprintf(stderr,"[%10s%c]     size of unique is now %lu\n",search.name,strand==POS_STRAND?'+':'-',unique.size());
