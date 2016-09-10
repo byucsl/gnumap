@@ -11,7 +11,7 @@ OBJ_FILES = obj/centers.o obj/bin_seq.o obj/Reader.o obj/SeqReader.o
 
 MEM_FILES = obj/GenomeMem.o 
 
-BWT_FILES = obj/GenomeBwt.o obj/bwt.o obj/utils.o obj/bntseq.o obj/bwtindex.o obj/is.o obj/bwt_gen.o \
+BWT_FILES = obj/Genome.o obj/GenomeBwt.o obj/bwt.o obj/utils.o obj/bntseq.o obj/bwtindex.o obj/is.o obj/bwt_gen.o \
 			obj/QSufSort.o
 		
 INC_FILES = inc/const_include.h inc/const_define.h inc/Exception.h inc/SeqManager.h inc/gvector.h \
@@ -164,6 +164,9 @@ obj/bwt.o : src/bwt.c inc/bwt.h
 	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
 
 obj/bntseq.o : src/bntseq.c inc/bntseq.h
+	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
+
+obg/Genome.o : src/Genome.cpp inc/Genome.h
 	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
 
 obj/GenomeBwt.o : src/GenomeBwt.cpp inc/GenomeBwt.h
