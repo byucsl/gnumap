@@ -16,37 +16,39 @@ GenomeBwt::GenomeBwt() : Genome()
 
 GenomeBwt::~GenomeBwt() {
 	//fprintf(stderr,"[-/%d] GenomeBwt destructor...\n",iproc);
-    if( index->bwt )
-    {
-        if( index->bwt->sa )
-        {
-            free( index->bwt->sa );
-        }
+    if(index) {
+	    if( index->bwt )
+	    {
+		if( index->bwt->sa )
+		{
+		    free( index->bwt->sa );
+		}
 
-        if( index->bwt->bwt )
-        {
-            free( index->bwt->bwt );
-        }
+		if( index->bwt->bwt )
+		{
+		    free( index->bwt->bwt );
+		}
 
-        free( index->bwt );
+		free( index->bwt );
+	    }
+
+	    if( index->bns )
+	    {
+		bns_destroy( index->bns );
+	    }
+
+	    if( index->pac )
+	    {
+		free( index->pac );
+	    }
+
+	    if( index->mem )
+	    {
+		free( index->mem );
+	    }
+	    
+	    free( index );
     }
-
-    if( index->bns )
-    {
-        bns_destroy( index->bns );
-    }
-
-    if( index->pac )
-    {
-        free( index->pac );
-    }
-
-    if( index->mem )
-    {
-        free( index->mem );
-    }
-    
-    free( index );
     free( ref_genome_fn );
 } 
 
