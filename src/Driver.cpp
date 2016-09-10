@@ -197,9 +197,10 @@ void usage(int has_error, const char * errmessage) {
 		 << "                               compliment match to the genome.\n"
 		 << "  --down_strand                Will only search the negaitve strand (opposite of\n"
 		 << "                               --up_strand command)\n"
-         << "  --no_nw                      This will disable the Needleman-Wunsch alignments and\n"
-         << "                               only use hit count as the basis for alignment. Score is\n"
-         << "                               calculated by summing the number of hits for a position.\n"
+		 << "  --no_nw                      This will disable the Needleman-Wunsch alignments and\n"
+		 << "                               only use hit count as the basis for alignment. Score is\n"
+		 << "                               calculated by summing the number of hits for a position.\n"
+		 << "  --gpu                        This will enable the GPU to assist in the alignment.\n"
 		 << "\n"
 		 << "Options for Read Quality\n"
 		 << "  -q, --read_quality=DOUBLE    Read quality cutoff:  won't align reads if they are\n"
@@ -494,6 +495,10 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
     {
         // TODO: figure out what this value should actually be set to
         min_align_score = gMIN_JUMP_MATCHES;
+    }
+
+    if( gpu ) {
+	// TODO: find CUDA devices using auto-detect
     }
 
 	// Match the positive strand
@@ -1126,6 +1131,11 @@ int main(const int argc, const char* argv[]) {
         params << "\tUsing kmer hit counts as proxy for full sequence alignment" << endl;
     }
 
+    if( gpu )
+    {
+	    params << "\tUsing CUDA GPU to speed up alignments" << endl;
+    }
+
 #ifdef MPI_RUN
 	// You must compile the MPI library to work with multiple threads otherwise
 	// it will actually be SLOWER with multiple threads than a single one (it will
@@ -1205,6 +1215,14 @@ int main(const int argc, const char* argv[]) {
 
 	params << "\tGap score: " << gGAP << endl;
 	params << "\tMaximum Gaps: " << gMAX_GAP << endl;
+	
+	params << "\tUsing GPU: ";
+	if(gpu) {
+		params << "True" << endl;
+	}
+	else {
+		params << "False" << endl;
+	}
 	
     if(g_adaptor)
     {
@@ -2856,7 +2874,8 @@ enum {
 	PAR_SNP_MONOP,
 	PAR_NO_GMP,
 	PAR_ASSEMBLER,
-    PAR_NO_NW
+	PAR_NO_NW,
+	PAR_GPU
 };
 
 int set_arg_ext(const char* param, const char* assign, int &count) {
@@ -2891,11 +2910,15 @@ int set_arg_ext(const char* param, const char* assign, int &count) {
 		which = PAR_PERCENT;
 		adjust = 9;
 	}
-    else if( strcmp( param + 2, "no_nw" ) == 0 )
-    {
-        which = PAR_NO_NW;
-        adjust = 7;
-    }
+	else if( strcmp( param + 2, "no_nw" ) == 0 )
+	{
+		which = PAR_NO_NW;
+		adjust = 7;
+	}
+	else if( strcmp( param + 2, "gpu" ) == 0 ) {
+		which = PAR_GPU;
+		adjust = 5;
+	}
 	else if( strcmp( param + 2, "raw") == 0 ) {
 		//which = 'p';
 		which = PAR_RAW;
@@ -3079,9 +3102,12 @@ int set_arg_ext(const char* param, const char* assign, int &count) {
 			perc = false;
 			break;
 		// case 'q':
-        case PAR_NO_NW:
-            gNW = false;
-            break;
+		case PAR_NO_NW:
+			gNW = false;
+			break;
+		case PAR_GPU:
+			gpu = true;
+			break;
 		case PAR_CUTOFF_SCORE:
 			if(sscanf(param,"%lf",&temp_dbl) < 1)
 				return PARSE_ERROR;

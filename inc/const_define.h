@@ -42,6 +42,10 @@ unsigned char g_gen_CONVERSION[256];
 // it does use NW alignments, but we can turn it off.
 bool gNW = true;
 
+// this flag is set to tell gnumap if it should use GPU during alignments,
+// default is set to false.
+bool gpu = false;
+
 int gVERBOSE=1;
 #define DEF_MER_SIZE	10
 int gMER_SIZE=0;
