@@ -1131,11 +1131,6 @@ int main(const int argc, const char* argv[]) {
         params << "\tUsing kmer hit counts as proxy for full sequence alignment" << endl;
     }
 
-    if( gpu )
-    {
-	    params << "\tUsing CUDA GPU to speed up alignments" << endl;
-    }
-
 #ifdef MPI_RUN
 	// You must compile the MPI library to work with multiple threads otherwise
 	// it will actually be SLOWER with multiple threads than a single one (it will
