@@ -26,9 +26,21 @@
 #include <set>
 #include <cmath>
 #include <pthread.h>
+#include <sstream>
 #include "const_include.h"
 #include "SequenceOperations.h"
 #include "Genome.h"
+
+/* This patch is for the error that 'to_string' is not a member of 'std'.
+ * This was created by Cole Lyman on 9 September 2016.
+ */
+namespace patch {
+	template <typename T > std::string to_string( const T& n) {
+		std::ostringstream stream;
+		stream << n;
+		return stream.str();
+	}
+}
 
 class ScoredSeq {
 	protected:
@@ -363,7 +375,7 @@ class ScoredSeq {
                 }
                 else
                 {
-                    CIGAR = std::to_string( consensus.size() ) + "M";
+                    CIGAR = patch::to_string( consensus.size() ) + "M";
                 }
             }
 			else
