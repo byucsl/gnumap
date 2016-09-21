@@ -53,6 +53,7 @@
 #include "SequenceOperations.h"
 #include "centers.h"
 #include "Exception.h"
+#include "CudaDriver.h"
 
 #ifdef DEBUG_NW
 unsigned int num_nw[8] = {0,0,0,0,0,0,0,0};
@@ -499,6 +500,7 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 
     if( gpu ) {
 	// TODO: find CUDA devices using auto-detect
+	CudaDriver::initDevice();
     }
 
 	// Match the positive strand
