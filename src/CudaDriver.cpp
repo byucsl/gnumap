@@ -1,8 +1,10 @@
 #include "CudaDriver.h"
+#include <cuda_runtime_api.h>
+#include <cuda.h>
 
 /*
  * Constructor. Creates new Cuda class.
- 
+*/ 
 CudaDriver::CudaDriver() {
 	deviceNum = 0;	
 }
@@ -10,7 +12,7 @@ CudaDriver::CudaDriver() {
 CudaDriver::~CudaDriver() {
 
 }
-*/ 
+ 
 bool CudaDriver::initDevice() {
 	int numDevices = 0;
 	cudaGetDeviceCount(&numDevices);

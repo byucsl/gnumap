@@ -24,7 +24,7 @@ TEST_BIN_FILE = bin/gnutest
 
 EXE_OBJ_FILES = obj/Driver.o $(OBJ_FILES) \
 		obj/NormalScoredSeq.o obj/BSScoredSeq.o obj/SNPScoredSeq.o
-OBJ_FILES = obj/centers.o obj/bin_seq.o obj/Reader.o obj/SeqReader.o obj/Genome.o $(BWT_OBJ_FILES)
+OBJ_FILES = obj/centers.o obj/bin_seq.o obj/Reader.o obj/SeqReader.o obj/Genome.o $(BWT_OBJ_FILES) $(CUDA_OBJ_FILES)
 		
 INC_FILES = inc/const_include.h inc/const_define.h inc/Exception.h inc/SeqManager.h inc/gvector.h \
 			inc/ScoredSeq.h
@@ -32,12 +32,14 @@ INC_FILES = inc/const_include.h inc/const_define.h inc/Exception.h inc/SeqManage
 CONV_EXE_NAME = bin/sam2sgr
 
 CONV_OBJ_FILES = obj/sam2sgr.o obj/Genome.o obj/Reader.o obj/bin_seq.o obj/SeqReader.o \
-		obj/NormalScoredSeq.o obj/BSScoredSeq.o obj/SNPScoredSeq.o $(BWT_OBJ_FILES)
+		obj/NormalScoredSeq.o obj/BSScoredSeq.o obj/SNPScoredSeq.o $(BWT_OBJ_FILES) $(CUDA_OBJ_FILES)
 
 CONV_INC_FILES = inc/const_include.h inc/const_define.h
 
 BWT_OBJ_FILES = obj/GenomeBwt.o obj/bwt.o obj/utils.o obj/bntseq.o obj/bwtindex.o \
 					 obj/is.o obj/bwt_gen.o obj/QSufSort.o
+
+CUDA_OBJ_FILES = obj/CudaDriver.o 
 
 BATCH_CONS_EXE = bin/sam2consensus
 BATCH_CONS_OBJ_FILES = obj/sam2consensus.o obj/Genome.o obj/Reader.o obj/bin_seq.o $(BWT_OBJ_FILES)
@@ -46,6 +48,10 @@ BATCH_CONS_INC_FILES = inc/const_include.h inc/const_define.h
 GSL_LIB_FILE = lib/lib/libgsl.a
 GSL_LIB_DIR = lib/gsl-1.9/
 GSL_ZIP_FILE = lib/gsl-1.9.tar.gz
+
+CUDA_PATH = /apps/cuda/7.5.18
+CUDA_LIB = -L$(CUDA_PATH)/lib -lcuda -lcudart
+CUDA_LIB_INC = $(CUDA_PATH)/include/ $(CUDA_LIB)
 		
 TEST_OBJ_FILES = obj/TestDriver.o $(OBJ_FILES)
 
@@ -94,7 +100,7 @@ GXX=g++
 BUILDTARGET=plain
 BUILDEXE=$(PLAIN_EXE_NAME)
 
-INC = -Iinc/ -I$(GSL_LIB_DIR)
+INC = -Iinc/ -I$(GSL_LIB_DIR) -I$(CUDA_LIB_INC)
 # For some reason, I thought we needed to do dynamic linking.  Running a few tests,
 # it doesn't seem we do after all, so we'll just pull this out, but leave it in just in case.
 LIB = -lz -lm -dynamic -lpthread -Llib/lib -Wl,-Bstatic -lgsl -lgslcblas -Wl,-Bdynamic
@@ -182,6 +188,9 @@ obj/bntseq.o : src/bntseq.c inc/bntseq.h
 	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
 
 obj/GenomeBwt.o : src/GenomeBwt.cpp inc/GenomeBwt.h
+	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
+
+obj/CudaDriver.o : src/CudaDriver.cpp inc/CudaDriver.h
 	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
 
 obj/bwtindex.o : src/bwtindex.c

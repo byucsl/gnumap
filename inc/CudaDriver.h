@@ -10,6 +10,8 @@
 
 class CudaDriver {
 	public:
+		CudaDriver();
+		~CudaDriver();
 		/*
 		 * init_device() will identify how many CUDA devices are available, and choose one. 
 		 * @return true- there is at least one CUDA device available

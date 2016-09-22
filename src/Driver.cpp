@@ -498,11 +498,6 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
         min_align_score = gMIN_JUMP_MATCHES;
     }
 
-    if( gpu ) {
-	// TODO: find CUDA devices using auto-detect
-	CudaDriver::initDevice();
-    }
-
 	// Match the positive strand
 	if( gMATCH_POS_STRAND )
     {
@@ -1395,6 +1390,10 @@ int main(const int argc, const char* argv[]) {
 	//GENOME_t gen; 
 	unsigned long my_start=0, my_end=0;
 	
+    	if( gpu ) {
+		CudaDriver::initDevice();
+	}
+
 	try {
 
 		//unsigned long gen_size=0;
