@@ -163,6 +163,8 @@ typedef GenomeBwt GENOME_t;
 GENOME_t gGen;
 string cl_args;
 
+CudaDriver* cudaDriver;
+
 SeqManager* gSM;
 
 void usage(int has_error, const char * errmessage) {
@@ -1391,7 +1393,15 @@ int main(const int argc, const char* argv[]) {
 	unsigned long my_start=0, my_end=0;
 	
     	if( gpu ) {
-		CudaDriver::initDevice();
+		if(!CudaDriver::initDevice()) {
+			// There are no CUDA devices found, so exit with an error
+			fprintf(stderr, "GNUMAP will run without CUDA devices.");
+			gpu = false;
+		}
+		else {
+			cudaDriver = new CudaDriver();
+			cudaDriver->getAvailableMem();
+		}
 	}
 
 	try {
@@ -1878,6 +1888,10 @@ int main(const int argc, const char* argv[]) {
     }
 	delete[] finished_arr;
 	delete[] sam_file;
+
+	if(gpu) {
+		delete cudaDriver;
+	}
 
 	// Deallocate space requested for these arrays
 #ifdef DEBUG

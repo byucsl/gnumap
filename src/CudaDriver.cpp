@@ -7,6 +7,8 @@
 */ 
 CudaDriver::CudaDriver() {
 	deviceNum = 0;	
+	availMem = 0;
+	totalMem = 0;
 }
 
 CudaDriver::~CudaDriver() {
@@ -23,7 +25,12 @@ bool CudaDriver::initDevice() {
 		return false;
 	}
 	else {
-		fprintf(stderr, "There are %d CUDA devices found.\n", numDevices);
+		if(numDevices == 1) {
+			fprintf(stderr, "There is %d Cuda device found.\n", numDevices);
+		}
+		else {
+			fprintf(stderr, "There are %d CUDA devices found.\n", numDevices);
+		}
 		return true;
 	}
 }
@@ -37,9 +44,11 @@ void CudaDriver::printCudaErrorGPU(const char* message) {
 	}
 }
 
-int CudaDriver::getAvailableMem() {
-	size_t mem_avail, total_mem;
-
+void CudaDriver::getAvailableMem() {
+	cudaMemGetInfo(&availMem, &totalMem);
+	printCudaErrorGPU("Checking the available memory.");
+	fprintf(stderr, "CUDA device has %lu available bytes.\n", availMem);
+	
 }
 
 void CudaDriver::copyBwtToDevice(bwt_t* bwt, const int availMem) {

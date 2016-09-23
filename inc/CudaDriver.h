@@ -28,9 +28,8 @@ class CudaDriver {
 
 		/*
 		 * getAvailableMem() will get the available memory of the CUDA device.
-		 * @return the memory available on the CUDA device
 		 */
-		int getAvailableMem();
+		void getAvailableMem();
 
 		/*
 		 * copyBwtToDevice(bwt_t* bwt, const int availMem) will copy the BWT object from memory 
@@ -44,6 +43,14 @@ class CudaDriver {
 		 * deviceNum is the CUDA device that will be utilized.
 		 */
 		int deviceNum;
+		/*
+		 * availMem is the memory available on the CUDA device.
+		 */
+		size_t availMem;
+		/*
+		 * totalMem is the total memory of the CUDA device.
+		 */
+		size_t totalMem;
 };
 
 #endif
