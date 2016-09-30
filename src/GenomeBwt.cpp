@@ -340,6 +340,9 @@ void GenomeBwt::ReplaceSpaceWithUnderscore(string &str)
 	}
 }
 
+bwaidx_t* GenomeBwt::getIndex() {
+	return this->index;
+}
 
 void GenomeBwt::StoreGenome( bool make_extra )
 {

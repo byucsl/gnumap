@@ -1442,6 +1442,17 @@ int main(const int argc, const char* argv[]) {
 		gGen.use(genome_file, my_start, my_end);
 		gGen.LoadGenome();
 
+		if(gpu) {
+			if(!cudaDriver->copyBwtToDevice(gGen.getIndex())) {
+				fprintf(stderr, "There is not enough memory on the CUDA device. Running without gpu support.");
+				gpu = false;
+			}
+			else {
+				fprintf(stderr, "There is enough memory! Proceeding with gpu's.");
+				// TODO: what to do after moving the BWT index to the device?
+			}
+		}
+
 	}
 	catch(const char* err) {
 		cerr << "ERROR: \n\t" << err << endl;

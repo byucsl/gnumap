@@ -124,6 +124,10 @@ class GenomeBwt : public Genome {
 		void inc_counter(int,unsigned int&, unsigned long&, unsigned int);
 		void ReplaceSpaceWithUnderscore(string &str);
 
+		/**
+		 * getIndex() will return the pointer to the index object of type bwaidx_t.
+		 */
+		bwaidx_t* getIndex();
 		
 		/**
 		 * count is used to determine the genome size to split for using MPI

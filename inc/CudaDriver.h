@@ -32,12 +32,12 @@ class CudaDriver {
 		void getAvailableMem();
 
 		/*
-		 * copyBwtToDevice(bwt_t* bwt, const int availMem) will copy the BWT object from memory 
+		 * copyBwtToDevice(bwaidx_t* bwt) will copy the BWT object from memory 
 		 * to the CUDA device.
-		 * @input bwt_t* bwt- a pointer to the BWT object
-		 * @input int availMem- the available memory on the CUDA device
+		 * @input bwaidx_t* index-- a pointer to the BWT object
+		 * @return true if the index is copied, false if the index is not copied
 		 */
-		void copyBwtToDevice(bwt_t* bwt, const int availMem);
+		bool copyBwtToDevice(bwaidx_t* index);
 	private:
 		/*
 		 * deviceNum is the CUDA device that will be utilized.
