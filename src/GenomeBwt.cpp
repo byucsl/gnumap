@@ -16,6 +16,12 @@ GenomeBwt::GenomeBwt() : Genome()
 
 GenomeBwt::~GenomeBwt() {
 	//fprintf(stderr,"[-/%d] GenomeBwt destructor...\n",iproc);
+    
+    if( !index )
+    {
+        return;
+    }
+
     if( index->bwt )
     {
         if( index->bwt->sa )
