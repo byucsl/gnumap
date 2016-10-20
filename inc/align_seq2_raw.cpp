@@ -27,6 +27,7 @@ bool process_hits( Genome& gen, seq_map& unique, const Read& search,
     map< pair< unsigned long, unsigned int >, int >::iterator loc_it;
     for( loc_it = possible_locs.begin(); loc_it != possible_locs.end(); ++loc_it )
     {
+        cout << "count:\t" << loc_it->second << endl;
         // Define the number of hits that have to be matching at each genomic position
         // before we'll even match it
         if( loc_it->second < gMIN_JUMP_MATCHES )
@@ -40,7 +41,10 @@ bool process_hits( Genome& gen, seq_map& unique, const Read& search,
             continue;
         }
 
-        unsigned long sa_val = ( gen.get_sa_coord( loc_it->first.first ) <= loc_it->first.second ) ? 0 : ( gen.get_sa_coord( loc_it->first.first ) - loc_it->first.second );
+        unsigned long sa_val = gen.get_sa_coord( loc_it->first.first );
+        sa_val = ( sa_val <= loc_it->first.second ) ? 0 : ( sa_val - loc_it->first.second );
+
+        //cout << "sa val:\t" << sa_val << endl;
         
         string to_match = gen.GetString( sa_val, search.length );
         
@@ -93,14 +97,14 @@ bool process_hits( Genome& gen, seq_map& unique, const Read& search,
             cerr << "\tand min " << min_align_score << endl;
         }
 #endif
-                            
+
         if( align_score > top_align_score )
         {
             top_align_score = align_score;
         }
-            
+
         string unique_string = to_match;
-        
+
         if( align_score >= min_align_score )
         {
             //fprintf(stderr,"\t**Aligned!\n");
