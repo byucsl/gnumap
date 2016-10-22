@@ -43,7 +43,7 @@ bool process_hits( Genome& gen, seq_map& unique, const Read& search,
         string to_match = gen.GetString(loc_it->first, search.length);
         
         if( to_match.size() == 0 )
-        {	//means it's on a chromosome boundary--not valid sequence
+        {    //means it's on a chromosome boundary--not valid sequence
 #ifdef DEBUG
             fprintf( stderr, "On chromosome boundary...skipping\n" );
 #endif
@@ -132,7 +132,7 @@ bool process_hits( Genome& gen, seq_map& unique, const Read& search,
             //pair<seq_map::iterator,bool> it_bool = unique.insert(pair<string,ScoredSeq*>(to_match,temp));
 
             if( it == unique.end() )
-            {	// It wasn't found in the set
+            {    // It wasn't found in the set
                 unique.insert(pair< string, ScoredSeq* >( to_match, temp ) );
                 denominator += exp( align_score );
 #ifdef DEBUG
@@ -141,12 +141,12 @@ bool process_hits( Genome& gen, seq_map& unique, const Read& search,
 #endif
             }
             else
-            { //if(it != unique.end()) 	// It was found in the set
+            { //if(it != unique.end())     // It was found in the set
                 
                 delete temp;
 
                 if( gUNIQUE )
-                {	            // Need to return early because this matches to
+                {                // Need to return early because this matches to
                                 // more than one location
 #ifdef DEBUG
                     cerr << "not a unique mapping! returning no mapping!" << endl;
@@ -168,37 +168,37 @@ bool process_hits( Genome& gen, seq_map& unique, const Read& search,
             }
             
         }
-//			else
-//				fprintf(stderr,"\tCould not align with align score %f and min_score %f\n",align_score,min_align_score);
+//            else
+//                fprintf(stderr,"\tCould not align with align score %f and min_score %f\n",align_score,min_align_score);
     }
     return true;
 }
 
 bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const string &consensus, 
-				double min_align_score, double &denominator, double &top_align_score,
-				int strand, int thread_id) {
+                double min_align_score, double &denominator, double &top_align_score,
+                int strand, int thread_id) {
 
-	bin_seq bs;
-	
-	unsigned int i, j, last_kmer_pos = search.length - gMER_SIZE;
+    bin_seq bs;
+    
+    unsigned int i, j, last_kmer_pos = search.length - gMER_SIZE;
     int sa_num_hits = 0;
-	
-	// A map of genome positions and the number of times they are referenced
-	map<unsigned long, int> possible_locs;
+    
+    // A map of genome positions and the number of times they are referenced
+    map<unsigned long, int> possible_locs;
 
-	for( i = 0; i < last_kmer_pos; i += gJUMP_SIZE)
+    for( i = 0; i < last_kmer_pos; i += gJUMP_SIZE)
     {
         uint64_t start, end;
         string consensus_piece;
 
-		// If we've run accross a kmer location that is clear (possibly because we've
-		// cleared it in a previous step of the algorithm), we want to get another kmer
-		// that's right next to it instead of jumping over everything.
-		for( j = 0; j + i < last_kmer_pos; j++ )
+        // If we've run accross a kmer location that is clear (possibly because we've
+        // cleared it in a previous step of the algorithm), we want to get another kmer
+        // that's right next to it instead of jumping over everything.
+        for( j = 0; j + i < last_kmer_pos; j++ )
         {
-			consensus_piece = consensus.substr( i + j, gMER_SIZE );
+            consensus_piece = consensus.substr( i + j, gMER_SIZE );
 #ifdef DEBUG
-			fprintf( stderr, "Consensus piece: >%s<\n", consensus_piece.c_str() );
+            fprintf( stderr, "Consensus piece: >%s<\n", consensus_piece.c_str() );
 #endif
             gen.get_sa_int( consensus_piece, &start, &end );
             if( end == 0 && start == 0 )
@@ -220,13 +220,13 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
             }
 
 #ifdef DEBUG
-			cerr << "At location " << j + i << ", no valid locations found." << endl;
+            cerr << "At location " << j + i << ", no valid locations found." << endl;
 #endif
-		} // end of for-loop identifying valid index location
+        } // end of for-loop identifying valid index location
 
-		// Increment i by j so we don't look here again.
-		i += j;
-		
+        // Increment i by j so we don't look here again.
+        i += j;
+        
         if( end == 0 && start == 0 )
         {
             break;
@@ -285,30 +285,28 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
             double min_align_score, double& top_align_score, bin_seq& bs,
             int strand, int thread_id )*/
         bool goon = process_hits( gen, unique, search, possible_locs, denominator, min_align_score, top_align_score, bs, strand, thread_id );
-
         if( !goon )
         {
             return false;
         }
        
-		
-		if( unique.size() > gMAX_MATCHES )
+        
+        if( unique.size() > gMAX_MATCHES )
         {
 
 //#ifdef DEBUG
             //cerr << "too many matches! returning no mapping! " << search.name << "\t" << unique.size() << endl;
 //#endif
-			return false;
+            return false;
         }
-		
-		
-		// If we want to do the fast mode, only look at one hit location
-		if( gFAST)
+        
+        // If we want to do the fast mode, only look at one hit location
+        if( gFAST)
         {
-			break;
+            break;
         }
-	
-	}  // end of for over all the hit positions
+    
+    }  // end of for over all the hit positions
 
     // process all the hits now if we're not doing the NW alignments
     if( !gNW )
@@ -320,6 +318,6 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
             cerr << "Turning off Needleman-Wunsch aligments and doing unique alignments are not possible" << endl;
         }
     }
-	
-	return true;
+    
+    return true;
 }
