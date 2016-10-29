@@ -70,10 +70,10 @@ void SeqReader::Construct(const char* fn)
 
 	while(token != NULL)
     {
-		//if(gVERBOSE > 1)
+		/*if(gVERBOSE > 1)
         {
 			cout << "construct\t" << token << endl;
-        }
+        }*/
 
 		string temp_str = token;
 		seq_files.push_back(temp_str);

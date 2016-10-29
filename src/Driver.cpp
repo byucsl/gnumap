@@ -455,13 +455,14 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
         return;
     }
 
-
+    //cerr << "Next Read:\t"<< search->name << endl;;
     // We need to do the length-1 because it will go to the base at that position.
     // @masakistan: it sets the maximum alignment score by doing a needleman-wunsch
     // with an exact match which can then be used to calculate the minimum alinment score needed
     // we don't need this if we're not doing needleman-wunsch
     if( gNW )
     {
+        
         double max_align_score = bs.get_align_score( *search, consensus, 0, search->length - 1 );
 
         // Too low of quality to align
@@ -500,36 +501,13 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
         // TODO: figure out what this value should actually be set to
         min_align_score = gMIN_JUMP_MATCHES;
     }
-
-    //if( thread_id == 0 )
-    {
-        //MUTEX_LOCK( &write_lock );
-        //of << "nw/non-nw stuff done" << endl;
-        //MUTEX_UNLOCK( &write_lock );
-    }
  
     // Match the positive strand
     if( gMATCH_POS_STRAND )
     {
-        //cerr << "checking positive strand" << endl;
-        //fprintf(stderr, "Aligning to UP_Strand\n" );
-        /*if( thread_id == 0 )
-        {
-            MUTEX_LOCK( &write_lock );
-            of << "start pos" << endl;
-            MUTEX_UNLOCK( &write_lock );
-        }*/
-        
         bool aligned = align_sequence( gen, *unique, *search, consensus, 
                                     min_align_score, denominator, top_align_score,
                                     POS_STRAND, thread_id );
-
-        /*if( thread_id == 0 )
-        {
-            MUTEX_LOCK( &write_lock );
-            of << "pos done align done" << endl;
-            MUTEX_UNLOCK( &write_lock );
-        }*/
 
         if( !aligned )
         {
@@ -547,19 +525,10 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
         }
     }
 
-    /*if( thread_id == 0 )
-    {
-        MUTEX_LOCK( &write_lock );
-        of << "pos done" << endl;
-        MUTEX_UNLOCK( &write_lock );
-    }*/
-    
-
     /************************************************************/
     /* We need to do the reverse of this as well...                */
     /************************************************************/
     // If we only want to do the positive strand, skip the reverse compliment stuff
-    gMATCH_NEG_STRAND = false;
     if( gMATCH_NEG_STRAND )
     {
         //cerr << "checking negative strand" << endl;
@@ -586,7 +555,7 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
         bool aligned = align_sequence(gen, *unique, rc, rev_consensus, 
                                 min_align_score, denominator, top_align_score,
                                 NEG_STRAND, thread_id);
-
+    
         // Clean up the copy
         for( unsigned int i = 0; i < rc.length; i++ )
         {
@@ -597,7 +566,7 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
 #ifdef DEBUG
         if(gVERBOSE > 2)
         {
-            cerr << "\tFound " << gReadLocs[ rIndex ].size() << " matches for this sequence\n";
+            cerr << "\tFound " << unique.size() << " matches for this sequence\n";
         }
 #endif
         if( !aligned )
@@ -617,19 +586,11 @@ void set_top_matches( GENOME_t &gen, unsigned int rIndex, string &consensus,
         
     }
 
-    /*if( thread_id == 0 )
-    {
-        MUTEX_LOCK( &write_lock );
-        of << "neg done" << endl;
-        MUTEX_UNLOCK( &write_lock );
-    }*/
- 
-
 #ifdef DEBUG
     fprintf( stderr, "**[%d/%d] Sequence [%s] has %lu matching locations\n", iproc, nproc, consensus.c_str(), unique->size() );
 #endif
 
-    if( gReadLocs[ rIndex ].size() == 0 )
+    if( unique->size() == 0 )
     {
 #ifdef DEBUG
         fprintf( stderr, "unmatched!\n" );
@@ -1904,9 +1865,7 @@ int main(const int argc, const char* argv[]) {
         //of << stats.str();        
     }
 
-    cerr << "closing sam file" << endl;
     of.close();
-    cerr << "sam file closed" << endl;
 #ifdef DEBUG
     fprintf(stderr, "[%d/-] Freeing memory...\n", iproc);
 #endif //DEBUG
@@ -2405,6 +2364,7 @@ void* parallel_thread_run(void* t_opts) {
             {
                 break;
             }
+            
             
             string consensus = GetConsensus( *( gReadArray[ k ] ) );
             create_match_output( ( ( thread_opts* )t_opts )->gen, k, consensus );

@@ -133,8 +133,11 @@ bool process_hits( Genome& gen, seq_map& unique, const Read& search,
 
             if( it == unique.end() )
             {    // It wasn't found in the set
+ 
                 unique.insert(pair< string, ScoredSeq* >( to_match, temp ) );
                 denominator += exp( align_score );
+
+
 #ifdef DEBUG
                 //fprintf(stderr,"[%10s%c] just added %s at jump %u with size %lu\n",search.name,strand==POS_STRAND ? '+' : '-',gen.GetPos(loc_it->first,strand).c_str(),i,hashes->size);
                 //fprintf(stderr,"[%10s%c]     size of unique is now %lu\n",search.name,strand==POS_STRAND?'+':'-',unique.size());
@@ -142,7 +145,7 @@ bool process_hits( Genome& gen, seq_map& unique, const Read& search,
             }
             else
             { //if(it != unique.end())     // It was found in the set
-                
+
                 delete temp;
 
                 if( gUNIQUE )
@@ -200,7 +203,9 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
 #ifdef DEBUG
             fprintf( stderr, "Consensus piece: >%s<\n", consensus_piece.c_str() );
 #endif
+            
             gen.get_sa_int( consensus_piece, &start, &end );
+
             if( end == 0 && start == 0 )
             {
                 //cerr << i + j << " bad " << endl;
@@ -285,12 +290,12 @@ bool align_sequence(Genome &gen, seq_map &unique, const Read &search, const stri
             double min_align_score, double& top_align_score, bin_seq& bs,
             int strand, int thread_id )*/
         bool goon = process_hits( gen, unique, search, possible_locs, denominator, min_align_score, top_align_score, bs, strand, thread_id );
+
         if( !goon )
         {
             return false;
         }
-       
-        
+
         if( unique.size() > gMAX_MATCHES )
         {
 

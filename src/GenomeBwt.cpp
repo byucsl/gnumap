@@ -440,7 +440,7 @@ void GenomeBwt::get_sa_int( string& seq, uint64_t* in_start, uint64_t* in_end )
 
     for (int i = 0; i < seq.size(); ++i) // convert to 2-bit encoding if we have not done so
     {
-        //std::cout << "\ti:\t" << i << "\t" << seq[ i ] << "\t" << ( int ) seq[ i ] << std::endl;
+        //std::cout << "\ti:\t" << i << "\t" << seq[ i ] << "\t" << ( int ) seq[ i ] << "\t" << nst_nt4_table[ ( int ) seq[ i ] ] << "\t!" << std::endl;
         c_seq[i] = seq[i] < 4? seq[ i ] : nst_nt4_table[ ( int ) seq[ i ] ];
     }
    
