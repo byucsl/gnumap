@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GNUMAP.  If not, see <http://www.gnu.org/licenses/>.
 
-PLAIN_EXE_NAME = bin/gnumap-plain
+PLAIN_EXE_NAME = bin/gnumap
 MPI_EXE_NAME = bin/gnumap
 TEST_BIN_FILE = bin/gnutest
 
