@@ -13,7 +13,7 @@
   
   `./bin/gnumap -g examples/Cel_gen.fa -o gnumap.out.sam -a .9 examples/Cel_gen.reads.1.fq`
 
-    * The -g parameter specifies the genome in [FASTA format](https://en.wikipedia.org/wiki/FASTA_format).
-    * The -o parameter gives the path and file-name in the [SAM format](https://samtools.github.io/hts-specs/).
-    * The -a parameter takes a percentage (in the form of a floating point number) and specifies the minimum alignment score that will be accepted for mapped reads.
-    * The last parameter is the file containing the reads needed to be mapped in [FASTQ format](https://en.wikipedia.org/wiki/FASTQ_format).
+  * The -g parameter specifies the genome in [FASTA format](https://en.wikipedia.org/wiki/FASTA_format).
+  * The -o parameter gives the path and file-name in the [SAM format](https://samtools.github.io/hts-specs/).
+  * The -a parameter takes a percentage (in the form of a floating point number) and specifies the minimum alignment score that will be accepted for mapped reads.
+  * The last parameter is the file containing the reads needed to be mapped in [FASTQ format](https://en.wikipedia.org/wiki/FASTQ_format).
