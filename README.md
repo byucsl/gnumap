@@ -33,6 +33,14 @@ Here are some of the common parameters used, to see a complete list of parameter
   * -k, --num_seed=INT           The total number of seed hits that must match to a
                                  location before it is considered for alignment
                                  (default: 2)
+  * -h, --max_kmer=INT           Kmers in the reference genome that occur more than this
+                                 will not be used in the read mapping
   * --no_nw                      This will disable the Needleman-Wunsch alignments and
                                  only use hit count as the basis for alignment. Score is
-				                 calculated by summing the number of hits for a position.
+				                 calculated by summing the number of hits for a position
+
+## Reference
+
+The paper describing the most recent changes was presented at [BioT 2016](http://biotconf.org) and is titled *GNUMAP 4.0: Space and Time Efficient NGS Read Mapping Using the FM-Index*.
+
+GNUMAP is made by the [Computational Sciences Laboratory](http://csl.cs.byu.edu/) at [Brigham Young University](http://byu.edu). 
