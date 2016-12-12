@@ -3,7 +3,7 @@
 ## Installation
 
   1. Download the source code [from the repo](https://github.com/byucsl/gnumap/archive/bwt.zip) or `git clone` [https://github.com/byucsl/gnumap.git](https://github.com/byucsl/gnumap.git).
-  2. In the gnumap/ directory run `make`.
+  2. In the `gnumap/` directory run `make`.
   3. _Optional:_ add the path to the GNUMAP binary (`./bin/gnumap`) to your PATH variable.
 
 ## Quick Start
