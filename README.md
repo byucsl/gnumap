@@ -3,7 +3,7 @@
 ## Installation
 
   1. Download the source code [from the repo](https://github.com/byucsl/gnumap/archive/bwt.zip) or `git clone` [https://github.com/byucsl/gnumap.git](https://github.com/byucsl/gnumap.git).
-  2. In the gnumap/ directory run `mkdir bin && mkdir obj && make`.
+  2. In the gnumap/ directory run `make`.
   3. _Optional:_ add the path to the GNUMAP binary (`./bin/gnumap`) to your PATH variable.
 
 ## Quick Start
@@ -11,7 +11,7 @@
   1. Run `./bin/gnumap` to view a help menu explaining how to run GNUMAP.
   2. To perform an alignment using the example dataset, run the following command:
   
-  `./bin/gnumap -g examples/Cel_gen.fa -o gnumap.out.sam -a .9 examples/Cel_gen.reads.1.fq`
+  `./bin/gnumap -g examples/Cel_gen.fa -o gnumap.out -a .9 examples/Cel_gen.reads.1.fq`
 
   * The -g parameter specifies the genome in [FASTA format](https://en.wikipedia.org/wiki/FASTA_format).
   * The -o parameter gives the path and file-name in the [SAM format](https://samtools.github.io/hts-specs/).
@@ -21,7 +21,7 @@
 
 ## Common Parameters
 
-Here are many of the common parameters used, to see a complete list of parameters refer to the file `./docs/DOCUMENTATION`.
+Here are some of the common parameters used, to see a complete list of parameters refer to the file `./docs/DOCUMENTATION`.
 
   * -g, --genome=STRING          Genome .fa file(s)
   * -o, --output=STRING          Output file
@@ -35,4 +35,4 @@ Here are many of the common parameters used, to see a complete list of parameter
                                  (default: 2)
   * --no_nw                      This will disable the Needleman-Wunsch alignments and
                                  only use hit count as the basis for alignment. Score is
-				 calculated by summing the number of hits for a position.
+				                 calculated by summing the number of hits for a position.
