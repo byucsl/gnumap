@@ -17,8 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with GNUMAP.  If not, see <http://www.gnu.org/licenses/>.
 
-PLAIN_EXE_NAME = bin/gnumap-plain
-MPI_EXE_NAME = bin/gnumap
+PLAIN_EXE_NAME = bin/gnumap
+MPI_EXE_NAME = bin/gnumap-mpi
 TEST_BIN_FILE = bin/gnutest
 
 
@@ -51,7 +51,7 @@ TEST_OBJ_FILES = obj/TestDriver.o $(OBJ_FILES)
 
 DEBUG_FLAGS = -m64 -Wall -g -rdynamic
 
-EXTRA_FLAGS =
+$(shell mkdir -p obj bin)
 
 OPT_FLAGS = -m64 -O3
 ERR_FLAGS = -Wall

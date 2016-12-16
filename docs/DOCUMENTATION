@@ -1,0 +1,546 @@
+README for gnumap: Genomic Next-generation Universal MAPper version 1.0
+
+Availability
+============
+
+The source code for this project can be found at 
+	http://dna.cs.byu.edu/gnumap
+or
+	http://sourcefourge.net/projects/gnumap/
+
+
+Table of Contents
+=================
+
+  1. Overview
+  2. Installing
+  3. Running gnumap (quick start)
+  4. Program Parameters (detailed guide)
+  5. Troubleshooting
+  6. History
+  7. Contact
+
+
+1. Overview
+===========
+
+The Genomic Next-generation Universal MAPper (gnumap) is a program designed to 
+accurately map sequence data obtained from next-generation sequencing machines 
+(specifically that of Solexa/Illumina) back to a genome of any size. 
+Currently, gnumap is designed to be used with the _int.txt data received from
+the Solexa/Illumina machine.
+
+With the emergence of high-throughput next-generation sequencing machines, an
+incredible amount of data is being produced at a very high rate. The big problem
+is mapping this data back to the genome. One significant problem with many 
+genomic mapping programs is the way duplicate regions in genomic DNA are dealt 
+with. Since it is impossible to know where exactly where a duplicate region
+should be mapped to, many programs simply throw out these sequences. Often, this
+results in a loss of nearly 40% of the data.
+
+This project develops gnumap, a program capable of handling such repetitive 
+regions. By using the posterior probability of mapping a given read to a specific
+genomic loation, we are able to account for these repetitive reads by distributing 
+them across several regions in the genome. In addition, the output of the program 
+is created in such a way that it can be easily viewed through other free and readily-
+available programs. Several benchmark data sets were created with spiked-in duplicate 
+regions, and gnumap was able to more accurately account for these duplicate regions.
+
+
+2. Installing
+=============
+
+Prerequisites: a 64-bit UNIX system and a C++ compiler.
+
+After downloading the gnumap.tgz file, untar the file using:
+
+	tar -xzf gnumap.tgz
+
+Navigate to the gnumap/ directory, then type
+
+	make;
+
+The program gnumap should be created in the bin/ directory. Add the /path/to/bin/ 
+directory to your PATH variable.
+
+
+3. Running gnumap (quick start)
+===============================
+
+For help on how to run gnumap, just type gnumap into a terminal and the usage
+information will be displayed. A typical gnumap run requires several things.
+For example, to run a test with the sequence file examples/example_sequences_prb.txt, 
+reporting only the locations containing a local alignment score of 90% or better, 
+using the file examples/Cel_gen.fa as the genome, and having the output printed to 
+gnumap.output, I would use:
+
+	./bin/gnumap -g examples/Cel_gen.fa -o gnumap.output -a .9 -v 1 examples/example_sequences_prb.txt
+
+(This command can also be run by typing 'make example' from the gnumap folder)
+
+The -g option defines the genome. The -o option tells the program where to 
+place the output (two output files will be created:  one with the alignment
+report for each read and another in the .sgr format usable with the Affymetrix 
+Integrated Genome Browser for convenient graphical disply. The -a option defines 
+the minimum aligment score that will be accepted for mapped reads, and is a percentage
+by default. The -v option tells the program to print more detailed progress. The
+last parameter is the name of Illumina's *_int.txt or *_prb.txt file to be used
+for the sequences. This file is a tab- and space-deliminated file containing 
+either the base intensity or base quality scores respectively, with each line 
+containing a separate read.
+
+HINT:
+To perform a quicker analysis, try adjusting the mer size and jump size (see
+detailed description of these parameters below).  This script will run gnumap 
+with a mer size of 12 and a jump size of 12 bases:
+
+	./bin/gnumap -g examples/Cel_gen.fa -o gnumap.output -a .9 -v 1 -m 12 -j 12 examples/example_sequences_prb.txt
+
+This example should find matches to roughly 30,000 sequences.
+
+
+4. Program Parameters (detailed guide)
+======================================
+
+Usage: gnumap [options] <file_to_parse>
+  -g, --genome=STRING          Genome .fa file(s)
+  -o, --output=STRING          Output file
+  -a, --align_score=DOUBE      Limit for sequence alignment (default: 90%)
+  -r, --raw                    Use raw score instead of percentage for alignment score limit
+  -q, --read_quality=DOUBLE    Read quality cutoff:  won't align reads if they are
+                               below this cutoff value
+                               (default=0.0)
+  -v, --verbose=INT            Verbose (default=0)
+  -c, --num_proc=INT           Number of processors to run on
+  -m, --mer_size=INT           Mer size (default=0)
+  -B, --buffer=INT             Buffer size
+  -T, --max_match=INT          Maximum number of matches for a given
+                               sequence (default: 1000)
+  -S, --subst_file=STRING      Position-Weight Matrix file for DNA
+                               Substitutions
+  -G, --gap_penalty=DOUBLE     Gap Penalty for Substitution Matrix
+  -M, --max_gap=INT            Maximum Number of Gaps to use in Alignment
+  -A, --adaptor=STRING         Adaptor sequence to remove from sequences
+  -0, --print_full             Print locations for the entire sequence, not
+                               just for the beginning.
+  --print_all_sam              Include all possible SAM records in output
+  -b, --bs_seq                 Flag to turn on the C to T conversion, used in
+                               bisulfite sequence analysis
+  --b2                         Flag to turn on bisulfite sequencing, searching the reverse
+                               strand of -b
+  -d, --a_to_g                 Flag that allows for A to G conversion
+  --fast                       Perform a fast alignment (at some reduction
+                               of accuracy)
+  -s, --gen_skip=INT           Number of bases to skip when the genome is aligned
+                               (default: none)
+  --bin_size=INT               The resolution for GNUMAP (default: 8)
+  -j, --jump=INT               The number of bases to jump in the sequence indexing
+                               (default: mer_size)
+  -k, --num_seed=INT           The total number of seed hits that must match to a
+                               location before it is considered for alignment
+                               (default: 2)
+  --snp                        Turn on SNP mapping (will output a .sgrex file)
+  --snp_pval=DOUBLE            P-Value cutoff for calling SNPs
+                               (default: 0.001)
+  --snp_monop                  Flag that turns on monoploid SNP calling
+                               (default: diploid SNP calling)
+  --illumina                   Defines the fastq file as Illumina file (otherwise
+                               does nothing)
+  --up_strand                  Will only search the positive strand of the genome
+                               for matching location (will not look for reverse
+                               compliment match to the genome.
+  --down_strand                Will only search the negaitve strand (opposite of
+                               --up_strand command)
+
+
+For MPI usage:
+  --MPI_largemem               If the run requires a large amount of memory, this
+                               flag will spread it accross several nodes.
+                               (default:  not included)
+
+Help options:
+  -?, --help                   Show this help message
+
+
+
+
+-g, --genome: Genome .fa file(s)
+gnumap also suports a genome of multiple files, enclosed in quotation marks. If
+a folder is desired, simply type 
+	-g "$(ls genome/*.fa)"
+and the entire *.fa contents of the folder genome will be used.
+
+-o, --output: Output file 
+This is where the output file should be defined. gnumap will create two output
+files: one with SAM format data from each sequence, and a second .sgr file 
+usable with the Integrated Genome Browser (IGB) 
+According to specifications (and only using the fields that are useful to 
+GNUMAP, SAM format should be as follows:
+	<QNAME> <FLAG> <RNAME> <POS> <MAPQ> <CIGAR> <MRNM> <MPOS> <ISIZE> <SEQ> <QUAL> <OPT>
+	<QNAME> will be used if it is a fastq or fasta string--otherwise the query name
+		will be "seq" followed by the sequence number in the file.
+	The only bits in <FLAG> that are important are 0x0010 (where 1 represents an 
+		alignment to the forward strand and 0 represents reverse) or 0x0200, which 
+		means the match was too poor to align
+	<RNAME> is the chromosome mapped to
+	<POS> is the position on the chromosome
+	<MAPQ> is the mapping quality, where MAPQ = 10 * log_10(1-p(x)) where p(x) is 
+		GNUMAP's posterior probability of mapping to that specific location
+	<CIGAR> is the alignment differences, where I=Insertion, D=Deletion and 
+		M=Mismatch or Match with the genomic strand
+	<MRNM> will be '=' for all sequences (it's the mate-pair name)
+	<MPOS> is ignored. Always '0'
+	<ISIZE> is ignored. Always '0'
+	<SEQ> is the sequence
+	<QUAL> is the Phred-based quality of the sequences
+	<OPT> is an optional field of the format TAG:VTYPE:VALUE. GNUMAP uses this to 
+		report the the following fields:
+			XA:f:<ALIGN_SCORE> 	is the raw alignment score
+        	XP:f:<POST_PROB> 	is the posterior probability score
+		    X0:i:<SIM_MATCHES>	is the number of similar matches
+
+If the sequence is too ambiguous to be used (the alignment score with itself is less 
+than 0 or it matches too many times to the genome), the sequence will not be matched, 
+but 0x0200 will appear in the second column. If the sequence can be mapped to the genome, 
+one line of output per each best match location will occur in the output. If it does not 
+align with the genome, there will be no corresponding line in the output.
+
+-a, --align_score: Minimum Alignment Score
+The -a option defines the minimum aligment score that will be accepted for 
+mapped reads. 
+
+-r, --raw: Raw Aligment Flag
+The -r option indicates that the score given in the -a option should be used as
+a raw score instead of a percentage. 
+
+-q, --read_quality: Read Quality Cutoff
+The -q option determines at which level the quality control is turned on.
+The cutoff score is determined by the alignment score of the probabilistic sequence
+with its own consensus sequence.  The default score of zero is as lenient as it can be, 
+and using a higher score will prevent poorer sequences from being aligned.
+ 
+-v, --verbose: Verbosity
+Different levels of verbosity can be used. However, for most purposes, level one
+is sufficient, ie:
+	-v 1
+Using this will slow down the program slightly.
+
+-c, --num_proc: Number of threads
+gnumap supports multi-threading to increase speed. To use gnumap with 8
+processors, use
+	-c 8
+
+-m, --mer_size: Mer length
+gnumap uses a BWT/suffix array table to store the genome. The -m option controls the length
+of these hashes (creating an m-mer hash). Using a longer mer-size, ie:
+	-m 9
+will increase the sequence alignment, but could potentially decrease the 
+accuracy. The current default setting is 9. 
+
+-B, --buffer: Buffer Size
+The buffer size determines how much of the genome and sequence files are read in
+at a time. Eventually, the entire genome will be stored in memory, but if it is
+necessary to read in a smaller portion at a time, this option can be set lower.
+Default setting: 10M
+
+-T,--max_match: Maximum number of matches
+When a sequence from the _int.txt file is matched, all the matches above the
+align_score threshhold are kept. The -M option will determine how many matches
+are reported and scored. If a given sequence has too many matches (whether its
+base qualities are too low, or it comes from a heavily-duplicated region), the
+sequence will not be used. The current default is 1000, but can be changed, ie:
+	-T 100000
+
+-S, --subst_file: Position-Weight Matrix Substitution file
+The position-weight matrix used by the algorithm as default is a simple matrix with
+(-1) as the mismatch score and (+1) as the match score.  If a different scoring
+system is desired, it can be included in a file and passed in as a parameter.  The
+substitution matrix should be in the format:
+A	C	G	T
+A	m	mm	mm	mm
+C	mm	m	mm	mm
+G	mm	mm	m	mm
+T	mm	mm	mm	m
+where m represents the match score and mm represents the mismatch score.
+
+-G, --gap_penalty: Gap Penalty
+The gap penalty used in the probabilistic Needleman-Wunsch algorithm.
+
+-M,--max_gap: Maximum Number of Gaps
+When initializing the Needleman-Wunsch DP-matrix, a boundary using the maximum number
+of gaps is used to not allow an alignment with a large number of gaps.
+
+-A,--adaptor: Adaptor String
+Many of the Solexa/Illumina reads also contain portions of the adaptor sequence.
+Specifying the -A option will remove this adaptor sequence from the end of each read.
+Currenly, only exact matches are used.
+
+-0, --print_full: Full-Print flag
+Normally, GNUMAP will only record one location for each sequence mapped (the start
+location).  When dealing with reads with different sizes, it is often useful to 
+record the placement of the entire sequence in the output file.  Because this does take
+more space in a final output, it is not done traditionally.  See OTHER NOTES for
+directions on how to make this happen.
+
+--print_all_sam: Print All SAM Records
+This flag will print a SAM record for any possible match that GNUMAP finds.  For sequences 
+with multiple "good" hits, this flag will print significantly more records than without it.
+Since the conversion to MAPQ looses a lot of data, look for the XP flag on the end of the SAM
+line for the posterior probability score of each record.
+
+
+IMPORTANT INFORMATION ON BISULFITE MAPPING:
+======================================================================================
+Due to the bisulfite treatment problem, there are four different types of reads that 
+can be created:  BSW (Bisulfite Watson), BSC (Bisulfite Crick), BSWR (BSW Reverse), and 
+BSCR (BSC Reverse).  Pictorally (in ASCII, see citation for full description), this can
+be described as such:
+
+[ C' -> methylated C ]
+[ T* -> bisulfite-treated C ]
+[ A* -> bisulftie-treaded C on reverse-compliment strand ]
+Watson   >> A C'G T T C G C T T G A G >>
+Crick    << T G C'A A G C G A A C T C <<
+
+---Denaturation, Bisulfite Treatment, PRC Amplification---
+
+Watson
+BSW  >> A C'G T T T*G T*T T G A G >>
+BSWR << T G C A A A*C A*A A C T C << 
+Crick
+BSC  << T G C'A A G T*G A A T*T T* <<
+BSCR >> A C G T T C A*C T T A*A A* >>
+
+[ Xi, Yuanxin et al, "BSMAP: whole genome bisulfite sequence MAPping program." BMC 
+Bioinformatics, vol. 10, no. 1, p. 1471-2105.  Available:  
+http://www.biomedcentral.com/1471-2105/10/232 ]
+
+Thus, a complete Bisulfite analysis should include two runs, one each with -b and --b2.
+======================================================================================
+
+
+-b, --bs_seq: Bisulfite Sequence Analysis
+Using bisulfite sequencing analysis, each unmethylated 'c' nucleotide would appear as 
+a 't' in the read. However, methylated c's would not be changed, thus identifying which 
+locations are methylated in the genome. 
+GNUMAP is capable of dealing with these reads, mapping each possibly methylated read 
+to the genome. The final output is in the form of .gmp files.
+With the -b flag, only BSW and BSC reads are mapped.  Including the --up_strand or
+--down_strand flags will only map the BSW or BSC reads respectively.
+
+--b2:  Bisulfite Sequence Mapping (reverse strand mapping)
+To be able to map the other two reads (BSWR and BSCR), use the --b2 flag.  Using the
+--up_strand or --down_strand flags will only map BSWR or BSCR, respectively.
+
+-d, --a_to_g: A to G transitions
+In similar manner to the Bisulfite Sequencing process appearing above, the -b flag can 
+be used to allow for substitutios from a genomic a to a genomic g.
+
+--fast: Perform a fast alignment
+The fast option increases the speed of the algorithm at the possible loss of missing 
+some sequencs. Among other things, including --fast will only search for at one valid
+hash location for each sequence.
+
+-s, --gen_skip: Bases to Skip while hashing
+When hashing the genome, instead of creating a hash at every base, the defined number
+of bases are skipped.  This creates a smaller hash in total without losing on accuracy.
+In order to skip every other base, use:
+	-s 1
+
+--bin_size: Number of bases in each bin
+When printing the sgr file, this is the number of bases to print.  Remember this is a
+genome-file specific parameter, ie: The bin size of the genome file that is written to
+memory will need to be the genome size of every run.
+To use a bin size of 1 (the sgr output file will have base-pair specificty), use:
+	--bin_size=1
+
+-j, --jump: The number of bases to jump
+When matching the read, GNUMAP will jump this number of bases when determining hashes.
+A lower jump value might give a better result, and a jump value of too high will not
+give very desirable results.  Default: MER_SIZE / 2
+In order to specify a jump size of 1 (take every possible hash from the sequence), use:
+	-j 1
+
+-k, --num_seed: The number of seed hashes that must match
+When matching sequences, k number of hashes must match to a given location before the
+location will be considered for alignment.  Significant speedup without loss in accuracy,
+and tradeoffs between -j and -k can provide optimal performance.  Using -k 1 is the 
+exact same as previous versions.  Default: 2
+In order to require that three hash k-mers align to the read before being considered for
+alignment, use:
+	-k 3
+
+--snp: Turns on SNP calling flag
+There are two results from the SNP flag.  The first is a sgrex file, which is an
+extension of the sgr file.  It also includes a rudimentary SNP calling program.  The
+second benefit of the SNP flag is that the flags -0 (full print at each base) and 
+--bin_size=1 are set.  This will take a little bit more memory, and should not be
+used with little memory machines (if the genome is large).
+
+--snp_pval: Minimum p-value for making SNP calls
+GNUMAP uses a p-value score for calling SNPs in the final .sgrex file.  If the p-value
+is not low enough, it will not label this position as a SNP.
+
+--snp_monop: Monopoid SNP flag
+If it is not possible to call diploid SNPs (or if it is not desired to call
+diploid SNPs), use this flag.
+
+--illumina: Defines fastq as Illumina format
+The only difference between Illumina fastq and normal fastq is the ASCII
+adjustment.  Normal fastq will adjust the probability by 33 to obtain an ASCII
+character, whereas Illumiina uses 64.
+
+--up_strand: Only uses the positive strand for alignment
+When searching for matches to a specific sequence, this flag will only allow GNUMAP
+to search the positive strand of the genome (instead of also looking at the
+reverse compilment negative strand).
+
+--down_strand: Only uses the negative strand for alignment
+This flag does the opposite of the --up_strand command and only searches the 
+negative strand.
+
+--save: Binary file to save Genome
+In order to save the genome file to a binary file on disk, include this flag.
+	--save=<file_to_save>
+
+--read: Binary file to read Genome
+Read a previously stored genome back into memory, using the same parameters (ie, mer
+size, maximum hash locations, etc) as were included in the writing of the file.
+	--read=<file_to_read>
+
+
+
+<file_to_parse>: Solexa/Illumina file to parse
+In similar fashion to the genome file(s), more than one Solexa/Illumina file can be
+included by separating each file with white space and surrounding all the files with
+quotation marks.  This can be accomplished on the command line as follows:
+
+	"$(ls Lane1/s_1_*_prb.txt)"
+
+
+
+5. Troubleshooting
+==================
+- Compiling Error
+  If, after typing "make" you get this error:
+	  ld: unknown option: -Bstatic
+	  collect2: ld returned 1 exit status
+	  make: *** [bin/gnumap] Error 1
+  edit Makefile at this point, removing the '#' to look like this:
+	  #If your compiler won't compile with the -Bstatic flag, try uncommenting this next line
+	  LIB =  -Llib/lib -lgsl -lgslcblas -dynamic -lpthread
+  then continue with the compilation (type "make").
+
+- Memory Errors
+  If an error occurs and the program is not capable of creating more memory, decreasing 
+  the mer size should allow it to continue. If this still does not help, try using a 
+  machine with more RAM.
+
+
+
+6. History
+==========
+September, 2015: Moved the repository to a git repo
+July 25, 2011:  Version 2.9.0 Some stability fixes.  Also included code for memory
+	optimizations
+June 3, 2011: sam2sgr Version 2.0 Uses threading via openmp
+May 23, 2011: Version 2.6.0 Several stability updates in addition to substantial 
+	changes in bisulfite mapping.  Including backward compatability so scripts will
+	perform the same way.
+February 22, 2011: Version 2.2.4 Introduced --print_all_sam flag in addition to XP and X0 flags
+December 13, 2010: Fixed SAM MAPQ characters (30 is good match, 0 is very poor)
+November 29, 2010: Ambiguity characters allowed in fasta reads
+November 09, 2010: sam2consensus program added
+November 06, 2010: Bisulfite .sgrex printing
+October 28, 2010: Version 2.2.1 Fixed error with catastrophic cancellation in PHMM
+	code.  Algorithm is more stable with long sequences.
+October 20, 2010: Version 2.2.0 Update to alignment matrices.  Much greater accuracy
+	on real data.  Fixes Segmentation Fault on SNP analysis with 454 sequences.
+September 20, 2010: Update to SNP calling for larger read totals.  Using ratio instead
+	of pvalues for comparison
+August 30, 2010: Updates to output and SNP calling.  Included ratio requirement for 
+	diploid SNP calling.
+August 03, 2010: Version 2.1.7 Changed what FAST mode does.  Also bug fixes and time
+	reductions
+July 22, 2010: Version 2.1.6 Fixes to Bisulfite mapping output.  Also added SAM to SGR
+	converter, Version 1.0
+July 13, 2010: Version 2.1.5 Fixed memory leak.  Working on MPI speedup.  Also added
+	the --read_quality parameter.
+May 19, 2010: Version 2.1.0 Disallowed program from searching for the same string
+	multiple times.  About 2x speedup
+May 13, 2010: Version 2.0.1 Fixed MPI bugs and SAM output
+May 07, 2010: Version 2.0.0 Added MPI for both large memory machines (genome spread 
+	across nodes) and small memory machines (reads spread across nodes)
+March 29, 2010: Version 1.5.75 Fixed a memory leak that was introduced in a previous version
+February 23, 2010: Version 1.5.6 Sam output and a larger genome capability
+February 17, 2010: Version 1.5.5 Added SAM output flag
+February 03, 2010: Version 1.5.3 Minor changes to improve speed
+January 11, 2010: Version 1.5 Fixed several bugs (including fastq sequence files and
+	SNP output in the .sgrex output file)
+December 29, 2009: Version 1.4.9 Fixed several bugs, only reads in a section of
+	the sequences intead of all at once
+December 14, 2009: Version 1.4.8 Fixed the number of sequences report
+December 01, 2009: Version 1.4.7 Can read fasta sequences that are multi-lined
+December 01, 2009: Version 1.4.5 and 1.4.6 Bug fixes
+November 14, 2009: Version 1.4.0 Added functionality to read in both fastq and
+	fasta files (in addition to prb and int files).
+November 09, 2009: Version 1.3.3  Added examples/ directory
+November 05, 2009: Version 1.3.2  Bug fixes.  Added --snp param.
+October 15, 2009: Version 1.3.  Reduced memory footprint, added things to increase
+	speed.  Should also print out each base when needed for the .sgrex file
+September 17, 2009: Version 1.2.  Introduced flags for reading and writing of the
+	genome (reduced hashing and storing the genome to just under 5 minutes).  
+	Also included a "sliding window" method to find a greater number of matches to 
+	the genome.
+July 27, 2009: Version 1.02.1. Bug fixes and optimization. Introduction of the --fast 
+	flag.
+July 04, 2009: Version 1.01.  Fixed some minor bugs when reading in multiple genomes in
+	the same file.
+June 15, 2009: Version 1.0.  Added many optimizations to increase speed.  Also included
+	the -b option for bisulfite conversion.
+May 05, 2009: Version 0.99_5.  Added -0 flag to print output at every position for
+	unequally lengthed sequences.
+May 01, 2009: Version 0.99_4.  Fixed an error with reading multiple chromosomes.  
+	Also allowed for multiple chromosomes to be included in one file.
+April 01, 2009: Version 0.99_3.  Fixed an error with overflowing the size of a 32-bit
+	unsigned int.  Using 64-bit unsigned long instead.  Must compile under 64-bit mode.
+February 10, 2009: Version 0.99_2.  Removed SEQ_LENGTH so the sequences can have 
+	variable lengths.  Also allowed for the receipt for the adaptor sequence,
+	removing any adaptor characters especially for shorter sequences.
+February 02, 2009: Version 0.99_full.  Removed popt library, compatable with platforms
+	that do not have the library.
+January 07, 2009: Version 0.99.  Removed traceback element of alignment, significant
+	speedup achieved.
+December 30, 2008: Version 0.98.  Added command-line argument to enable PWM
+	matrix specification and GAP number.
+August 20, 2008: Version 0.96 created, allowing the user to select more than
+	one sequence file.
+August 05, 2008: Version 0.95. Compatability with both the _prb.txt and
+	_int.txt files fixed.
+July 31, 2008: Version 0.9 (Beta) released. The full version released, including
+	multithreading to improve performance.  datagen, a program used to create
+	synthetic reads for duplication analysis, was created.
+June 02, 2008: Version 0.5 released with limited functionality. Synthetic 
+	benchmark datasets were also developed to measure the impact of duplicate 
+	reads on the accuracy of different read mapping programs.
+April 23, 2008: Development of the hashing algorithm. Most mapping programs 
+	hash the reads and then make one pass across the genome to map the reads. In
+	order to account for duplicate reads, we decided that gnumap would need to 
+	hash the genome and then map each read into muliple locations.
+March 21, 2008: The architecture of gnumap was developed with a focus on 
+	statistical methods to account for duplicate reads.
+January 11, 2008: Initial work on gnumap began when Dr. Evan Johnson and his 
+	statistics research group began meeting with researchers in the 
+	Computational Sciences Laboratory.
+
+7. Contact
+==========
+
+The program website is:
+	http://dna.cs.byu.edu/gnumap
+
+The authors of this program can be contacted at:
+	nathanlclement@gmail.com 	(Nathan Clement, Computer Science)
+	clement@cs.byu.edu			(Mark Clement PhD, Computer Science)
+	snell@cs.byu.edu			(Quinn Snell PhD, Computer Science)
+	evan@stat.byu.edu 			(W. Evan Johnson PhD, Statistics)
