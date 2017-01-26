@@ -6,6 +6,12 @@
   2. In the `gnumap/` directory run `make`.
   3. _Optional:_ add the path to the GNUMAP binary (`./bin/gnumap`) to your PATH variable.
 
+### Mac Installation
+
+To install on a Mac, clone the repository with the following command:
+  
+  `git clone -b mac https://github.com/byucsl/gnumap.git`
+  
 ## Quick Start
 
   1. Run `./bin/gnumap` to view a help menu explaining how to run GNUMAP.
