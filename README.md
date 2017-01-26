@@ -1,12 +1,14 @@
-# GNUMAP: Genomic Next-generation Universal MAPper version 4.0 for MacOS
-
-This is tested on MacOS Sierra 10.12.3
+# GNUMAP: Genomic Next-generation Universal MAPper version 4.0
 
 ## Installation
 
   1. Download the source code [from the repo](https://github.com/byucsl/gnumap/archive/bwt.zip) or `git clone` [https://github.com/byucsl/gnumap.git](https://github.com/byucsl/gnumap.git).
   2. In the `gnumap/` directory run `make`.
   3. _Optional:_ add the path to the GNUMAP binary (`./bin/gnumap`) to your PATH variable.
+  
+### Mac Installation
+
+To install on a Mac, clone the repository with the following command: `git clone -b mac https://github.com/byucsl/gnumap.git`
 
 ## Quick Start
 
