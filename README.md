@@ -1,4 +1,6 @@
-# GNUMAP: Genomic Next-generation Universal MAPper version 4.0
+# GNUMAP: Genomic Next-generation Universal MAPper version 4.0 for MacOS
+
+This is tested on MacOS Sierra 10.12.3
 
 ## Installation
 
