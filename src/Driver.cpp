@@ -95,7 +95,7 @@ unsigned int *finished_arr = 0;                    // Array used to tell when th
 double gTimeBegin;
 
 pthread_attr_t attr;
-pthread_mutex_t lock;
+pthread_mutex_t alock;
 pthread_mutex_t nwlock;
 pthread_mutex_t total_read_lock;
 pthread_mutex_t cond_lock;
@@ -639,7 +639,7 @@ void create_match_output(GENOME_t &gen, unsigned int rIndex, string &consensus) 
     
     for(sit = gReadLocs[rIndex].begin(); sit != gReadLocs[rIndex].end(); ++sit) {
 
-        (*sit).second->score(gReadDenominator[rIndex],gGen,len,*gReadArray[rIndex],lock);
+        (*sit).second->score(gReadDenominator[rIndex],gGen,len,*gReadArray[rIndex],alock);
 /*
         vector<TopReadOutput> tro = (*sit).second->get_SAM(gReadDenominator[rIndex],*gReadArray[rIndex],consensus,gen,rIndex);
         for(unsigned int i=0; i<tro.size(); i++) {
@@ -1015,7 +1015,7 @@ int main(const int argc, const char* argv[]) {
     sigaction(SIGBUS, &bus_action, NULL);
 
     //Print command line args
-    cerr << "This is GNUMAP, Version "gVERSION", for public and private use." << endl;
+    cerr << "This is GNUMAP, Version " gVERSION ", for public and private use." << endl;
     cerr << "# Using BWT/Suffix Array.\n";
     
     // move this code out of the main body.
@@ -1491,7 +1491,7 @@ int main(const int argc, const char* argv[]) {
     
     pthread_t pthread_hand[gNUM_THREADS];
     void *pthread_ret[gNUM_THREADS];
-    pthread_mutex_init(&lock,NULL);
+    pthread_mutex_init(&alock,NULL);
     pthread_mutex_init(&nwlock,NULL);
     pthread_mutex_init(&write_lock,NULL);
     pthread_mutex_init( &output_lock, NULL );

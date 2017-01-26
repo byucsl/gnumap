@@ -58,6 +58,7 @@ ERR_FLAGS = -Wall
 
 FLAGS = $(OPT_FLAGS) -DGENOME_BWT -std=c++0x
 FLAGS = -DDEBUG_NW -DDEBUG_TIME $(DEBUG_FLAGS) -std=c++0x -O3
+CFLAGS= -DDEBUG_NW -DDEBUG_TIME $(DEBUG_FLAGS) -O3
 #FLAGS = $(PROFILE_FLAGS)
 #FLAGS = $(DEBUG_FLAGS) -DDEBUG
 #FLAGS = $(DEBUG_FLAGS) -DSET_POS
@@ -97,7 +98,7 @@ BUILDEXE=$(PLAIN_EXE_NAME)
 INC = -Iinc/ -I$(GSL_LIB_DIR)
 # For some reason, I thought we needed to do dynamic linking.  Running a few tests,
 # it doesn't seem we do after all, so we'll just pull this out, but leave it in just in case.
-LIB = -lz -lm -dynamic -lpthread -Llib/lib -Wl,-Bstatic -lgsl -lgslcblas -Wl,-Bdynamic
+LIB = -lz -lm -dynamic -lpthread -Llib/lib -lgsl -lgslcblas 
 #LIB =  -Llib/lib -lgsl -lgslcblas -dynamic -lpthread
 
 prog : $(BUILDTARGET)
@@ -173,31 +174,31 @@ obj/GenomeMem.o : src/GenomeMem.cpp inc/GenomeMem.h
 	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
 
 obj/utils.o : src/utils.c inc/utils.h
-	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
+	$(GXX) $(CFLAGS) -o $@ -c $< $(INC)
 
 obj/bwt.o : src/bwt.c inc/bwt.h
-	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
+	$(GXX) $(CFLAGS) -o $@ -c $< $(INC)
 
 obj/bntseq.o : src/bntseq.c inc/bntseq.h
-	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
+	$(GXX) $(CFLAGS) -o $@ -c $< $(INC)
 
 obj/GenomeBwt.o : src/GenomeBwt.cpp inc/GenomeBwt.h
-	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
+	$(GXX) $(CFLAGS) -o $@ -c $< $(INC)
 
 obj/bwtindex.o : src/bwtindex.c
-	$(GCC) $(FLAGS) -o $@ -c $< $(INC)
+	$(GCC) $(CFLAGS) -o $@ -c $< $(INC)
 
 obj/is.o : src/is.c
-	$(GCC) $(FLAGS) -o $@ -c $< $(INC)
+	$(GCC) $(CFLAGS) -o $@ -c $< $(INC)
 
 obj/bwt_gen.o : src/bwt_gen.c
-	$(GCC) $(FLAGS) -o $@ -c $< $(INC)
+	$(GCC) $(CFLAGS) -o $@ -c $< $(INC)
 
 obj/QSufSort.o : src/QSufSort.c inc/QSufSort.h
-	$(GCC) $(FLAGS) -o $@ -c $< $(INC)
+	$(GCC) $(CFLAGS) -o $@ -c $< $(INC)
 
 obj/%.o : src/%.cpp inc/%.h
-	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
+	$(GXX) $(CFLAGS) -o $@ -c $< $(INC)
 
 #	valgrind --tool=memcheck --leak-check=full --show-reachable=yes --suppressions=test/string.supp $(EXE_NAME) \
 #	-g /data/public/hci/mouse/chr1_both.seq -o test/val_test \

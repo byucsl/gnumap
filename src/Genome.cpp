@@ -1169,7 +1169,7 @@ void Genome::PrintFinalVCF(const char* fn, bool append) {
 		time_t rawtime;
 		time ( &rawtime );
 		fprintf(vcf_file, "##fileDate=%s\n", ctime (&rawtime));
-		fprintf(vcf_file, "##source=GNUMAP v"gVERSION"\n");
+		fprintf(vcf_file, "##source=GNUMAP v" gVERSION "\n");
 		fprintf(vcf_file, "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n");
 		fprintf(stderr, "Finished writing header to VCF file\n");
 	}
