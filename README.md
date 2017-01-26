@@ -12,6 +12,8 @@ To install on a Mac, clone the repository with the following command:
   
   `git clone -b mac https://github.com/byucsl/gnumap.git`
 
+and follow the regular installation instructions.
+
 ## Quick Start
 
   1. Run `./bin/gnumap` to view a help menu explaining how to run GNUMAP.
