@@ -1,9 +1,10 @@
 # GNUMAP
+
 ## Genomic Next-generation Universal MAPper version 4.0
 
 ### Installation
 
-  1. Download the source code [from the repo](https://github.com/byucsl/gnumap/archive/bwt.zip) or `git clone` [https://github.com/byucsl/gnumap.git](https://github.com/byucsl/gnumap.git).
+  1. Download the source code [from the repo](https://github.com/byucsl/gnumap/archive/bwt.zip) or `git clone [https://github.com/byucsl/gnumap.git](https://github.com/byucsl/gnumap.git)`.
   2. In the `gnumap/` directory run `make`.
   3. _Optional:_ add the path to the GNUMAP binary (`./bin/gnumap`) to your PATH variable.
 
@@ -45,3 +46,7 @@ Here are some of the common parameters used, to see a complete list of parameter
 The paper describing the most recent changes was presented at [BioT 2016](http://biotconf.org) and is titled *GNUMAP 4.0: Space and Time Efficient NGS Read Mapping Using the FM-Index*.
 
 GNUMAP is made by the [Computational Sciences Laboratory](http://csl.cs.byu.edu/) at [Brigham Young University](http://byu.edu). 
+
+### Contact
+
+There is a [Google Group for GNUMAP](https://groups.google.com/forum/#!forum/gnumap-users) that one can use to post questions/issues.
