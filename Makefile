@@ -105,10 +105,10 @@ prog : $(BUILDTARGET)
 
 all : $(BUILDTARGET) conv batch-consensus
 
-mpi : $(GSL_LIB_FILE) $(MPI_EXE_NAME) 
+mpi : $(MPI_EXE_NAME) 
 	-@ echo ""; echo "MPI Build Successful"; echo ""
 	
-plain : $(GSL_LIB_FILE) $(PLAIN_EXE_NAME) 
+plain : $(PLAIN_EXE_NAME) 
 	-@ echo ""; echo "Successful"; echo ""
 
 conv : $(CONV_EXE_NAME)
@@ -154,10 +154,10 @@ $(MPI_EXE_NAME) : $(EXE_OBJ_FILES) $(INC_FILES) inc/ScoredSeq.h inc/SeqManager.h
 	$(MPIXX) $(FLAGS) -o $(MPI_EXE_NAME) $(EXE_OBJ_FILES) $(INC) $(LIB) $(EXTRA_FLAGS)
 	
 obj/Driver.o : src/Driver.cpp $(INC_FILES) inc/a_matrices.c inc/SequenceOperations.h \
-				inc/align_seq2_raw.cpp
+				inc/align_seq2_raw.cpp $(GSL_LIB_FILE) 
 	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
 
-obj/TestDriver.o : test/TestDriver.cpp
+obj/TestDriver.o : test/TestDriver.cpp $(GSL_LIB_FILE) 
 	$(GXX) $(FLAGS) -o obj/TestDriver.o -c test/TestDriver.cpp $(INC)
 
 $(CONV_EXE_NAME) : $(CONV_OBJ_FILES) $(CONV_INC_FILES)
@@ -170,7 +170,7 @@ $(BATCH_CONS_EXE) : $(BATCH_CONS_OBJ_FILES) $(BATCH_CONS_INC_FILES)
 obj/sam2consensus.o : src/sam2consensus.cpp inc/a_matrices.c
 	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
 
-obj/GenomeMem.o : src/GenomeMem.cpp inc/GenomeMem.h
+obj/GenomeMem.o : src/GenomeMem.cpp inc/GenomeMem.h $(GSL_LIB_FILE)
 	$(GXX) $(FLAGS) -o $@ -c $< $(INC)
 
 obj/utils.o : src/utils.c inc/utils.h
@@ -182,7 +182,10 @@ obj/bwt.o : src/bwt.c inc/bwt.h
 obj/bntseq.o : src/bntseq.c inc/bntseq.h
 	$(GXX) $(CFLAGS) -o $@ -c $< $(INC)
 
-obj/GenomeBwt.o : src/GenomeBwt.cpp inc/GenomeBwt.h
+obj/GenomeBwt.o : src/GenomeBwt.cpp inc/GenomeBwt.h $(GSL_LIB_FILE)
+	$(GXX) $(CFLAGS) -o $@ -c $< $(INC)
+
+obj/Genome.o : src/Genome.cpp inc/Genome.h $(GSL_LIB_FILE)
 	$(GXX) $(CFLAGS) -o $@ -c $< $(INC)
 
 obj/bwtindex.o : src/bwtindex.c
@@ -197,7 +200,7 @@ obj/bwt_gen.o : src/bwt_gen.c
 obj/QSufSort.o : src/QSufSort.c inc/QSufSort.h
 	$(GCC) $(CFLAGS) -o $@ -c $< $(INC)
 
-obj/%.o : src/%.cpp inc/%.h
+obj/%.o : src/%.cpp inc/%.h $(GSL_LIB_FILE)
 	$(GXX) $(CFLAGS) -o $@ -c $< $(INC)
 
 #	valgrind --tool=memcheck --leak-check=full --show-reachable=yes --suppressions=test/string.supp $(EXE_NAME) \
