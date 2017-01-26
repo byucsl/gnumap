@@ -8,7 +8,9 @@
   
 ### Mac Installation
 
-To install on a Mac, clone the repository with the following command: `git clone -b mac https://github.com/byucsl/gnumap.git`
+To install on a Mac, clone the repository with the following command:
+  
+  `git clone -b mac https://github.com/byucsl/gnumap.git`
 
 ## Quick Start
 
