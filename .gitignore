@@ -1,6 +1,7 @@
 bin/*
 obj/*
 lib/*
+!lib/cxxopts
 stuff.*
 slurm*
 analysis.txt
