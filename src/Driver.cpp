@@ -54,6 +54,9 @@
 #include "centers.h"
 #include "Exception.h"
 
+// cxxopts library to parse commandline arguments
+#include <cxxopts.hpp>
+
 #ifdef DEBUG_NW
 // @masakistan
 // IMPORTANT NOTE: keeping track of the number of needleman-wunsch alignments

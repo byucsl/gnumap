@@ -46,6 +46,8 @@ BATCH_CONS_INC_FILES = inc/const_include.h inc/const_define.h
 GSL_LIB_FILE = lib/lib/libgsl.a
 GSL_LIB_DIR = lib/gsl-1.9/
 GSL_ZIP_FILE = lib/gsl-1.9.tar.gz
+
+CXXOPTS_LIB_DIR = lib/cxxopts/include/
 		
 TEST_OBJ_FILES = obj/TestDriver.o $(OBJ_FILES)
 
@@ -94,7 +96,7 @@ GXX=g++
 BUILDTARGET=plain
 BUILDEXE=$(PLAIN_EXE_NAME)
 
-INC = -Iinc/ -I$(GSL_LIB_DIR)
+INC = -Iinc/ -I$(GSL_LIB_DIR) -I$(CXXOPTS_LIB_DIR) 
 # For some reason, I thought we needed to do dynamic linking.  Running a few tests,
 # it doesn't seem we do after all, so we'll just pull this out, but leave it in just in case.
 LIB = -lz -lm -dynamic -lpthread -Llib/lib -Wl,-Bstatic -lgsl -lgslcblas -Wl,-Bdynamic
