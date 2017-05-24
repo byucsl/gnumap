@@ -85,6 +85,7 @@ void GetParseError(ostream &os, const char* argv[]);
 int set_arg_ext(const char* param, const char* assign, int &count);
 int set_arg(const char* param, const char* assign, int &count);
 CMDLine this_cmd;
+std::vector<string> addCmdLineOptions(cxxopts::Options* options);
 /*****************************************************/
 
 /*****************************************************
@@ -1016,11 +1017,7 @@ int main(const int argc, const char* argv[]) {
     struct sigaction bus_action;
     bus_action.sa_handler = sig_handler;
     sigaction(SIGBUS, &bus_action, NULL);
-
-    //Print command line args
-    cerr << "This is GNUMAP, Version "gVERSION", for public and private use." << endl;
-    cerr << "# Using BWT/Suffix Array.\n";
-    
+   
     // move this code out of the main body.
     setup_matrices();
 
@@ -1032,8 +1029,13 @@ int main(const int argc, const char* argv[]) {
     //print_stats(stderr);
 #endif
 
+    // Print command line header
+    cxxopts::Options options("GNUMAP, version " gVERSION ".", 
+            "A space and time efficient NGS read mapper using the FM-Index.\n");
+ 
     cl_args = "";
     cout << endl << "Command Line Arguments:  ";
+    // Print command line arguments
     for(int i=0; i<argc; i++)
     {
         cout << argv[i] << ' ';
@@ -1044,7 +1046,16 @@ int main(const int argc, const char* argv[]) {
     
     gVERBOSE = 0;
 
-    if(argc == 1) //means only the bin/gnumap parameter
+    std::vector<string> helpGroups = addCmdLineOptions(&options);
+
+    // "cast" argc and argv so that they aren't const
+    int& numArgs = const_cast<int&>(argc);
+    char** args = const_cast<char**>(argv);
+    // parse the command line arguments
+    options.parse(numArgs, args);
+    cout << endl << options.help(helpGroups);
+
+    /*if(argc == 1) //means only the bin/gnumap parameter
     {
         usage(0, "" );
     }
@@ -1061,7 +1072,7 @@ int main(const int argc, const char* argv[]) {
     {
         GetParseError(cerr, argv);
         return -1;
-    }
+    }*/
 
 // if we're doing the needleman-wunsch counting for deubgging
 #ifdef DEBUG_NW
@@ -1078,7 +1089,7 @@ int main(const int argc, const char* argv[]) {
 
     /* Manage errors that might occur */    
     // If they don't include a fasta file for sequences
-    if( (seq_file == NULL) )
+    /*if( (seq_file == NULL) )
         usage(1, "Specify a single file e.g., sequences.fa\n");
     if(!genome_file)
         usage(1, "Specify a genome to map to with the -g flag\n");
@@ -1096,7 +1107,7 @@ int main(const int argc, const char* argv[]) {
             delete e;
             return -1;
         }
-    }
+    }*/
 
     // Allocate space for dynammically-allocated arrays
     alloc_nReads();
@@ -1893,6 +1904,43 @@ int main(const int argc, const char* argv[]) {
 #endif
 
     return 0;
+}
+
+std::vector<string> addCmdLineOptions(cxxopts::Options* options) {
+    std::vector<string> helpGroups;
+
+    // add the available command line arguments
+    helpGroups.push_back("");
+    options->add_options(helpGroups[helpGroups.size() - 1])
+        ("g,genome", "Genome .fa file(s)", cxxopts::value<std::string>())
+        ("o,output", "Output file", cxxopts::value<std::string>())
+        ("v,verbose", "Verbosity level", cxxopts::value<int>()->default_value("1"))
+        ("c,num_proc", "Number of processors on which to run", cxxopts::value<int>()->default_value("1"))
+        ("B,buffer", "Buffer size", cxxopts::value<int>()->default_value("524288"))
+    ;
+
+    helpGroups.push_back("alignment");
+    options->add_options(helpGroups[helpGroups.size() - 1])
+        ("a,align_score", "Limit for sequence alignment", cxxopts::value<double>()->default_value("0.9"))
+        ("r,raw", "Use raw score when determining alignment cutoff")
+        ("G,gap_penalty", "Gap penalty for substitution matrix", cxxopts::value<double>()->default_value("-4"))
+        ("A,adaptor", "Adaptor sequence to remove from sequences", cxxopts::value<std::string>())
+    ;
+
+    return helpGroups;
+}
+
+void setCmdLineOptions(cxxopts::Options* options) {
+    if(options.count("genome")) {
+        genome_file = options["genome"].as<std::string>().c_str();
+    }
+    if(options.count("output")) {
+        output_file = options["output"].as<std::string>().c_str();
+    }
+    if(options.count("verbose")) {
+
+    }
+    return;
 }
 
 
@@ -2831,7 +2879,7 @@ int set_arg(const char* param, const char* assign, int &count) {
                 return PARSE_ERROR;
             break;
         case '?':
-            usage(0, "" );
+            //usage(0, "" );
         default:
             return PARSE_ERROR;
     }
