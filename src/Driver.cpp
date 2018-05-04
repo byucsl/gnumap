@@ -1280,16 +1280,17 @@ int main(const int argc, const char* argv[]) {
                 
     }
 
-    /*if(gATOG)
+    if(gATOG)
     {
         gPRINT_FULL = true;
         params << "\tUsing A to G conversion" << endl;
     
-         * We don't want to match to only one strand:  All 4, REW,REWR,REC,RECR
+         /* We don't want to match to only one strand:  All 4, REW,REWR,REC,RECR
         // RNA editing only works with one strand, so don't let them have both
         if(gMATCH_POS_STRAND && gMATCH_NEG_STRAND)
             usage(1, "Please specify a strand to match with --up_strand or --down_strand");
             // exit
+        */
 
         if(gMATCH_POS_STRAND)
         {    
@@ -1311,7 +1312,7 @@ int main(const int argc, const char* argv[]) {
             }
         }
 
-    }*/
+    }
 
     if(gGEN_SIZE != 8)
     {
