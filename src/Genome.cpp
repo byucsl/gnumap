@@ -220,6 +220,7 @@ void Genome::make_extra_arrays() {
 #endif
 	
 	}
+
 	if(gBISULFITE) {
 		// Might already have been done under SNP calling
 		printf("Using bisulfite conversion techniques\n");
@@ -249,6 +250,7 @@ void Genome::make_extra_arrays() {
 #endif
 		
 	}
+
 	if(gATOG) {
 		printf("Using AtoG conversion techniques\n");
 		// Might already have been done under SNP calling
@@ -267,13 +269,19 @@ void Genome::make_extra_arrays() {
 			memset(reads,0,genome_size*NUM_SNP_VALS*sizeof(char));
 		}
 #else
-		for(unsigned int i=0; i<NUM_SNP_VALS; i++) {
+		for(unsigned int i = 0; i < NUM_SNP_VALS; i++)
+        {
 			if(!reads[i])
+            {
 				reads[i] = new float[genome_size];
+            }
 				
 			if(!reads[i])
+            {
 				throw new Exception("Could not allocate space for A to G calling");
-			memset(reads[i],0,genome_size*sizeof(float));
+            }
+
+			memset( reads[ i ], 0, genome_size * sizeof( float ) );
 		}
 #endif // DISCRETIZE/INTDISC
 	}
@@ -560,7 +568,9 @@ void Genome::AddSeqScore(unsigned long pos, const float amt, unsigned int which)
 	}
 #else
 	if(which < NUM_CHAR_VALS && reads[which])
+    {
 		reads[which][loc] += amt;
+    }
 #endif	// DISCRETIZE/INTDISC
 
 }

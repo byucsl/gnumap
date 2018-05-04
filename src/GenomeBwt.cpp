@@ -194,6 +194,7 @@ unsigned int GenomeBwt::readGen(char* fn) {
 	return 1;
 }
 
+/*
 void GenomeBwt::make_extra_arrays() {
 	//if we are doing the bisulfite sequencing, we want to record what nucleotide
 	//comes at each position
@@ -276,11 +277,12 @@ void GenomeBwt::make_extra_arrays() {
 		}
 #endif // DISCRETIZE/INTDISC
 	}
-}
+}*/
 
 void GenomeBwt::LoadGenome()
 {
     //std::cout << "load genome" << std::endl;
+    //fflush( stdout );
     unsigned int read_status = readGen( ref_genome_fn );
     bool read_from_disk = false;
     
@@ -314,7 +316,7 @@ void GenomeBwt::LoadGenome()
 		cout.flush();
     }
 #endif
-
+    genome_size = size();
 	make_extra_arrays();
 
     {
@@ -495,19 +497,6 @@ void GenomeBwt::AddSeqScore(unsigned long pos, const float* amt, const float sca
 	//fprintf(stderr,"pos: %lu, myStart: %lu\n",pos,my_start);
 	unsigned int loc = (pos-my_start)/gGEN_SIZE;
 	
-/*
-	if(amt[A_POS] * scale > 0.0)
-		fprintf(stderr,"For position %lu, total A is %f = %f*%f\n",pos,amt[A_POS]*scale,amt[A_POS],scale);
-	if(amt[C_POS] * scale > 0.0)
-		fprintf(stderr,"For position %lu, total C is %f = %f*%f\n",pos,amt[C_POS]*scale,amt[C_POS],scale);
-	if(amt[G_POS] * scale > 0.0)
-		fprintf(stderr,"For position %lu, total G is %f = %f*%f\n",pos,amt[G_POS]*scale,amt[G_POS],scale);
-	if(amt[T_POS] * scale > 0.0)
-		fprintf(stderr,"For position %lu, total T is %f = %f*%f\n",pos,amt[T_POS]*scale,amt[T_POS],scale);
-	if(amt[N_POS] * scale > 0.0)
-		fprintf(stderr,"For position %lu, total N is %f = %f*%f\n",pos,amt[N_POS]*scale,amt[N_POS],scale);
-*/
-
 #if defined( DISCRETIZE )
 	int i;
 	center_t *map_c = centers[read_allot[loc]];
@@ -539,15 +528,6 @@ void GenomeBwt::AddSeqScore(unsigned long pos, const float* amt, const float sca
 	unsigned char newC;
 	
 	//fprintf(stderr,"prev: %d %d %d %d %d\n",reads[reads_loc+A_POS],reads[reads_loc+C_POS],reads[reads_loc+G_POS],reads[reads_loc+T_POS],reads[reads_loc+N_POS]);
-	/*
-	float fnA = FLTFROM255(prev_amt, reads[reads_loc+A_POS]) + amt[A_POS]*scale;
-	float fnC = FLTFROM255(prev_amt, reads[reads_loc+C_POS]) + amt[C_POS]*scale;
-	float fnG = FLTFROM255(prev_amt, reads[reads_loc+G_POS]) + amt[G_POS]*scale;
-	float fnT = FLTFROM255(prev_amt, reads[reads_loc+T_POS]) + amt[T_POS]*scale;
-	float fnN = FLTFROM255(prev_amt, reads[reads_loc+N_POS]) + amt[N_POS]*scale;
-	fprintf(stderr,"prev_floats(%f): %f %f %f %f %f\n",prev_amt,fnA-amt[A_POS]*scale,fnC-amt[C_POS]*scale,fnG-amt[G_POS]*scale,fnT-amt[T_POS]*scale,fnN-amt[N_POS]*scale);
-	fprintf(stderr,"floats(%f): %f %f %f %f %f\n",loc_amt,fnA,fnC,fnG,fnT,fnN);
-	*/
 
 	for(unsigned int i=0; i<NUM_SNP_VALS; i++) {
 		newC = CHARFROMFLT(loc_amt, FLTFROM255(prev_amt, reads[reads_loc+i]) + amt[i]*scale);
@@ -617,7 +597,9 @@ void GenomeBwt::AddSeqScore(unsigned long pos, const float amt, unsigned int whi
 	}
 #else
 	if(reads[which])
+    {
 		reads[which][loc] += amt;
+    }
 #endif	// DISCRETIZE/INTDISC
 
 }

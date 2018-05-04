@@ -1280,40 +1280,38 @@ int main(const int argc, const char* argv[]) {
                 
     }
 
-    if(gATOG)
+    /*if(gATOG)
     {
         gPRINT_FULL = true;
         params << "\tUsing A to G conversion" << endl;
     
-        /*
          * We don't want to match to only one strand:  All 4, REW,REWR,REC,RECR
         // RNA editing only works with one strand, so don't let them have both
         if(gMATCH_POS_STRAND && gMATCH_NEG_STRAND)
             usage(1, "Please specify a strand to match with --up_strand or --down_strand");
             // exit
-         */
 
         if(gMATCH_POS_STRAND)
         {    
-            g_bs_CONVERSION[(int)'a'] = g_bs_CONVERSION[(int)'A'] = 2;    //change it so every 'a' will be *indexed* as a 'g'
+            g_bs_CONVERSION[(unsigned int)'a'] = g_bs_CONVERSION[(unsigned int)'A'] = 2;    //change it so every 'a' will be *indexed* as a 'g'
             // If they've supplied a matrix, we don't want to mess with this
             if(pos_matrix == NULL)
             {
-                gALIGN_SCORES[(int)'a'][2] = gMATCH;
+                gALIGN_SCORES[(unsigned int)'a'][2] = gMATCH;
             }
         }
         else // only if we don't want to match to both strands...
         {
             // when doing the opposite strand, we want to allow 'T->C' (the rev comp)
-            g_bs_CONVERSION[(int)'t'] = g_bs_CONVERSION[(int)'T'] = 1;    //change it so every 't' will be *indexed* as a 'c'
+            g_bs_CONVERSION[(unsigned int)'t'] = g_bs_CONVERSION[(unsigned int)'T'] = 1;    //change it so every 't' will be *indexed* as a 'c'
             // If they've supplied a matrix, we don't want to mess with this
             if(pos_matrix == NULL)
             {
-                gALIGN_SCORES[(int)'t'][1] = gMATCH;
+                gALIGN_SCORES[(unsigned int)'t'][1] = gMATCH;
             }
         }
 
-    }
+    }*/
 
     if(gGEN_SIZE != 8)
     {

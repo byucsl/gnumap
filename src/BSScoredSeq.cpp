@@ -74,7 +74,7 @@ void BSScoredSeq::score(double denom, Genome &gen, unsigned int len, Read &read,
 		if(sit->second == firstStrand) {
 			for(unsigned int i=0; i<aligned.size(); i++) {
 				gen.AddScore( (*sit).first+i,total_score );
-				gen.AddSeqScore((*sit).first+i,total_score,g_gen_CONVERSION[(int)aligned[i]]);
+				gen.AddSeqScore( ( *sit ).first + i, total_score, g_gen_CONVERSION[ ( int ) aligned[ i ] ] );
 			}
 		}
 		else {

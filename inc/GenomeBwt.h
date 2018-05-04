@@ -114,7 +114,7 @@ class GenomeBwt : public Genome {
 		 * This function was pulled out of LoadGenome so it could also be used in Store Genome.
 		 * It simply allocates space for the 'read' and 'genome' arrays, as necessary.
 		 */
-		void make_extra_arrays();
+		//void make_extra_arrays();
 
 		/*
 		 * index_and_store() will cause the genome to be indexed--from the file fn given above.
@@ -140,13 +140,12 @@ class GenomeBwt : public Genome {
 		 */
 		float GetScore(const unsigned long &pos);
 		void AddScore(const unsigned long &pos, const float &amt);
-		void AddScore(const unsigned long &pos, const float &amt, float a_add, float b_add, float gen_a, float gen_b);
-		void AddScore(const unsigned long &pos, const float &amt, float a_add, float c_add, float g_add, float t_add,
-					float gen_a, float gen_c, float gen_g, float gen_t);
+		//void AddScore(const unsigned long &pos, const float &amt, float a_add, float b_add, float gen_a, float gen_b);
+		//void AddScore(const unsigned long &pos, const float &amt, float a_add, float c_add, float g_add, float t_add, float gen_a, float gen_c, float gen_g, float gen_t);
 
 		void AddSeqScore(unsigned long, const float*, const float);
 		void AddSeqScore(unsigned long, const float, unsigned int which);
-		void AddGenScore(unsigned long, const float, char which);
+		//void AddGenScore(unsigned long, const float, char which);
 		
 		/*! 
 		 * GetPos is used mostly in printing out the matches.  It will find the position
