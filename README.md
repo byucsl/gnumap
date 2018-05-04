@@ -49,6 +49,16 @@ Here are some of the common parameters used, to see a complete list of parameter
 
 ## Reference
 
-The paper describing the most recent changes was presented at [BioT 2016](http://biotconf.org) and is titled *GNUMAP 4.0: Space and Time Efficient NGS Read Mapping Using the FM-Index*.
+```
+@article{fujimoto2018gnumap,
+  title={GNUMAP 4.0: Space and Time Efficient NGS Read Mapping Using the FM-Index},
+  author={\textbf{Fujimoto, MS} and Lyman, CA and Bodily, PM and others},
+  journal={Insights Bioinform},
+  volume={1},
+  number={1},
+  pages={1--8},
+  year={2018}
+}
+```
 
 GNUMAP is made by the [Computational Sciences Laboratory](http://csl.cs.byu.edu/) at [Brigham Young University](http://byu.edu). 
